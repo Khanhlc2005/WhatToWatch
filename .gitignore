@@ -22,3 +22,27 @@
 # virtual machine crash logs, see http://www.java.com/en/download/help/error_hotspot.xml
 hs_err_pid*
 replay_pid*
+
+# --- Java / Spring Boot ---
+backend/target/
+backend/.mvn/
+backend/*.iml
+backend/.idea/
+
+# --- Node / Next.js ---
+frontend/node_modules/
+frontend/.next/
+frontend/.env*.local
+
+# --- Python / FastAPI ---
+ai-service/__pycache__/
+ai-service/venv/
+ai-service/.venv/
+ai-service/*.egg-info/
+
+# --- General ---
+.env
+.env.local
+*.log
+docker-compose.override.yml
+docs/evidence/**/*.zip
