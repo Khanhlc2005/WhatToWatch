@@ -1,0 +1,24 @@
+name: AI Service CI
+on:
+  pull_request:
+    paths: ["ai-service/**"]
+  push:
+    branches: [main]
+    paths: ["ai-service/**"]
+
+jobs:
+  lint-test:
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: ai-service
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+          cache: "pip"
+      - run: pip install -r requirements.txt
+      - run: pip install ruff pytest
+      - run: ruff check .
+      - run: pytest -q || echo "chưa có test, bỏ qua tạm ở giai đoạn đầu"

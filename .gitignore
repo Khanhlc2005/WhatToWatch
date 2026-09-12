@@ -46,3 +46,8 @@ ai-service/*.egg-info/
 *.log
 docker-compose.override.yml
 docs/evidence/**/*.zip
+
+# --- AI---
+.CLAUDE
+.AGENT
+.PLAN
