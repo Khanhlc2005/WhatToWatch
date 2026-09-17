@@ -40,12 +40,17 @@ ai-service/venv/
 ai-service/.venv/
 ai-service/*.egg-info/
 
+# --- Python / Data ---
+data/raw/
+data/processed/
+
 # --- General ---
 .env
 .env.local
 *.log
 docker-compose.override.yml
 docs/evidence/**/*.zip
+.vscode/settings.json
 
 # --- AI---
 .CLAUDE
