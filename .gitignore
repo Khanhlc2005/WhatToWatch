@@ -55,4 +55,6 @@ docs/evidence/**/*.zip
 # --- AI---
 .CLAUDE
 .AGENT
-.PLAN
+.PLANvenv/
+__pycache__/
+*.pyc
