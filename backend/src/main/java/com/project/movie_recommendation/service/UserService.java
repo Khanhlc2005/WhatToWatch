@@ -1,7 +1,6 @@
 package com.project.movie_recommendation.service;
 
 import com.project.movie_recommendation.dto.request.UserCreationRequest;
-import com.project.movie_recommendation.dto.request.UserUpdateRequest;
 import com.project.movie_recommendation.entity.User;
 import com.project.movie_recommendation.exception.AppException;
 import com.project.movie_recommendation.exception.ErrorCode;
