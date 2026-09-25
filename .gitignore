@@ -53,8 +53,6 @@ docs/evidence/**/*.zip
 .vscode/settings.json
 
 # --- AI---
-.CLAUDE
-.AGENT
-.PLANvenv/
-__pycache__/
-*.pyc
+CLAUDE.md
+AGENT.md
+PLAN.md
