@@ -24,10 +24,14 @@ public class SecurityConfig {
     private final String[] PUBLIC_ENDPOINTS = {"/users",
             "/auth/introspect", "/auth/log-in"};
 
+    private final String[] PUBLIC_GET_ENDPOINTS = {
+            "/movies/**"};
+
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity httpSecurity) throws Exception {
         httpSecurity.authorizeHttpRequests(request ->
                 request.requestMatchers(HttpMethod.POST, PUBLIC_ENDPOINTS).permitAll()
+                        .requestMatchers(HttpMethod.GET, PUBLIC_GET_ENDPOINTS).permitAll()
                         .anyRequest().authenticated());
 
         httpSecurity.oauth2ResourceServer(oauth2 ->

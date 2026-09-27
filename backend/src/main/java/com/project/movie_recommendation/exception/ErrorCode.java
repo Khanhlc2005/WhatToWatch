@@ -9,6 +9,8 @@ public enum ErrorCode {
     UNAUTHENTICATED(1005, "Unauthenticated"),
     EMAIL_INVALID(1006, "Invalid email format"),
     EMAIL_IS_REQUIRED(1007, "Email must not be blank"),
+    MOVIE_NOT_FOUND(2001, "Movie not found"),
+    TRAILER_NOT_FOUND(2002, "Trailer not found for this movie")
     ;
 
     private int code;
