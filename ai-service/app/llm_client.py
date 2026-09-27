@@ -1,6 +1,7 @@
-import os
-import requests
 import logging
+import os
+
+import requests
 from dotenv import load_dotenv
 
 # Tải các biến môi trường từ file .env
@@ -18,7 +19,7 @@ class OllamaClient:
         if not self.model_name:
             raise ValueError("LỖI: Biến môi trường 'OLLAMA_MODEL_NAME' chưa được thiết lập. Hãy kiểm tra file .env.")
 
-    def generate(self, prompt: str, system_prompt: str = None) -> str:
+    def generate(self, prompt: str, system_prompt: str | None = None) -> str:
         """
         Gửi prompt tới mô hình LLM qua API của Ollama.
         """
