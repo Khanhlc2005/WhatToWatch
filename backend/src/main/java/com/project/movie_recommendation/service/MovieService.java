@@ -33,18 +33,18 @@ public class MovieService {
         Movie movie = movieRepository.findById(id)
                 .orElseThrow(() -> new AppException(ErrorCode.MOVIE_NOT_FOUND));
 
-        if (movie.getTrailerYoutubeKey() == null || movie.getTrailerYoutubeKey().isBlank()) {
+        if (movie.getTrailerKey() == null || movie.getTrailerKey().isBlank()) {
             throw new AppException(ErrorCode.TRAILER_NOT_FOUND);
         }
 
         return TrailerResponse.builder()
-                .trailerKey(movie.getTrailerYoutubeKey())
-                .embedUrl("https://www.youtube.com/embed/" + movie.getTrailerYoutubeKey())
+                .trailerKey(movie.getTrailerKey())
+                .embedUrl("https://www.youtube.com/embed/" + movie.getTrailerKey())
                 .build();
     }
 
     public List<MovieSummaryResponse> getTopRatedMovies() {
-        return movieRepository.findTop10ByOrderByVoteAverageDesc().stream()
+        return movieRepository.findTop10ByOrderByTmdbVoteAverageDesc().stream()
                 .map(movieMapper::toMovieSummaryResponse)
                 .collect(Collectors.toList());
     }
