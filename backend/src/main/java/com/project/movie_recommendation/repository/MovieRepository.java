@@ -8,6 +8,6 @@ import java.util.List;
 
 @Repository
 public interface MovieRepository extends JpaRepository<Movie, String> {
-    List<Movie> findTop10ByOrderByVoteAverageDesc();
+    List<Movie> findTop10ByOrderByTmdbVoteAverageDesc();
     List<Movie> findTop10ByOrderByReleaseDateDesc();
 }
