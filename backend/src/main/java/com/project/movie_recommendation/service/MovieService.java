@@ -8,6 +8,7 @@ import com.project.movie_recommendation.exception.AppException;
 import com.project.movie_recommendation.exception.ErrorCode;
 import com.project.movie_recommendation.mapper.MovieMapper;
 import com.project.movie_recommendation.repository.MovieRepository;
+import org.springframework.data.domain.PageRequest;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
@@ -44,7 +45,7 @@ public class MovieService {
     }
 
     public List<MovieSummaryResponse> getTopRatedMovies() {
-        return movieRepository.findTop10ByOrderByTmdbVoteAverageDesc().stream()
+        return movieRepository.findTopRatedMovies(PageRequest.of(0, 10)).stream()
                 .map(movieMapper::toMovieSummaryResponse)
                 .collect(Collectors.toList());
     }

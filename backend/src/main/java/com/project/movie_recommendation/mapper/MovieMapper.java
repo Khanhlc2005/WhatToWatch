@@ -13,6 +13,6 @@ public interface MovieMapper {
 
 
     @Mapping(target = "posterUrl", source = "posterPath")
-    @Mapping(target = "voteAverage", source = "tmdbVoteAverage")
+    @Mapping(target = "voteAverage", expression = "java(movie.getTmdbVoteAverage() != null && movie.getTmdbVoteAverage() > 0 ? movie.getTmdbVoteAverage() : movie.getImdbRating())")
     MovieSummaryResponse toMovieSummaryResponse(Movie movie);
 }
