@@ -4,25 +4,24 @@ Movie discovery app with Spring Boot backend and a Next.js frontend in `nextflix
 
 ## Chạy toàn bộ ứng dụng (cấu hình hiện tại)
 
-Cấu hình này dùng **Docker Desktop cho MySQL và Spring Boot**, còn UI Next.js chạy trong thư mục `nextflix/`. Cần có Docker Desktop, Node.js 18 và npm. Thư mục `WhatToWatch-docker` nằm cạnh thư mục `WhatToWatch` này và chứa `docker-compose.yml` với hai service `mysql`, `backend`. Các lệnh dưới đây bắt đầu tại thư mục gốc `WhatToWatch`.
+Cấu hình này dùng **Docker Desktop cho MySQL và Spring Boot**, còn UI Next.js chạy trong thư mục `nextflix/`. Cần có Docker Desktop, Node.js 18 và npm. Chạy các lệnh Docker Compose tại thư mục gốc `WhatToWatch`, nơi có `docker-compose.yml` với hai service `mysql`, `backend`.
 
 ### 1. Khởi động backend và database — terminal thứ nhất
 
-Trên Ubuntu, bật Docker Desktop rồi chạy Compose trong thư mục Docker:
+Trên Ubuntu, bật Docker Desktop rồi chạy Compose tại thư mục gốc dự án:
 
 ```bash
 systemctl --user start docker-desktop
-cd ../WhatToWatch-docker
-docker compose up -d
+docker compose up -d --build
 docker compose ps
 ```
 
-Cả `whattowatch-mysql` và `whattowatch-backend` cần ở trạng thái `Up`. Lần đầu hoặc sau khi sửa mã backend, dùng `docker compose up -d --build` thay cho `docker compose up -d`. Nếu cổng `3306` đã được MySQL cài trên máy sử dụng, dừng MySQL local bằng `sudo systemctl stop mysql` rồi chạy lại Compose.
+Nếu stack ở `WhatToWatch-docker` còn chạy, hãy dừng nó bằng `docker compose down` trong thư mục đó trước khi khởi động stack này để tránh trùng tên container và cổng. Stack ở thư mục này dùng Docker volume riêng, nên dữ liệu MySQL cũ không tự chuyển sang. Cả `whattowatch-mysql` và `whattowatch-backend` cần ở trạng thái `Up`. Những lần tiếp theo có thể dùng `docker compose up -d`; sau khi sửa backend, dùng `docker compose up -d --build`. Nếu cổng `3306` đã được MySQL cài trên máy sử dụng, dừng MySQL local bằng `sudo systemctl stop mysql` rồi chạy lại Compose.
 
-**Chỉ khi database chưa có phim:** đặt `movies_data.sql` ở thư mục gốc `WhatToWatch`, sau đó chạy các lệnh sau tại `WhatToWatch-docker`:
+**Chỉ khi database chưa có phim:** đặt `movies_data.sql` ở thư mục gốc `WhatToWatch`, sau đó chạy các lệnh sau tại thư mục gốc `WhatToWatch`:
 
 ```bash
-python3 tools/prepare_movies_sql.py ../WhatToWatch/movies_data.sql /tmp/movies_data_compatible.sql
+python3 tools/prepare_movies_sql.py movies_data.sql /tmp/movies_data_compatible.sql
 docker exec -i -e MYSQL_PWD=root whattowatch-mysql mysql -u root whattowatch_db < /tmp/movies_data_compatible.sql
 docker exec -i -e MYSQL_PWD=root whattowatch-mysql mysql -u root whattowatch_db < data/mysql/sample_trailers.sql
 ```
@@ -48,7 +47,7 @@ Mở [http://localhost:3000/browse](http://localhost:3000/browse). Kiểm tra ba
 
 ### 3. Dừng ứng dụng
 
-Dừng UI bằng `Ctrl+C` trong terminal thứ hai. Tại `WhatToWatch-docker`, chạy `docker compose down` để dừng backend và MySQL; lệnh này giữ nguyên dữ liệu trong Docker volume.
+Dừng UI bằng `Ctrl+C` trong terminal thứ hai. Tại thư mục gốc `WhatToWatch`, chạy `docker compose down` để dừng backend và MySQL; lệnh này giữ nguyên dữ liệu trong Docker volume.
 
 ## Cách khác: chạy backend local với MySQL đã cài sẵn
 
@@ -90,7 +89,7 @@ Yêu cầu: Java 21, Node.js 18, npm và MySQL 8. Trên Ubuntu, kiểm tra MySQL
 
 4. Mở http://localhost:3000 để xem trang mở đầu Nextflix gốc. Vào `/register` để tạo tài khoản, đăng nhập ở `/login`, rồi xem home tại `/browse`. Chọn phim để mở chi tiết trong modal gốc tại `/movies/{id}`. Trang browse và chi tiết cũng xem được khi chưa đăng nhập.
 
-## Nếu chỉ dùng Docker Compose cho MySQL ở nhánh này
+## Nếu chỉ dùng Docker Compose cho MySQL
 
 Nếu máy đã có Docker, có thể dùng `docker compose up -d mysql` thay bước tạo MySQL ở trên. Compose tạo database và tài khoản root phát triển với mật khẩu mặc định `root`; backend có cấu hình mặc định tương ứng.
 
