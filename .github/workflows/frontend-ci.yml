@@ -1,24 +1,24 @@
 name: Frontend CI
 on:
   pull_request:
-    paths: ["frontend/**"]
+    paths: ["nextflix/**", ".github/workflows/frontend-ci.yml"]
   push:
     branches: [main]
-    paths: ["frontend/**"]
+    paths: ["nextflix/**", ".github/workflows/frontend-ci.yml"]
 
 jobs:
   build-lint:
     runs-on: ubuntu-latest
     defaults:
       run:
-        working-directory: frontend
+        working-directory: nextflix
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-node@v4
         with:
-          node-version: "20"
+          node-version: "18"
           cache: "npm"
-          cache-dependency-path: frontend/package-lock.json
+          cache-dependency-path: nextflix/package-lock.json
       - run: npm ci
       - run: npm run lint
       - run: npm run build

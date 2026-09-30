@@ -23,6 +23,7 @@ public class Movie {
     String overview;
 
     String posterUrl;
+    String backdropUrl;
     LocalDate releaseDate;
     Double voteAverage;
     Integer runtime; 

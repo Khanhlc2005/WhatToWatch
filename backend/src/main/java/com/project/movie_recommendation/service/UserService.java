@@ -2,6 +2,7 @@ package com.project.movie_recommendation.service;
 
 import com.project.movie_recommendation.dto.request.UserCreationRequest;
 import com.project.movie_recommendation.entity.User;
+import com.project.movie_recommendation.dto.response.UserResponse;
 import com.project.movie_recommendation.exception.AppException;
 import com.project.movie_recommendation.exception.ErrorCode;
 import com.project.movie_recommendation.mapper.UserMapper;
@@ -21,7 +22,7 @@ public class UserService {
     @Autowired
     UserMapper userMapper;
 
-    public User createUser(UserCreationRequest request){
+    public UserResponse createUser(UserCreationRequest request){
 
         if (userRepository.existsByEmail(request.getEmail()))
             throw new AppException(ErrorCode.USER_EXISTED);
@@ -29,7 +30,8 @@ public class UserService {
         User user = userMapper.toUser(request);
         PasswordEncoder passwordEncoder = new BCryptPasswordEncoder(10);
         user.setPassword(passwordEncoder.encode(request.getPassword()));
-        return userRepository.save(user);
+        User saved = userRepository.save(user);
+        return new UserResponse(saved.getId(), saved.getEmail());
     }
 
 }

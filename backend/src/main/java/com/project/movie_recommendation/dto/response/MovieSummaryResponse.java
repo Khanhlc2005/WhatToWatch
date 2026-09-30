@@ -14,6 +14,9 @@ public class MovieSummaryResponse {
     String id;
     String title;
     String posterUrl;
+    String backdropUrl;
     Double voteAverage;
     LocalDate releaseDate;
+    String overview;
+    String genres;
 }

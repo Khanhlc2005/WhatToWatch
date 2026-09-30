@@ -1,0 +1,94 @@
+@import './variables.scss';
+
+.container {
+  min-height: 100vh;
+  padding: 0 0.5rem;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+}
+
+.main {
+  padding: 5rem 0;
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+
+  &__bgImage {
+    z-index: 0;
+    background-color: #0e0e0e99;
+  }
+
+  &__card {
+    margin: 1rem;
+    padding: 1.5rem;
+    text-align: left;
+    color: inherit;
+    background-color:$background-overlay;
+    color: $white;
+    text-decoration: none;
+    z-index: 100;
+    border-radius: 0.5rem;
+
+    .button {
+      background-color: $primary-button;
+      padding: 0.7rem;
+      text-align: center;
+      border-radius: 0.2rem;
+      min-width: 18rem ;
+      transition: linear 200ms ease-in-out;
+
+      &:hover {
+        background-color: $primary-buttonHover;
+        cursor: pointer;
+        transform: scale(1.02);
+      }
+    }
+  }
+
+
+}
+
+.authCard {
+  display: flex;
+  flex-direction: column;
+  min-width: min(22rem, calc(100vw - 2rem));
+  max-width: 24rem;
+  gap: 0.45rem;
+
+  h1 { margin: 0 0 0.25rem; }
+  h2 { margin: 0 0 0.6rem; }
+
+  input {
+    border: 1px solid #777;
+    border-radius: 0.2rem;
+    padding: 0.8rem;
+    background: #333;
+    color: white;
+    font: inherit;
+  }
+  input:focus { outline: 2px solid white; }
+  a { color: white; text-decoration: underline; }
+  p { font-size: 0.9rem; }
+}
+
+.submit {
+  border: 0;
+  border-radius: 0.2rem;
+  background: $primary-button;
+  color: white;
+  font: inherit;
+  font-weight: bold;
+  padding: 0.8rem;
+  cursor: pointer;
+  margin-top: 0.6rem;
+}
+.submit:hover { background: $primary-buttonHover; }
+.submit:disabled { opacity: 0.6; cursor: wait; }
+.error { color: #ffaaa9; }
+.success { color: #9ce99c; }
+.backLink { align-self: flex-start; }
