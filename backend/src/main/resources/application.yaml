@@ -1,7 +1,7 @@
 server:
   port: 8080
   servlet:
-    context-path: /movie-recommendation
+    context-path: /movie-recommendation/api/v1
 
 
 

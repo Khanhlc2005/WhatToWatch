@@ -1,5 +1,6 @@
 package com.project.movie_recommendation.entity;
 
+import com.project.movie_recommendation.enums.Roles;
 import jakarta.persistence.*;
 import lombok.*;
 import lombok.experimental.FieldDefaults;
@@ -30,6 +31,11 @@ public class User {
 
     @Column(name = "password_hash", nullable = false, length = 255)
     String passwordHash;
+
+    @Enumerated(EnumType.STRING)
+    @Column(length = 20)
+    @Builder.Default
+    Roles role = Roles.USER;
 
     @CreationTimestamp
     @Column(name = "created_at", updatable = false)
