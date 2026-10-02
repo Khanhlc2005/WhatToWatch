@@ -11,7 +11,7 @@ import java.time.LocalDate;
 @AllArgsConstructor
 @FieldDefaults(level = AccessLevel.PRIVATE)
 public class MovieDetailResponse {
-    String id;
+    Long id;
     String imdbId;
     Long tmdbId;
     String title;

@@ -35,7 +35,7 @@ public class AuthenticationService {
     UserRepository userRepository;
 
     @NonFinal
-    @Value(("${jwt.signerKey}"))
+    @Value("${jwt.signerKey}")
     protected String SIGNER_KEY;
 
     private String generateToken(String email){
@@ -51,8 +51,7 @@ public class AuthenticationService {
                 .build();
 
         Payload payload = new Payload((jwtClaimsSet.toJSONObject()));
-
-        JWSObject jwsObject = new JWSObject(header,payload);
+        JWSObject jwsObject = new JWSObject(header, payload);
 
         try {
             jwsObject.sign(new MACSigner(SIGNER_KEY.getBytes()));
@@ -61,30 +60,27 @@ public class AuthenticationService {
             log.error("Cannot create token", e);
             throw new RuntimeException(e);
         }
-
     }
 
     public IntrospectResponse introspect(IntrospectRequest request)
             throws JOSEException, ParseException {
-
         var token = request.getToken();
-
         JWSVerifier verifier = new MACVerifier(SIGNER_KEY.getBytes());
-
         SignedJWT signedJWT = SignedJWT.parse(token);
-
         Date expiryTime = signedJWT.getJWTClaimsSet().getExpirationTime();
-
         var verified = signedJWT.verify(verifier);
+
         return IntrospectResponse.builder()
                 .valid(verified && expiryTime.after(new Date()))
                 .build();
     }
+
     public AuthenticationResponse authenticate(AuthenticationRequest request){
         var user = userRepository.findByEmail(request.getEmail())
                 .orElseThrow(() -> new AppException(ErrorCode.USER_NOT_EXISTED));
+
         PasswordEncoder passwordEncoder = new BCryptPasswordEncoder(10);
-        boolean authenticated =  passwordEncoder.matches(request.getPassword(), user.getPassword());
+        boolean authenticated = passwordEncoder.matches(request.getPassword(), user.getPasswordHash());
 
         if(!authenticated)
             throw new AppException(ErrorCode.UNAUTHENTICATED);
@@ -95,7 +91,5 @@ public class AuthenticationService {
                 .token(token)
                 .authenticated(true)
                 .build();
-
     }
-
 }

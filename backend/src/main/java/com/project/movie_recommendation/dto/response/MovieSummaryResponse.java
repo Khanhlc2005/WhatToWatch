@@ -11,7 +11,7 @@ import java.time.LocalDate;
 @AllArgsConstructor
 @FieldDefaults(level = AccessLevel.PRIVATE)
 public class MovieSummaryResponse {
-    String id;
+    Long id;
     String title;
     String posterUrl;
     Double voteAverage;
