@@ -10,7 +10,10 @@ public enum ErrorCode {
     EMAIL_INVALID(1006, "Invalid email format"),
     EMAIL_IS_REQUIRED(1007, "Email must not be blank"),
     MOVIE_NOT_FOUND(2001, "Movie not found"),
-    TRAILER_NOT_FOUND(2002, "Trailer not found for this movie")
+    TRAILER_NOT_FOUND(2002, "Trailer not found for this movie"),
+    WATCHLIST_NOT_FOUND(3001, "Watchlist not found"),
+    MOVIE_ALREADY_IN_WATCHLIST(3002, "Movie is already in watchlist"),
+    MOVIE_NOT_IN_WATCHLIST(3003, "Movie is not in watchlist")
     ;
 
     private int code;

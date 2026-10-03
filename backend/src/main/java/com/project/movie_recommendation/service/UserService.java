@@ -2,6 +2,7 @@ package com.project.movie_recommendation.service;
 
 import com.project.movie_recommendation.dto.request.UserCreationRequest;
 import com.project.movie_recommendation.entity.User;
+import com.project.movie_recommendation.enums.Roles;
 import com.project.movie_recommendation.exception.AppException;
 import com.project.movie_recommendation.exception.ErrorCode;
 import com.project.movie_recommendation.mapper.UserMapper;
@@ -26,13 +27,15 @@ public class UserService {
 
         User user = userMapper.toUser(request);
 
-        // Mặc định gán username bằng prefix của email nếu form chưa có trường username
         if (user.getUsername() == null || user.getUsername().isBlank()) {
             user.setUsername(request.getEmail().split("@")[0]);
         }
 
+        user.setRole(Roles.USER);
+
         PasswordEncoder passwordEncoder = new BCryptPasswordEncoder(10);
         user.setPasswordHash(passwordEncoder.encode(request.getPassword()));
+
         return userRepository.save(user);
     }
 }
