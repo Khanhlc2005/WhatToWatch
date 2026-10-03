@@ -18,7 +18,10 @@ public enum ErrorCode {
     MOVIE_ALREADY_IN_WATCHLIST(3002, "Movie is already in watchlist"),
     MOVIE_NOT_IN_WATCHLIST(3003, "Movie is not in watchlist"),
 
-    WATCH_HISTORY_NOT_FOUND(4001, "Watch history record not found")
+    WATCH_HISTORY_NOT_FOUND(4001, "Watch history record not found"),
+
+    RATING_INVALID(5001, "Rating value must be between 1.0 and 5.0"),
+    RATING_NOT_FOUND(5002, "Rating not found"),
     ;
 
     private int code;
