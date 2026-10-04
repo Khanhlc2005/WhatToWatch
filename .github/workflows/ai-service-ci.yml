@@ -1,10 +1,10 @@
 name: AI Service CI
 on:
   pull_request:
-    paths: ["ai-service/**"]
+    paths: ["ai-service/**", "requirements.txt", ".github/workflows/ai-service-ci.yml"]
   push:
     branches: [main]
-    paths: ["ai-service/**"]
+    paths: ["ai-service/**", "requirements.txt", ".github/workflows/ai-service-ci.yml"]
 
 jobs:
   lint-test:
@@ -21,4 +21,4 @@ jobs:
       - run: pip install -r ../requirements.txt
       - run: pip install ruff pytest
       - run: ruff check .
-      - run: pytest -q || echo "chưa có test, bỏ qua tạm ở giai đoạn đầu"
+      - run: python -m pytest -q tests

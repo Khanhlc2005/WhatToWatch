@@ -1,0 +1,30 @@
+{
+  "status": "INCOMPLETE",
+  "scope": "All supplied points and processed movies; MySQL export may contain additional movies",
+  "counts": {
+    "processed": 3,
+    "mysql": null,
+    "qdrant": null
+  },
+  "not_run": [
+    "MySQL: no CSV export supplied",
+    "Qdrant: no snapshot or URL supplied"
+  ],
+  "issues": [
+    {
+      "code": "missing_or_invalid_movie_id",
+      "source": "processed",
+      "imdb_id": "tt0068646"
+    },
+    {
+      "code": "missing_or_invalid_movie_id",
+      "source": "processed",
+      "imdb_id": "tt0137523"
+    },
+    {
+      "code": "missing_or_invalid_movie_id",
+      "source": "processed",
+      "imdb_id": "tt0816692"
+    }
+  ]
+}

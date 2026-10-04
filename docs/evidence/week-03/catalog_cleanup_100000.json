@@ -1,0 +1,26 @@
+{
+  "target_successes": 100000,
+  "accepted_rows": 11347,
+  "remaining_to_target": 88653,
+  "removed": [
+    {
+      "path": "data/processed/handoff/catalog_handoff",
+      "bytes": 784325150
+    },
+    {
+      "path": "data/processed/handoff/catalog_handoff.zip",
+      "bytes": 191519551
+    },
+    {
+      "path": "data/processed/handoff/catalog_handoff.sha256",
+      "bytes": 86
+    },
+    {
+      "path": "data/processed/imdb_tmdb_full.jsonl",
+      "bytes": 166535247
+    }
+  ],
+  "freed_bytes": 1142380034,
+  "validation_passed": true,
+  "archive_bytes": 191519827
+}

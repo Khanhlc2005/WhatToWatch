@@ -40,6 +40,7 @@ Các endpoint hiện có:
 | GET | `/internal/health` | Health check của service |
 | GET | `/internal/qdrant/health` | Kiểm tra kết nối Qdrant và danh sách collection |
 | GET | `/internal/qdrant/sample?limit=5` | Truy xuất dữ liệu mẫu từ collection `movies` |
+| POST | `/internal/qdrant/search` | Dense hoặc sparse search với payload filters; MySQL ID có thể chưa được mapping |
 | POST | `/internal/chat` | Điểm tích hợp chatbot (Ollama/Qwen2.5), thống nhất với Nam Anh |
 
 ## 5. Chạy test
@@ -48,3 +49,5 @@ Các endpoint hiện có:
 cd ai-service
 pytest
 ```
+
+Dockerfile dùng build context ở repo root. Xem [contract và lệnh demo Docker/retrieval](retrieval_data_contract_vi.md) để chạy profile `ai`, kiểm tra ID và giới hạn khi chưa có CSV MySQL.
