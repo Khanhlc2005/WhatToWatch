@@ -9,8 +9,7 @@ import org.springframework.stereotype.Repository;
 import java.util.List;
 
 @Repository
-public interface MovieRepository extends JpaRepository<Movie, String> {
-    @Query("select m from Movie m order by case when m.tmdbVoteAverage is not null and m.tmdbVoteAverage > 0 then m.tmdbVoteAverage else coalesce(m.imdbRating, 0) end desc")
-    List<Movie> findTopRatedMovies(Pageable pageable);
+public interface MovieRepository extends JpaRepository<Movie, Long> {
+    List<Movie> findTop10ByOrderByTmdbVoteAverageDesc();
     List<Movie> findTop10ByOrderByReleaseDateDesc();
 }

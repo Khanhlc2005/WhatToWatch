@@ -9,8 +9,19 @@ public enum ErrorCode {
     UNAUTHENTICATED(1005, "Unauthenticated"),
     EMAIL_INVALID(1006, "Invalid email format"),
     EMAIL_IS_REQUIRED(1007, "Email must not be blank"),
+    UNAUTHORIZED_ACCESS(1008, "You do not have permission to access this resource"),
+
     MOVIE_NOT_FOUND(2001, "Movie not found"),
-    TRAILER_NOT_FOUND(2002, "Trailer not found for this movie")
+    TRAILER_NOT_FOUND(2002, "Trailer not found for this movie"),
+
+    WATCHLIST_NOT_FOUND(3001, "Watchlist not found"),
+    MOVIE_ALREADY_IN_WATCHLIST(3002, "Movie is already in watchlist"),
+    MOVIE_NOT_IN_WATCHLIST(3003, "Movie is not in watchlist"),
+
+    WATCH_HISTORY_NOT_FOUND(4001, "Watch history record not found"),
+
+    RATING_INVALID(5001, "Rating value must be between 1.0 and 5.0"),
+    RATING_NOT_FOUND(5002, "Rating not found"),
     ;
 
     private int code;

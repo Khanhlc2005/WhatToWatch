@@ -8,9 +8,16 @@ import org.hibernate.annotations.UpdateTimestamp;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
 
 @Entity
-@Table(name = "movie")
+@Table(name = "movies", indexes = {
+        @Index(name = "idx_movies_release_date", columnList = "release_date"),
+        @Index(name = "idx_movies_imdb_rating", columnList = "imdb_rating")
+})
 @Getter
 @Setter
 @Builder
@@ -20,13 +27,13 @@ import java.time.LocalDateTime;
 public class Movie {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.UUID)
-    String id;
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    Long id;
 
-    @Column(name = "imdb_id", length = 30)
+    @Column(name = "imdb_id", length = 30, unique = true)
     String imdbId;
 
-    @Column(name = "tmdb_id")
+    @Column(name = "tmdb_id", unique = true)
     Long tmdbId;
 
     @Column(nullable = false, length = 500)
@@ -90,4 +97,30 @@ public class Movie {
     @UpdateTimestamp
     @Column(name = "updated_at")
     LocalDateTime updatedAt;
+
+    @ManyToMany(fetch = FetchType.LAZY)
+    @JoinTable(
+            name = "movie_genres",
+            joinColumns = @JoinColumn(name = "movie_id"),
+            inverseJoinColumns = @JoinColumn(name = "genre_id")
+    )
+    @Builder.Default
+    Set<Genre> genres = new HashSet<>();
+
+    @ManyToMany(fetch = FetchType.LAZY)
+    @JoinTable(
+            name = "movie_keywords",
+            joinColumns = @JoinColumn(name = "movie_id"),
+            inverseJoinColumns = @JoinColumn(name = "keyword_id")
+    )
+    @Builder.Default
+    Set<Keyword> keywords = new HashSet<>();
+
+    @OneToMany(mappedBy = "movie", cascade = CascadeType.ALL, orphanRemoval = true)
+    @Builder.Default
+    List<MovieCast> cast = new ArrayList<>();
+
+    @OneToMany(mappedBy = "movie", cascade = CascadeType.ALL, orphanRemoval = true)
+    @Builder.Default
+    List<MovieCrew> crew = new ArrayList<>();
 }

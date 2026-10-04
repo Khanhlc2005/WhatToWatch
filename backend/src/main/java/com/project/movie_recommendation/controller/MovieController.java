@@ -20,14 +20,14 @@ public class MovieController {
     MovieService movieService;
 
     @GetMapping("/{id}")
-    public ApiResponse<MovieDetailResponse> getMovieDetail(@PathVariable String id) {
+    public ApiResponse<MovieDetailResponse> getMovieDetail(@PathVariable Long id) {
         return ApiResponse.<MovieDetailResponse>builder()
                 .result(movieService.getMovieDetail(id))
                 .build();
     }
 
     @GetMapping("/{id}/trailer")
-    public ApiResponse<TrailerResponse> getMovieTrailer(@PathVariable String id) {
+    public ApiResponse<TrailerResponse> getMovieTrailer(@PathVariable Long id) {
         return ApiResponse.<TrailerResponse>builder()
                 .result(movieService.getMovieTrailer(id))
                 .build();

@@ -24,13 +24,13 @@ public class MovieService {
     MovieRepository movieRepository;
     MovieMapper movieMapper;
 
-    public MovieDetailResponse getMovieDetail(String id) {
+    public MovieDetailResponse getMovieDetail(Long id) {
         Movie movie = movieRepository.findById(id)
                 .orElseThrow(() -> new AppException(ErrorCode.MOVIE_NOT_FOUND));
         return movieMapper.toMovieDetailResponse(movie);
     }
 
-    public TrailerResponse getMovieTrailer(String id) {
+    public TrailerResponse getMovieTrailer(Long id) {
         Movie movie = movieRepository.findById(id)
                 .orElseThrow(() -> new AppException(ErrorCode.MOVIE_NOT_FOUND));
 
