@@ -1,4 +1,36 @@
 services:
+  ai-service:
+    profiles: ["ai"]
+    build:
+      context: .
+      dockerfile: ai-service/Dockerfile
+    ports:
+      - "127.0.0.1:8010:8010"
+    environment:
+      QDRANT_URL: http://qdrant:6333
+      QDRANT_COLLECTION: ${QDRANT_COLLECTION:-movies}
+      EMBEDDING_MODEL_NAME: BAAI/bge-m3
+      EMBEDDING_DEVICE: cpu
+      OLLAMA_BASE_URL: http://host.docker.internal:11434
+      OLLAMA_MODEL_NAME: qwen2.5:3b
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
+    volumes:
+      - whattowatch_model_cache:/home/app/.cache/huggingface
+    depends_on:
+      - qdrant
+    networks:
+      - whattowatch-network
+
+  qdrant:
+    image: qdrant/qdrant
+    ports:
+      - "127.0.0.1:6335:6333"
+    volumes:
+      - whattowatch_qdrant_data:/qdrant/storage
+    networks:
+      - whattowatch-network
+
   mysql:
     image: mysql:8.0
     container_name: whattowatch-mysql
@@ -32,6 +64,8 @@ services:
       - whattowatch-network
 
 volumes:
+  whattowatch_model_cache:
+  whattowatch_qdrant_data:
   mysql_data:
 
 networks:
