@@ -2,6 +2,7 @@ package com.project.movie_recommendation.controller;
 
 import com.project.movie_recommendation.dto.request.RatingRequest;
 import com.project.movie_recommendation.dto.response.ApiResponse;
+import com.project.movie_recommendation.dto.response.PageResponse;
 import com.project.movie_recommendation.dto.response.RatingResponse;
 import com.project.movie_recommendation.service.RatingService;
 import jakarta.validation.Valid;
@@ -36,12 +37,11 @@ public class RatingController {
     }
 
     @GetMapping("/my-ratings")
-    public ApiResponse<Page<RatingResponse>> getMyRatings(
-            @RequestParam(defaultValue = "0") int page,
+    public ApiResponse<PageResponse<RatingResponse>> getMyRatings(
+            @RequestParam(defaultValue = "1") int page,
             @RequestParam(defaultValue = "20") int size) {
-        Pageable pageable = PageRequest.of(page, size);
-        return ApiResponse.<Page<RatingResponse>>builder()
-                .result(ratingService.getMyRatings(pageable))
+        return ApiResponse.<PageResponse<RatingResponse>>builder()
+                .result(ratingService.getMyRatings(page, size))
                 .build();
     }
 

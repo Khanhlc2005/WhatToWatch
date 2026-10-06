@@ -1,10 +1,10 @@
 package com.project.movie_recommendation.controller;
 
-import com.project.movie_recommendation.dto.response.ApiResponse;
-import com.project.movie_recommendation.dto.response.MovieDetailResponse;
-import com.project.movie_recommendation.dto.response.MovieSummaryResponse;
-import com.project.movie_recommendation.dto.response.TrailerResponse;
+import com.project.movie_recommendation.dto.response.*;
 import com.project.movie_recommendation.service.MovieService;
+import com.project.movie_recommendation.dto.request.MovieFilterRequest;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
@@ -44,6 +44,15 @@ public class MovieController {
     public ApiResponse<List<MovieSummaryResponse>> getNewestMovies() {
         return ApiResponse.<List<MovieSummaryResponse>>builder()
                 .result(movieService.getNewestMovies())
+                .build();
+    }
+
+    @GetMapping("/filter")
+    public ApiResponse<PageResponse<MovieSummaryResponse>> filterMovies(
+            MovieFilterRequest filterRequest,
+            Pageable pageable) {
+        return ApiResponse.<PageResponse<MovieSummaryResponse>>builder()
+                .result(movieService.filterMovies(filterRequest, pageable))
                 .build();
     }
 }
