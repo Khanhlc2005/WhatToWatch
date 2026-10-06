@@ -4,6 +4,7 @@ import lombok.*;
 import lombok.experimental.FieldDefaults;
 
 import java.time.LocalDate;
+import java.util.List;
 
 @Data
 @Builder
@@ -32,4 +33,19 @@ public class MovieDetailResponse {
     String trailerKey;
     String trailerSite;
     String trailerType;
+
+    List<CastResponse> cast;
+    List<MovieSummaryResponse> similarMovies;
+
+    @Data
+    @Builder
+    @NoArgsConstructor
+    @AllArgsConstructor
+    @FieldDefaults(level = AccessLevel.PRIVATE)
+    public static class CastResponse {
+        Long personId;
+        String name;
+        String characterName;
+        Integer castOrder;
+    }
 }

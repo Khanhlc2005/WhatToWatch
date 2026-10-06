@@ -10,6 +10,9 @@ import com.project.movie_recommendation.exception.ErrorCode;
 import com.project.movie_recommendation.repository.MovieRepository;
 import com.project.movie_recommendation.repository.UserRepository;
 import com.project.movie_recommendation.repository.WatchHistoryRepository;
+import com.project.movie_recommendation.dto.response.PageResponse;
+import org.springframework.data.domain.PageRequest;
+import java.util.List;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
@@ -55,10 +58,23 @@ public class WatchHistoryService {
         return toResponse(watchHistory);
     }
 
-    public Page<WatchHistoryResponse> getMyWatchHistory(Pageable pageable) {
+    public PageResponse<WatchHistoryResponse> getMyWatchHistory(int page, int size) {
         User user = getCurrentUser();
-        return watchHistoryRepository.findByUserOrderByCreatedAtDesc(user, pageable)
-                .map(this::toResponse);
+        Pageable pageable = PageRequest.of(page > 0 ? page - 1 : 0, size);
+
+        Page<WatchHistory> historyPage = watchHistoryRepository.findByUserOrderByCreatedAtDesc(user, pageable);
+
+        List<WatchHistoryResponse> data = historyPage.getContent().stream()
+                .map(this::toResponse)
+                .toList();
+
+        return PageResponse.<WatchHistoryResponse>builder()
+                .currentPage(page)
+                .pageSize(size)
+                .totalPages(historyPage.getTotalPages())
+                .totalElements(historyPage.getTotalElements())
+                .data(data)
+                .build();
     }
 
     @Transactional

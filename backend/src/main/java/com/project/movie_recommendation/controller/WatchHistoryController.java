@@ -4,6 +4,7 @@ import com.project.movie_recommendation.dto.request.WatchHistoryRequest;
 import com.project.movie_recommendation.dto.response.ApiResponse;
 import com.project.movie_recommendation.dto.response.WatchHistoryResponse;
 import com.project.movie_recommendation.service.WatchHistoryService;
+import com.project.movie_recommendation.dto.response.PageResponse;
 import jakarta.validation.Valid;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
@@ -29,12 +30,11 @@ public class WatchHistoryController {
     }
 
     @GetMapping
-    public ApiResponse<Page<WatchHistoryResponse>> getHistory(
-            @RequestParam(defaultValue = "0") int page,
+    public ApiResponse<PageResponse<WatchHistoryResponse>> getHistory(
+            @RequestParam(defaultValue = "1") int page,
             @RequestParam(defaultValue = "20") int size) {
-        Pageable pageable = PageRequest.of(page, size);
-        return ApiResponse.<Page<WatchHistoryResponse>>builder()
-                .result(watchHistoryService.getMyWatchHistory(pageable))
+        return ApiResponse.<PageResponse<WatchHistoryResponse>>builder()
+                .result(watchHistoryService.getMyWatchHistory(page, size))
                 .build();
     }
 

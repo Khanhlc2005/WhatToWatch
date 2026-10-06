@@ -31,6 +31,10 @@ public class UserService {
             user.setUsername(request.getEmail().split("@")[0]);
         }
 
+        if (userRepository.existsByUsername(user.getUsername())) {
+            throw new AppException(ErrorCode.USER_EXISTED);
+        }
+
         user.setRole(Roles.USER);
 
         PasswordEncoder passwordEncoder = new BCryptPasswordEncoder(10);

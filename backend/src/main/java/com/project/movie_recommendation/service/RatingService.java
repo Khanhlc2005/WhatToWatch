@@ -1,6 +1,7 @@
 package com.project.movie_recommendation.service;
 
 import com.project.movie_recommendation.dto.request.RatingRequest;
+import com.project.movie_recommendation.dto.response.PageResponse;
 import com.project.movie_recommendation.dto.response.RatingResponse;
 import com.project.movie_recommendation.entity.Movie;
 import com.project.movie_recommendation.entity.Rating;
@@ -10,6 +11,7 @@ import com.project.movie_recommendation.exception.ErrorCode;
 import com.project.movie_recommendation.repository.MovieRepository;
 import com.project.movie_recommendation.repository.RatingRepository;
 import com.project.movie_recommendation.repository.UserRepository;
+import org.springframework.data.domain.PageRequest;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
@@ -19,6 +21,8 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
+import java.util.List;
 
 @Slf4j
 @Service
@@ -73,12 +77,6 @@ public class RatingService {
                 .orElse(null);
     }
 
-    public Page<RatingResponse> getMyRatings(Pageable pageable) {
-        User user = getCurrentUser();
-        return ratingRepository.findByUserOrderByCreatedAtDesc(user, pageable)
-                .map(this::toResponse);
-    }
-
     @Transactional
     public void deleteRating(Long movieId) {
         User user = getCurrentUser();
@@ -96,6 +94,25 @@ public class RatingService {
     private void notifyAiPreferenceUpdate(Long userId, Long movieId, Double ratingScore) {
         log.info("Triggered AI Preference Update Webhook for userId={}, movieId={}, score={}",
                 userId, movieId, ratingScore);
+    }
+
+    public PageResponse<RatingResponse> getMyRatings(int page, int size) {
+        User user = getCurrentUser();
+        Pageable pageable = PageRequest.of(page > 0 ? page - 1 : 0, size);
+
+        Page<Rating> ratingPage = ratingRepository.findByUserOrderByCreatedAtDesc(user, pageable);
+
+        List<RatingResponse> data = ratingPage.getContent().stream()
+                .map(this::toResponse)
+                .toList();
+
+        return PageResponse.<RatingResponse>builder()
+                .currentPage(page)
+                .pageSize(size)
+                .totalPages(ratingPage.getTotalPages())
+                .totalElements(ratingPage.getTotalElements())
+                .data(data)
+                .build();
     }
 
     private RatingResponse toResponse(Rating entity) {
