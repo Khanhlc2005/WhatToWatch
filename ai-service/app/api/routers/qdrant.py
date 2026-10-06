@@ -1,13 +1,31 @@
+import logging
+
 from fastapi import APIRouter, HTTPException
 
 from app.core.qdrant import QdrantConnectionError, check_qdrant_connection
-from app.schemas.retrieval import QdrantHealthResponse, SampleRetrievalResponse
-from app.services.retrieval import fetch_sample_movies
+from app.schemas.retrieval import (
+    MovieSearchRequest,
+    MovieSearchResponse,
+    QdrantHealthResponse,
+    SampleRetrievalResponse,
+)
+from app.services.retrieval import fetch_sample_movies, search_movies
+
+logger = logging.getLogger(__name__)
 
 router = APIRouter(
     prefix="/internal/qdrant",
     tags=["Qdrant"],
 )
+
+
+@router.post("/search", response_model=MovieSearchResponse)
+def qdrant_search(request: MovieSearchRequest) -> MovieSearchResponse:
+    try:
+        return search_movies(request)
+    except Exception as exc:
+        logger.exception("Movie retrieval failed")
+        raise HTTPException(status_code=503, detail="Movie retrieval is unavailable") from exc
 
 
 @router.get("/health", response_model=QdrantHealthResponse)

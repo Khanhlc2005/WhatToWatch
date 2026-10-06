@@ -1,0 +1,73 @@
+services:
+  ai-service:
+    profiles: ["ai"]
+    build:
+      context: .
+      dockerfile: ai-service/Dockerfile
+    ports:
+      - "127.0.0.1:8010:8010"
+    environment:
+      QDRANT_URL: http://qdrant:6333
+      QDRANT_COLLECTION: ${QDRANT_COLLECTION:-movies}
+      EMBEDDING_MODEL_NAME: BAAI/bge-m3
+      EMBEDDING_DEVICE: cpu
+      OLLAMA_BASE_URL: http://host.docker.internal:11434
+      OLLAMA_MODEL_NAME: qwen2.5:3b
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
+    volumes:
+      - whattowatch_model_cache:/home/app/.cache/huggingface
+    depends_on:
+      - qdrant
+    networks:
+      - whattowatch-network
+
+  qdrant:
+    image: qdrant/qdrant
+    ports:
+      - "127.0.0.1:6335:6333"
+    volumes:
+      - whattowatch_qdrant_data:/qdrant/storage
+    networks:
+      - whattowatch-network
+
+  mysql:
+    image: mysql:8.0
+    container_name: whattowatch-mysql
+    restart: always
+    environment:
+      MYSQL_ROOT_PASSWORD: root
+      MYSQL_DATABASE: whattowatch_db
+    ports:
+      - "3306:3306"
+    volumes:
+      - mysql_data:/var/lib/mysql
+      - ./data/mysql/init.sql:/docker-entrypoint-initdb.d/init.sql
+    networks:
+      - whattowatch-network
+
+  backend:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+    container_name: whattowatch-backend
+    restart: always
+    depends_on:
+      - mysql
+    ports:
+      - "8080:8080"
+    environment:
+      SPRING_DATASOURCE_URL: jdbc:mysql://mysql:3306/whattowatch_db?useSSL=false&serverTimezone=UTC&allowPublicKeyRetrieval=true
+      SPRING_DATASOURCE_USERNAME: root
+      SPRING_DATASOURCE_PASSWORD: root
+    networks:
+      - whattowatch-network
+
+volumes:
+  whattowatch_model_cache:
+  whattowatch_qdrant_data:
+  mysql_data:
+
+networks:
+  whattowatch-network:
+    driver: bridge

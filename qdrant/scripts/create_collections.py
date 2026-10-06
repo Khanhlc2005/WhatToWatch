@@ -1,54 +1,58 @@
-from qdrant_client import QdrantClient
-from qdrant_client.models import (
-    Distance, VectorParams, SparseVectorParams, PointStruct,
-)
+import os
 
-client = QdrantClient(url="http://localhost:6333")
+from qdrant_client import QdrantClient, models
 
-# 1. Tạo collection "movies": named vectors dense + sparse
-if client.collection_exists("movies"):
-    client.delete_collection("movies")
-client.create_collection(
-    collection_name="movies",
-    vectors_config={
-        "dense": VectorParams(size=1024, distance=Distance.COSINE),  # BGE-M3 dense = 1024 chiều
-    },
-    sparse_vectors_config={
-        "sparse": SparseVectorParams(),
-    },
-)
 
-# 2. Tạo collection "user_profiles": chỉ cần dense vector
-if client.collection_exists("user_profiles"):
-    client.delete_collection("user_profiles")
-client.create_collection(
-    collection_name="user_profiles",
-    vectors_config={
-        "dense": VectorParams(size=1024, distance=Distance.COSINE),
-    },
-)
+def ensure_collection(client, name, with_sparse):
+    if not client.collection_exists(name):
+        options = {}
 
-print(client.get_collections())
+        if with_sparse:
+            options["sparse_vectors_config"] = {
+                "sparse": models.SparseVectorParams()
+            }
 
-# 3. Ví dụ insert thử 1 point vào "movies" để kiểm tra payload đúng schema
-example_payload = {
-    "movie_id": 157336,
-    "genres": ["Science Fiction", "Drama"],
-    "year": 2014,
-    "rating": 8.6,
-    "language": "en",
-    "country": ["US", "GB"],
-    "runtime": 169,
-    "keywords": ["space travel", "wormhole"],
-    "adult": False,
-    "status": "Released",
-}
-dummy_dense = [0.0] * 1024  # thay bằng vector thật khi có BGE-M3
+        client.create_collection(
+            collection_name=name,
+            vectors_config={
+                "dense": models.VectorParams(
+                    size=1024,
+                    distance=models.Distance.COSINE,
+                )
+            },
+            **options,
+        )
 
-client.upsert(
-    collection_name="movies",
-    points=[
-        PointStruct(id=157336, vector={"dense": dummy_dense}, payload=example_payload)
-    ],
-)
-print(client.retrieve(collection_name="movies", ids=[157336]))
+        print(f"Created: {name}")
+        return
+
+    params = client.get_collection(name).config.params
+    vectors = params.vectors
+
+    if not isinstance(vectors, dict) or "dense" not in vectors:
+        raise ValueError(f"{name}: thiếu named vector dense")
+
+    if vectors["dense"].size != 1024:
+        raise ValueError(f"{name}: dense dimension phải bằng 1024")
+
+    if vectors["dense"].distance != models.Distance.COSINE:
+        raise ValueError(f"{name}: dense distance phải là Cosine")
+
+    if with_sparse and "sparse" not in (params.sparse_vectors or {}):
+        raise ValueError(f"{name}: thiếu named vector sparse")
+
+    print(f"Schema OK: {name}")
+
+
+def main():
+    client = QdrantClient(
+        url=os.environ["QDRANT_URL"],
+        timeout=60,
+    )
+
+    ensure_collection(client, "movies", with_sparse=True)
+    ensure_collection(client, "user_profiles", with_sparse=False)
+
+
+if __name__ == "__main__":
+    main()

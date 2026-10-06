@@ -1,0 +1,94 @@
+{
+  "removed": [
+    {
+      "path": "dry_run_25",
+      "bytes": 567512
+    },
+    {
+      "path": "dry_run_3",
+      "bytes": 12387
+    },
+    {
+      "path": "dry_run_3_live",
+      "bytes": 101415
+    },
+    {
+      "path": "dry_run_25_ids.txt",
+      "bytes": 250
+    },
+    {
+      "path": "dns_restore.json",
+      "bytes": 487
+    },
+    {
+      "path": "dns_restore_hotspot.json",
+      "bytes": 173
+    },
+    {
+      "path": "hotspot_sample_usage.json",
+      "bytes": 74
+    },
+    {
+      "path": "hotspot_20k_validation.json",
+      "bytes": 128798
+    },
+    {
+      "path": "hotspot_20k_validation.log",
+      "bytes": 65
+    },
+    {
+      "path": "hotspot_6gb_validation.json",
+      "bytes": 135712
+    },
+    {
+      "path": "hotspot_6gb_validation.log",
+      "bytes": 64
+    },
+    {
+      "path": "hotspot_half_validation.json",
+      "bytes": 113193
+    },
+    {
+      "path": "hotspot_half_validation.log",
+      "bytes": 64
+    },
+    {
+      "path": "live_snapshot_validation.json",
+      "bytes": 93383
+    },
+    {
+      "path": "partial_validation.json",
+      "bytes": 64711
+    },
+    {
+      "path": "hotspot_6gb_run.log",
+      "bytes": 85854
+    },
+    {
+      "path": "movies_cleaned.jsonl",
+      "bytes": 12202
+    },
+    {
+      "path": "movies_cleaned_rejected.jsonl",
+      "bytes": 0
+    },
+    {
+      "path": "movies_cleaned_report.json",
+      "bytes": 185
+    },
+    {
+      "path": "movies_filtered_step1.csv",
+      "bytes": 20122704
+    },
+    {
+      "path": "unmatched_step3.csv",
+      "bytes": 209
+    },
+    {
+      "path": "imdb_tmdb_full.jsonl",
+      "bytes": 166535247
+    }
+  ],
+  "removed_bytes": 187974689,
+  "preserved": "catalog.sqlite, tmdb_cache, cleaned JSONL, final reports, network budget history, evaluation queries, handoff ZIP"
+}

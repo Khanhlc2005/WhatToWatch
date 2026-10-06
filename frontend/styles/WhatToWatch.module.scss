@@ -1,0 +1,12 @@
+.detailError {
+  position: fixed;
+  z-index: 800;
+  top: 4rem;
+  left: 50%;
+  transform: translateX(-50%);
+  background: #191919;
+  color: white;
+  padding: 1rem 1.5rem;
+  border-radius: .3rem;
+  cursor: pointer;
+}
