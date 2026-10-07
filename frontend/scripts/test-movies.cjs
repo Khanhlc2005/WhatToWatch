@@ -36,6 +36,7 @@ async function testRoutes() {
     });
     const context = { exports: {}, require(name) {
       if (name.endsWith('/lib/backend')) return { backendRequest: async path => { calls.push(path); return { id: 7 }; } };
+      if (name.endsWith('/lib/trailerLookup')) return { resolveTrailer: async () => 'Ew9ngL1GZvs' };
       if (name.endsWith('/lib/api')) return { allowMethod: () => true, sendError: (_, error) => { throw error; } };
       throw new Error('Unexpected dependency: ' + name);
     } };
@@ -46,7 +47,7 @@ async function testRoutes() {
       return response;
     };
     assert.equal((await invoke('7')).code, 200);
-    assert.equal(calls[0], '/movies/7' + (route === 'trailer' ? '/trailer' : ''));
+    assert.equal(calls[0], '/movies/7');
     for (const id of ['uuid', '12345678-1234-1234-1234-123456789abc', '0', '-1', '1.5', '9007199254740992', ['7']]) {
       assert.equal((await invoke(id)).code, 400);
     }

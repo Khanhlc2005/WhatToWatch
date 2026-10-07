@@ -1,26 +1,11 @@
-/* eslint-disable @next/next/no-img-element */
-import React, { useEffect, useRef, useState } from 'react';
-import { motion } from 'framer-motion';
-import dynamic from 'next/dynamic';
-import router from 'next/router';
-
-import { Maybe } from '../../types';
-import { ROUTES } from '../../config/route';
-import { CaretDown } from '../../utils/icons';
+import { useEffect, useState } from 'react';
+import { useRouter } from 'next/router';
 import styles from '../../styles/Navbar.module.scss';
-
-const Dialog = dynamic(import('../Dialog'))
+import { invalidateLibrarySession } from '../LibraryActions';
 
 export default function Profile(): React.ReactElement {
-  const [visible, setVisible] = useState<boolean>(false);
-  const [authenticated, setAuthenticated] = useState<boolean>(false);
-  const profileRef = useRef<Maybe<HTMLDivElement>>(null);
-
-  const onHover = (): void => {
-    setVisible(true);
-  };
-
-  const onClose = (): void => setVisible(false);
+  const [authenticated, setAuthenticated] = useState(false);
+  const router = useRouter();
 
   useEffect(() => {
     fetch('/api/auth/session').then(response => response.json())
@@ -31,35 +16,17 @@ export default function Profile(): React.ReactElement {
   const onAccountClick = async () => {
     if (authenticated) {
       await fetch('/api/auth/logout', { method: 'POST' });
+      invalidateLibrarySession();
+      window.dispatchEvent(new Event('wtw-auth-change'));
       setAuthenticated(false);
-      await router.push(ROUTES.HOME);
+      await router.push('/');
     } else {
       await router.push('/login');
     }
   };
 
-  const caretAnimation = {
-    animate: visible ? 'up' : 'down',
-    variants: {
-      up: {
-        rotate: 180
-      },
-      down: {
-        rotate: 0
-      }
-    },
-    transition: { duration: 0.25 }
-  };
-
-  return (
-    <div className={styles.profile} onMouseOver={onHover}>
-      <img src='/assets/avatar.png' alt='user' className={styles.user} />
-      <motion.div {...caretAnimation}>
-        <CaretDown />
-      </motion.div>
-      <Dialog dialogRef={profileRef} onClose={onClose} classname={styles.signout} visible={visible}>
-        <div onClick={onAccountClick}>{authenticated ? 'Sign out' : 'Sign in'}</div>
-      </Dialog>
-    </div>
-  );
+  return <button className={styles.accountButton} onClick={onAccountClick}>
+    <span className={styles.accountDot} aria-hidden='true' />
+    {authenticated ? 'Đăng xuất' : 'Đăng nhập'}
+  </button>;
 }

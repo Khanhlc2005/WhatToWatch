@@ -1,0 +1,8 @@
+.actions { display: flex; flex-wrap: wrap; gap: .5rem; align-items: center; }
+.actions button { border: 1px solid rgba(255,186,114,.5); border-radius: .5rem; background: rgba(16,31,40,.92); color: #fff9ee; padding: .65rem .8rem; font: inherit; font-size: .85rem; font-weight: 700; cursor: pointer; }
+.actions button[aria-pressed='true'] { background: #ffba72; color: #14212a; }
+.actions button:disabled { opacity: .55; cursor: wait; }
+.actions button:focus-visible { outline: 2px solid #ffba72; outline-offset: 2px; }
+.compact { margin-top: .55rem; }
+.compact button { padding: .3rem .65rem; font-size: 1.05rem; line-height: 1.1; }
+.error { color: #ffabab; font-size: .75rem; }

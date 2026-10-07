@@ -36,6 +36,7 @@ export type Movie = {
   runtime?: number | null;
   trailerKey?: string | null;
   cast?: string | null;
+  similarMovies?: Movie[];
   releaseDate?: string | null;
 };
 
@@ -47,6 +48,4 @@ export type ImageType = 'poster' | 'original';
 export type Section = {
   heading: string;
   endpoint: string;
-  defaultCard?: boolean;
-  topList?: boolean;
 };

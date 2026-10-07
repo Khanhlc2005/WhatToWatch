@@ -12,9 +12,9 @@ function App({ Component, pageProps, router }: AppProps) {
   return (
     <>
       <Head>
-        <title>Nextflix</title>
-        <meta name='description' content='Netflix clone, made using Next.js' />
-        <link rel='icon' href='/favicon.ico' />
+        <title>WhatToWatch — Chọn phim cho tối nay</title>
+        <meta name='description' content='Khám phá phim hay và tìm câu chuyện phù hợp với bạn trên WhatToWatch.' />
+        <link rel='icon' href='/favicon.svg' type='image/svg+xml' />
       </Head>
       <ModalProvider>
         {showBrowse ? <Browse /> : <Component {...pageProps} />}

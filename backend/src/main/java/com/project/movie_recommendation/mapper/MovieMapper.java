@@ -3,6 +3,7 @@ package com.project.movie_recommendation.mapper;
 import com.project.movie_recommendation.dto.response.MovieDetailResponse;
 import com.project.movie_recommendation.dto.response.MovieSummaryResponse;
 import com.project.movie_recommendation.entity.Movie;
+import com.project.movie_recommendation.entity.MovieCast;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 
@@ -10,6 +11,10 @@ import org.mapstruct.Mapping;
 public interface MovieMapper {
 
     MovieDetailResponse toMovieDetailResponse(Movie movie);
+
+    @Mapping(target = "personId", source = "person.id")
+    @Mapping(target = "name", source = "person.name")
+    MovieDetailResponse.CastResponse toCastResponse(MovieCast movieCast);
 
 
     @Mapping(target = "posterUrl", source = "posterPath")
