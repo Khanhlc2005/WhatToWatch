@@ -1,7 +1,16 @@
 from fastapi import APIRouter, HTTPException
+from requests import RequestException
 
 from app.llm_client import OllamaClient
 from app.schemas.chat import ChatRequest, ChatResponse
+from app.schemas.rag import RAGAnswer
+from app.services.rag import (
+    RAGFormatError,
+    RAGGroundingError,
+    RAGInputError,
+    answer_question,
+    load_sample_context,
+)
 
 router = APIRouter(
     prefix="/internal/chat",
@@ -11,11 +20,27 @@ router = APIRouter(
 
 @router.post("", response_model=ChatResponse)
 def chat(request: ChatRequest) -> ChatResponse:
-    """Điểm tích hợp thống nhất với module chatbot/RAG của Nam Anh."""
+    """Grounded baseline; omitted context uses the checked-in movie fixture."""
+    context = request.movie_context
+    if context is None:
+        context = load_sample_context()
     try:
-        client = OllamaClient()
-        reply = client.generate(request.message, system_prompt=request.system_prompt)
-    except Exception as exc:
-        raise HTTPException(status_code=503, detail=f"Chatbot không khả dụng: {exc}") from exc
+        result = answer_question(
+            request.message,
+            context,
+            lambda prompt, system: OllamaClient().generate(
+                prompt,
+                system_prompt=system,
+                response_format=RAGAnswer.model_json_schema(),
+            ),
+        )
+    except RAGInputError as exc:
+        raise HTTPException(status_code=422, detail=str(exc)) from exc
+    except (RAGFormatError, RAGGroundingError) as exc:
+        raise HTTPException(status_code=502, detail=str(exc)) from exc
+    except RequestException as exc:
+        raise HTTPException(status_code=503, detail="Ollama không khả dụng") from exc
 
-    return ChatResponse(reply=reply)
+    details = "\n".join(f"- {movie.title}: {movie.reason}" for movie in result.movies)
+    reply = result.answer + ("\n" + details if details else "")
+    return ChatResponse(**result.model_dump(), reply=reply)

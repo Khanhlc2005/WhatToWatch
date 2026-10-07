@@ -14,12 +14,14 @@ class OllamaClient:
     def __init__(self):
         """Khởi tạo client kết nối với Ollama dựa trên biến môi trường."""
         self.base_url = os.getenv("OLLAMA_BASE_URL", "http://localhost:11434")
-        self.model_name = os.getenv("OLLAMA_MODEL_NAME")
-        
-        if not self.model_name:
-            raise ValueError("LỖI: Biến môi trường 'OLLAMA_MODEL_NAME' chưa được thiết lập. Hãy kiểm tra file .env.")
+        self.model_name = os.getenv("OLLAMA_MODEL_NAME", "qwen2.5:3b")
 
-    def generate(self, prompt: str, system_prompt: str | None = None) -> str:
+    def generate(
+        self,
+        prompt: str,
+        system_prompt: str | None = None,
+        response_format: dict | None = None,
+    ) -> str:
         """
         Gửi prompt tới mô hình LLM qua API của Ollama.
         """
@@ -33,6 +35,9 @@ class OllamaClient:
         
         if system_prompt:
             payload["system"] = system_prompt
+        if response_format is not None:
+            payload["format"] = response_format
+            payload["options"] = {"temperature": 0}
 
         try:
             response = requests.post(url, json=payload, timeout=120)
