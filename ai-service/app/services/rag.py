@@ -1,8 +1,8 @@
 """Grounded movie answers while the retrieval endpoint is being built."""
 
 import json
+from collections.abc import Callable
 from pathlib import Path
-from typing import Callable
 
 from pydantic import ValidationError
 
@@ -77,9 +77,9 @@ def parse_answer(raw: str, context: list[MovieContext]) -> RAGAnswer:
     try:
         payload = json.loads(body, object_pairs_hook=_no_duplicate_keys)
         if not isinstance(payload, dict):
-            raise ValueError("expected a JSON object")
+            raise TypeError("expected a JSON object")
         answer = RAGAnswer.model_validate(payload)
-    except (json.JSONDecodeError, ValidationError, ValueError) as exc:
+    except (json.JSONDecodeError, ValidationError, TypeError, ValueError) as exc:
         raise RAGFormatError("Model response is not valid RAG JSON") from exc
 
     known = {movie.movie_id: movie for movie in context}

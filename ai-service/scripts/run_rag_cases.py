@@ -9,9 +9,9 @@ from pathlib import Path
 PROJECT_ROOT = Path(__file__).resolve().parents[2]
 sys.path.insert(0, str(PROJECT_ROOT / "ai-service"))
 
-from app.llm_client import OllamaClient  # noqa: E402
-from app.schemas.rag import RAGAnswer  # noqa: E402
-from app.services.rag import answer_question, load_sample_context  # noqa: E402
+from app.llm_client import OllamaClient
+from app.schemas.rag import RAGAnswer
+from app.services.rag import answer_question, load_sample_context
 
 OUTPUT = PROJECT_ROOT / "docs" / "evidence" / "rag_baseline_results.jsonl"
 
@@ -62,7 +62,7 @@ def main() -> None:
                 ) and (bool(actual_ids) == bool(expected_ids)) and (
                     expected_answer_contains is None or expected_answer_contains in actual["answer"]
                 )
-            except Exception as exc:
+            except Exception as exc:  # noqa: BLE001 - Record unexpected failures in the evidence file.
                 record["error"] = {"type": type(exc).__name__, "message": str(exc)}
                 record["raw_response"] = raw_response
                 record["passed"] = False
