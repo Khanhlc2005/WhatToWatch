@@ -35,6 +35,7 @@ public class MovieDetailResponse {
     String trailerType;
 
     List<CastResponse> cast;
+    List<CrewResponse> crew;
     List<MovieSummaryResponse> similarMovies;
 
     @Data
@@ -47,5 +48,17 @@ public class MovieDetailResponse {
         String name;
         String characterName;
         Integer castOrder;
+    }
+
+    @Data
+    @Builder
+    @NoArgsConstructor
+    @AllArgsConstructor
+    @FieldDefaults(level = AccessLevel.PRIVATE)
+    public static class CrewResponse {
+        Long personId;
+        String name;
+        String job;
+        String department;
     }
 }
