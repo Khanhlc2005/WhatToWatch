@@ -60,6 +60,7 @@ services:
       SPRING_DATASOURCE_URL: jdbc:mysql://mysql:3306/whattowatch_db?useSSL=false&serverTimezone=UTC&allowPublicKeyRetrieval=true
       SPRING_DATASOURCE_USERNAME: root
       SPRING_DATASOURCE_PASSWORD: root
+      SERVER_SERVLET_CONTEXT_PATH: /movie-recommendation
     networks:
       - whattowatch-network
 

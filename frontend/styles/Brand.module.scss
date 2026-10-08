@@ -1,0 +1,5 @@
+.brand { display: inline-flex; align-items: center; gap: .7rem; color: #f7f3e9; white-space: nowrap; }
+.mark { width: 2rem; height: 2rem; display: grid; place-items: center; border: 2px solid #ffba72; border-radius: .55rem; transform: rotate(-10deg); box-shadow: 0 0 22px rgba(255, 151, 72, .2); }
+.mark span { width: 0; height: 0; border-top: .38rem solid transparent; border-bottom: .38rem solid transparent; border-left: .58rem solid #ffba72; margin-left: .15rem; }
+.wordmark { font-size: 1.03rem; font-weight: 900; letter-spacing: -.055em; }
+.wordmark > span:first-child, .period { color: #ffba72; }

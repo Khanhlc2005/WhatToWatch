@@ -1,17 +1,3 @@
-@import './_mixins';
-@import './_variables';
-
-.footer {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    width: 100%;
-    padding-bottom: 1.5rem;
-
-    .icon {
-        font-size: 1.2rem;
-        margin: 0 0.4rem;
-       
-    }
-}
+.footer { display: flex; flex-direction: column; align-items: center; gap: .6rem; padding: 3.5rem 1rem 2.8rem; border-top: 1px solid rgba(255,255,255,.1); background: #081017; text-align: center; }
+.footer p { margin: .35rem 0 1rem; color: #aeb9bf; font-size: .9rem; }
+.footer > span { color: #71818a; font-size: .76rem; }

@@ -7,7 +7,7 @@
     "build": "NODE_OPTIONS=--openssl-legacy-provider next build",
     "start": "NODE_OPTIONS=--openssl-legacy-provider next start",
     "lint": "next lint",
-    "test:contract": "node scripts/test-movies.cjs"
+    "test:contract": "node scripts/test-movies.cjs && node scripts/test-trailer-lookup.cjs"
   },
   "dependencies": {
     "axios": "^0.21.1",

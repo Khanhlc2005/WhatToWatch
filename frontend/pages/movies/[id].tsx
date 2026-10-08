@@ -38,7 +38,7 @@ export default function MoviePage() {
   useEffect(() => () => setIsModal(false), [setIsModal]);
 
   return <>
-    <Head><title>Movie details | Nextflix</title></Head>
+    <Head><title>Chi tiết phim | WhatToWatch</title></Head>
     {error && <div role='alert' className={styles.detailError} onClick={() => router.replace('/browse', undefined, { scroll: false })}>
       {error} · Quay lại
     </div>}

@@ -1,7 +1,7 @@
 server:
   port: 8080
   servlet:
-    context-path: /movie-recommendation/api/v1
+    context-path: /movie-recommendation
 
 
 
@@ -9,7 +9,7 @@ spring:
   application:
     name: movie-recommendation
   datasource:
-    url: "jdbc:mysql://localhost:3306/movie-recommendation"
+    url: "jdbc:mysql://localhost:3306/whattowatch_db"
     username: root
     password: root
   jpa:

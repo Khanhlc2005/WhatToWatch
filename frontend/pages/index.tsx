@@ -1,35 +1,24 @@
 import Head from 'next/head';
-import Image from 'next/image';
-import { NextRouter, useRouter } from 'next/router';
-
+import Link from 'next/link';
+import Brand from '../components/Brand';
 import styles from '../styles/Login.module.scss';
-import { ROUTES } from '../config/route';
 
 export default function Home(): React.ReactElement {
-  const router: NextRouter = useRouter();
-
-  const onSignIn = () => {
-    router.push('/login')
-  }
-
-  return (
-    <div className={styles.container}>
-      <Head>
-        <title>Nextflix</title>
-        <meta name='description' content='Netflix clone, made using Next.js' />
-        <link rel='icon' href='/favicon.ico' />
-      </Head>
-
-      <main className={styles.main}>
-        <Image src='/assets/loginBg.jpg' alt='background image' layout='fill' unoptimized className={styles.main__bgImage} />
-        <div className={styles.main__card}>
-          <h1>
-            Nextflix
-          </h1>
-          <p>A simple Netflix clone built using Next.js</p>
-          <div className={styles.button} onClick={onSignIn}>Sign in</div>
-        </div>
-      </main>
-    </div>
-  );
+  return <div className={styles.landing}>
+    <Head><title>WhatToWatch — Chọn phim cho tối nay</title></Head>
+    <header className={styles.landingHeader}>
+      <Brand href='/' />
+      <Link href='/login'><a className={styles.headerLink}>Đăng nhập <span aria-hidden='true'>↗</span></a></Link>
+    </header>
+    <main className={styles.landingMain}>
+      <span className={styles.eyebrow}>KHÁM PHÁ ĐIỆN ẢNH THEO CÁCH CỦA BẠN</span>
+      <h1>Chọn phim hay.<br /><em>Thưởng thức tối nay.</em></h1>
+      <p>Những câu chuyện đáng xem đang chờ bạn. Bắt đầu với các bộ phim được đánh giá cao và mới phát hành.</p>
+      <div className={styles.landingActions}>
+        <Link href='/login'><a className={styles.primaryLink}>Bắt đầu khám phá <span aria-hidden='true'>↗</span></a></Link>
+        <Link href='/register'><a className={styles.secondaryLink}>Tạo tài khoản</a></Link>
+      </div>
+    </main>
+    <div className={styles.landingFooter}>WHAT TO WATCH <span>•</span> YOUR NEXT GREAT STORY</div>
+  </div>;
 }

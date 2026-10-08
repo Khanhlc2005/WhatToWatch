@@ -21,7 +21,13 @@ export async function backendRequest<T>(path: string, init: RequestInit = {}): P
       headers: { 'Content-Type': 'application/json', ...init.headers },
       signal: controller.signal
     });
-    const body = (await response.json()) as ApiEnvelope<T>;
+    let body: ApiEnvelope<T>;
+    try {
+      body = (await response.json()) as ApiEnvelope<T>;
+    } catch {
+      throw new BackendApiError(response.status === 401 || response.status === 403 ? 401 : 502,
+        response.status === 401 || response.status === 403 ? 'Phiên đăng nhập đã hết hạn' : 'Phản hồi backend không hợp lệ');
+    }
     if (!response.ok || body.code !== 1000) {
       const status = body.code === 2001 || body.code === 2002 ? 404
         : body.code === 1002 ? 409

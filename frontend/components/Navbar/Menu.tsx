@@ -1,73 +1,47 @@
-/* eslint-disable @next/next/no-img-element */
-import { useRef, useState } from 'react';
+import Link from 'next/link';
+import { useEffect, useState } from 'react';
 import { useRouter } from 'next/router';
-import dynamic from 'next/dynamic';
-import Image from 'next/image';
-import { motion } from 'framer-motion';
-
-import { Maybe } from '../../types';
-import { CaretDown } from '../../utils/icons';
+import Brand from '../Brand';
 import styles from '../../styles/Navbar.module.scss';
-import useDimensions from '../../hooks/useDimensions';
-
-const Dialog = dynamic(import('../Dialog'))
-
-const browseList = ['Home', 'TV Shows', 'Movies', 'New & Popular', 'My List'];
 
 export default function Menu() {
-  const { isMobile, isTablet } = useDimensions();
   const router = useRouter();
-  const menuRef = useRef<Maybe<HTMLDivElement>>(null);
-  const [isVisible, setIsVisible] = useState<boolean>(false);
+  const initialPath = router.pathname === '/library/[kind]' && typeof router.query.kind === 'string'
+    ? '/library/' + router.query.kind : router.asPath;
+  const [currentPath, setCurrentPath] = useState(initialPath);
 
-  const onMenu = (): void => {
-    setIsVisible(true);
-  };
-  const onClose = (): void => {
-    setIsVisible(false);
-  };
+  useEffect(() => {
+    const updateFromLocation = () => setCurrentPath(window.location.pathname + window.location.hash);
+    const updateFromRoute = (url: string) => setCurrentPath(url);
+    updateFromLocation();
+    router.events.on('routeChangeComplete', updateFromRoute);
+    router.events.on('hashChangeComplete', updateFromRoute);
+    window.addEventListener('hashchange', updateFromLocation);
+    return () => {
+      router.events.off('routeChangeComplete', updateFromRoute);
+      router.events.off('hashChangeComplete', updateFromRoute);
+      window.removeEventListener('hashchange', updateFromLocation);
+    };
+  }, [router.events]);
 
-  const caretAnimation = {
-    animate: isVisible ? 'up' : 'down',
-    variants: {
-      up: {
-        rotate: 180
-      },
-      down: {
-        rotate: 0
-      }
-    },
-    transition: { duration: 0.25 }
-  };
+  const path = currentPath.split('#')[0].split('?')[0];
+  const hash = currentPath.includes('#') ? currentPath.slice(currentPath.indexOf('#')) : '';
+  const links = [
+    { href: '/browse', label: 'Khám phá', active: path === '/browse' && !hash },
+    { href: '/browse#top-rated', label: 'Đánh giá cao', active: path === '/browse' && hash === '#top-rated' },
+    { href: '/browse#newest', label: 'Mới phát hành', active: path === '/browse' && hash === '#newest' },
+    { href: '/search', label: 'Tìm kiếm', active: path === '/search' },
+    { href: '/library/favorites', label: 'Yêu thích', active: path === '/library/favorites' },
+    { href: '/library/watchlist', label: 'Xem sau', active: path === '/library/watchlist' }
+  ];
 
-  return (
-    <>
-      <span onClick={() => router.push('/browse')}><Image src='/assets/logo.png' alt='Nextflix' width={90} height={30} className={styles.nfLogo} /></span>
-      {isTablet || isMobile ? (
-        <>
-          <div className={styles.browse}>
-            <div className={styles.options} onMouseOver={onMenu}>
-              browse
-            </div>
-            <motion.div {...caretAnimation}>
-              <CaretDown />
-            </motion.div>
-          </div>
-          <Dialog dialogRef={menuRef} onClose={onClose} classname={styles.menu} visible={isVisible}>
-            {browseList.map((item, index) => (
-              <div key={index} className={styles.options} onClick={() => item === 'Home' || item === 'Movies' ? router.push('/browse') : undefined}>
-                {item}
-              </div>
-            ))}
-          </Dialog>
-        </>
-      ) : (
-        browseList.map((item, index) => (
-          <div key={index} className={styles.options} onClick={() => item === 'Home' || item === 'Movies' ? router.push('/browse') : undefined}>
-            {item}
-          </div>
-        ))
-      )}
-    </>
-  );
+  return <div className={styles.navigation}>
+    <Brand />
+    <nav className={styles.links} aria-label='Điều hướng chính'>
+      {links.map(link => <Link key={link.href} href={link.href}>
+        <a className={link.active ? styles.active : undefined} aria-current={link.active ? 'page' : undefined}
+          onClick={() => setCurrentPath(link.href)}>{link.label}</a>
+      </Link>)}
+    </nav>
+  </div>;
 }

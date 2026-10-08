@@ -20,6 +20,9 @@ import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.time.LocalDate;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.transaction.annotation.Transactional;
 import java.util.stream.Collectors;
 
 @Service
@@ -29,10 +32,18 @@ public class MovieService {
     MovieRepository movieRepository;
     MovieMapper movieMapper;
 
+    @Transactional(readOnly = true)
     public MovieDetailResponse getMovieDetail(Long id) {
         Movie movie = movieRepository.findById(id)
                 .orElseThrow(() -> new AppException(ErrorCode.MOVIE_NOT_FOUND));
-        return movieMapper.toMovieDetailResponse(movie);
+        MovieDetailResponse detail = movieMapper.toMovieDetailResponse(movie);
+        if (movie.getReleaseDate() != null && movie.getOriginalLanguage() != null) {
+            LocalDate date = movie.getReleaseDate();
+            detail.setSimilarMovies(movieRepository.findRelatedByLanguageAndDate(
+                    id, movie.getOriginalLanguage(), date.minusYears(5), date.plusYears(5))
+                    .stream().map(movieMapper::toMovieSummaryResponse).toList());
+        }
+        return detail;
     }
 
     public TrailerResponse getMovieTrailer(Long id) {
@@ -50,7 +61,7 @@ public class MovieService {
     }
 
     public List<MovieSummaryResponse> getTopRatedMovies() {
-        return movieRepository.findTop10ByOrderByTmdbVoteAverageDesc().stream()
+        return movieRepository.findTop10ByEffectiveRating().stream()
                 .map(movieMapper::toMovieSummaryResponse)
                 .collect(Collectors.toList());
     }
@@ -75,6 +86,17 @@ public class MovieService {
                 .totalPages(movies.getTotalPages())
                 .totalElements(movies.getTotalElements())
                 .data(data)
+                .build();
+    }
+
+    public PageResponse<MovieSummaryResponse> searchMovies(String query, int page, int size) {
+        Page<Movie> movies = movieRepository.searchByTitle(query.trim(), PageRequest.of(page, size));
+        return PageResponse.<MovieSummaryResponse>builder()
+                .currentPage(page + 1)
+                .pageSize(size)
+                .totalPages(movies.getTotalPages())
+                .totalElements(movies.getTotalElements())
+                .data(movies.getContent().stream().map(movieMapper::toMovieSummaryResponse).toList())
                 .build();
     }
 

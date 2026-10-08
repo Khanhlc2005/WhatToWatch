@@ -1,202 +1,35 @@
-@import './variables.scss';
-@import './mixins.scss';
-
 .navBar {
-  background-image: linear-gradient(to bottom, $navBar-transparent 10%, $navBar-gradient);
-  transition: all 0.2s ease-out;
-  display: flex;
-  flex-direction: row;
-  justify-content: space-between;
-  align-items: center;
-  z-index: 100;
   position: sticky;
-  padding: 0.8rem;
   top: 0;
-  overflow: visible;
-
-  @include for-mobile-only {
-    padding: 0.6rem 0rem;
-  }
-
-  &__filled {
-    background-image: none;
-    background-color: $secondary;
-    transition: all 0.2s ease-out;
-    display: flex;
-    flex-direction: row;
-    justify-content: space-between;
-    align-items: center;
-    z-index: 100;
-    position: sticky;
-    padding: 0.8rem;
-    top: 0;
-
-    @include for-mobile-only {
-      padding: 0.6rem 0rem;
-    }  
-  }
-
-  &__left {
-    display: flex;
-    flex-direction: row;
-    align-items: center;
-    margin-left: 3rem;
-
-    @include for-mobile-only {
-      margin-left: 2rem;
-    }
-
-    .browse {
-      display: flex;
-      flex-direction: row;
-      align-items: center;
-      justify-content: space-around;
-      cursor: pointer;
-    }
-
-    .options {
-      padding: 0.4rem 0.3rem;
-      margin: 0 0.5rem;
-      cursor: pointer;
-      transition: linear 200ms ease-in;
-      display: flex;
-      flex-direction: row;
-      align-items: center;
-      justify-content: space-around;
-      
-      @include for-mobile-only {
-        margin: 0 0.2rem;
-      }
-
-      &:hover {
-        color: $white-hover;
-      }
-    }
-
-    .menu {
-      background-color: $secondary;
-      opacity: 0.7 !important;
-      color: $white;
-      position: absolute;
-      top: 3rem;
-      padding: 0.6rem 0.9rem;
-      margin-left: 6rem;
-      border: $button-border solid 1.5px;
-      cursor: pointer;
-
-      &:hover {
-        border-color: $white;
-      }
-    }
-  }
-
-  &__right {
-    display: flex;
-    flex-direction: row;
-    align-items: center;
-    margin-right: 2rem;
-    z-index: 50;
-
-    @include for-mobile-only {
-      margin-right: 0.4rem;
-    }
-
-    .options {
-      padding: 0.3rem;
-      margin: 0 0.2rem;
-      cursor: pointer;
-      transition: linear 200ms ease-in;
-
-      @include for-mobile-only {
-        padding: 0.1rem;
-        margin: 0;
-      }
-
-      &:hover {
-        color: $white-hover;
-      }
-    }
-
-    .icon {
-      font-size: 1.4rem;
-      margin: 0 0.7rem;
-      cursor: pointer;
-      transition: linear 250ms ease-in-out;
-
-      @include for-mobile-only {
-        margin: 0 0.3rem;
-      }
-
-      &:hover {
-        transform: translateY(-1px);
-      }
-    }
-
-    .searchPanel {
-      display: flex;
-      flex-direction: row;
-      align-items: center;
-      cursor: pointer;
-    }
-    .searchBar {
-      background-color: $secondary;
-      border: $white-hover solid 1.2px;
-      display: flex;
-      flex-direction: row;
-      align-items: center;
-      font-size: 0.9rem;
-
-      &__input {
-        padding: 0.4rem;
-        outline: none;
-        border-radius: 0;
-        background-color: transparent;
-        color: $white;
-        border: none;
-
-        @include for-mobile-only {
-          width: 90%;
-          overflow: hidden;
-          padding: 0.3rem;
-        }
-      }
-    }
-
-    .profile {
-      position: relative;
-      padding: 0 0.9rem;
-      display: flex;
-      align-items: center;
-      flex-direction: row;
-      cursor: pointer;
-
-      .user {
-        height: 2rem;
-        border-radius: 0.2rem;
-        margin-right: 0.3rem;
-        cursor: pointer;
-
-        @include for-mobile-only {
-          height: 1.7rem;
-        }
-      }
-
-      .signout {
-        background-color: $secondary;
-        color: $white;
-        position: absolute;
-        top: calc(100% + 0.8rem);
-        right: 0;
-        padding: 0.6rem 0.9rem;
-        white-space: nowrap;
-        border: $button-border solid 1.5px;
-        cursor: pointer;
-        z-index: 40;
-
-        &:hover {
-          border-color: $white;
-        }
-      }
-    }
-  }
+  z-index: 100;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  min-height: 78px;
+  padding: 0 clamp(1.25rem, 5vw, 5.5rem);
+  background: rgba(8, 15, 20, .82);
+  backdrop-filter: blur(18px);
+  border-bottom: 1px solid rgba(255,255,255,.07);
+  transition: background .2s ease;
 }
+.navBar__filled { background: rgba(8, 15, 20, .97); }
+.navigation, .links { display: flex; align-items: center; }
+.navigation { gap: clamp(1.5rem, 5vw, 5rem); }
+.links { gap: clamp(1rem, 2.5vw, 2.5rem); }
+.links a { position: relative; font-size: .88rem; color: #aeb9bf; font-weight: 600; transition: color .2s; }
+.links a:hover, .links .active { color: #fff9ee; }
+.links a::after { content: ''; position: absolute; bottom: -1.8rem; left: 0; width: 100%; height: 2px; background: #ffba72; transform: scaleX(0); transform-origin: left; transition: transform .22s ease; }
+.links .active::after { transform: scaleX(1); }
+.accountButton { display: flex; align-items: center; gap: .65rem; padding: .7rem 1rem; border: 1px solid rgba(255,255,255,.24); border-radius: 999px; background: rgba(255,255,255,.05); color: #fff9ee; font: inherit; font-size: .85rem; font-weight: 700; cursor: pointer; }
+.accountButton:hover { border-color: #ffba72; }
+.accountDot { width: .45rem; height: .45rem; border-radius: 50%; background: #ffba72; }
+@media (max-width: 760px) {
+  .navBar { min-height: 66px; flex-wrap: wrap; gap: .6rem; padding-top: .7rem; padding-bottom: .6rem; }
+  .navigation { display: contents; }
+  .links { order: 3; width: 100%; gap: 1.1rem; overflow-x: auto; white-space: nowrap; padding: .35rem 0; scrollbar-width: none; }
+  .links a { font-size: .8rem; }
+  .links a::after { bottom: -.35rem; }
+  .accountButton { padding: .65rem .8rem; }
+}
+@media (max-width: 400px) { .accountButton { font-size: .72rem; } }
+@media (prefers-reduced-motion: reduce) { .links a, .links a::after { transition: none; } }

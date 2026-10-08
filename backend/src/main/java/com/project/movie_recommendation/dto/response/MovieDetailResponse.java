@@ -36,6 +36,7 @@ public class MovieDetailResponse {
 
     List<CastResponse> cast;
     List<CrewResponse> crew;
+    List<MovieSummaryResponse> similarMovies;
 
     @Data
     @Builder

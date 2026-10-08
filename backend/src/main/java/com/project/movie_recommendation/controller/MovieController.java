@@ -9,6 +9,8 @@ import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.http.HttpStatus;
+import org.springframework.web.server.ResponseStatusException;
 
 import java.util.List;
 
@@ -53,6 +55,20 @@ public class MovieController {
             Pageable pageable) {
         return ApiResponse.<PageResponse<MovieSummaryResponse>>builder()
                 .result(movieService.filterMovies(filterRequest, pageable))
+                .build();
+    }
+
+    @GetMapping("/search")
+    public ApiResponse<PageResponse<MovieSummaryResponse>> searchMovies(
+            @RequestParam String query,
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "20") int size) {
+        String term = query.trim();
+        if (term.isEmpty() || term.length() > 100 || page < 0 || size < 1 || size > 40) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Invalid search parameters");
+        }
+        return ApiResponse.<PageResponse<MovieSummaryResponse>>builder()
+                .result(movieService.searchMovies(term, page, size))
                 .build();
     }
 }
