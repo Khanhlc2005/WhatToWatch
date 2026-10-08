@@ -7,7 +7,7 @@ See the repository root README for MySQL setup and backend commands. Docker is o
 From `frontend/`:
 
 ```bash
-cp .env.example .env.local
+cp -n .env.example .env.local
 npm ci
 npm run dev
 ```
