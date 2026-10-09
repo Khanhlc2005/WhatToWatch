@@ -9,7 +9,7 @@ spring:
   application:
     name: movie-recommendation
   datasource:
-    url: "jdbc:mysql://localhost:3306/whattowatch_db"
+    url: "jdbc:mysql://localhost:3306/movie-recommendation"
     username: root
     password: root
   jpa:
@@ -19,3 +19,6 @@ spring:
 
 jwt:
   signerKey: "CjyrY242aNdw6Rr3FsqDvvQ5SA0OmggwsNVnG8a3mfNZa5yJ6jYhWNDeH2C2iFhp"
+
+ai-service:
+  url: "http://localhost:8010"
