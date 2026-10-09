@@ -36,6 +36,7 @@ public class SecurityConfig {
                         .requestMatchers(HttpMethod.GET, PUBLIC_GET_ENDPOINTS).permitAll()
                         .requestMatchers("/favorites/**").hasRole("USER")
                         .requestMatchers("/watchlists/**").hasRole("USER")
+                        .requestMatchers("/chat/**").hasRole("USER")
                         .anyRequest().authenticated());
 
         httpSecurity.oauth2ResourceServer(oauth2 ->
