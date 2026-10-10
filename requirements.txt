@@ -3,8 +3,9 @@ uvicorn
 pydantic-settings
 pytest
 httpx
-requests==2.31.0
+requests==2.34.2
 python-dotenv==1.0.1
 FlagEmbedding
 qdrant-client
 numpy
+huggingface-hub>=1.5,<2

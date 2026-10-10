@@ -1,0 +1,11 @@
+{
+  "status": "PASS",
+  "scope": "Confirmed teammate CSV versus mapped JSONL versus live Qdrant; live MySQL/backend intentionally skipped",
+  "counts": {
+    "processed": 46923,
+    "mysql": 46923,
+    "qdrant": 46923
+  },
+  "not_run": [],
+  "issues": []
+}

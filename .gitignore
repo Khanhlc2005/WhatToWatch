@@ -58,3 +58,15 @@ docs/evidence/**/*.zip
 CLAUDE.md
 AGENT.md
 PLAN.md
+
+# Local embedding weights
+data/model_cache/
+
+# Isolated local CUDA runtime
+ai-service/.venv-gpu/
+
+# Machine-specific runtime overrides and diagnostics (keep local)
+/docker-compose.ai-local.yml
+/ai-service/requirements-gpu-overlay.txt
+/docs/evidence/integration/gpu_diagnosis.md
+/docs/evidence/integration/gpu_environment.freeze.txt

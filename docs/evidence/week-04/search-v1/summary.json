@@ -1,0 +1,15 @@
+{
+  "timestamp": "2026-10-10T19:25:39.401873+00:00",
+  "base_url": "http://127.0.0.1:8010",
+  "catalog_count": 46923,
+  "queries": 18,
+  "requests": 54,
+  "failed_checks": 0,
+  "sha256": {
+    "data/processed/movies_with_mysql_ids.jsonl": "f6c18688f4ba09b514bdf53cf329961441d3b759fcae769a0170b23525956400",
+    "data/processed/movies_id_mapping.csv": "5dd7fa441fe14f2ea57e22287214fb9b8c590a4108bfdbcf33b2de93b828a81e",
+    "data/evaluation/query_set_v1.json": "bdcc26f87bf448cb09f92b6d9d45b2176e13d2f6c701e467c51d6f7e521d200c"
+  },
+  "relevance": "unjudged; no quality metrics",
+  "latency": "single sequential pass, includes cold model startup; not a benchmark"
+}

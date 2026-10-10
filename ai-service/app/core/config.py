@@ -8,12 +8,14 @@ class Settings(BaseSettings):
 
     qdrant_url: str = "http://localhost:6335"
     qdrant_collection: str = "movies"
+    qdrant_user_profiles_collection: str = "user_profiles"
 
     ollama_base_url: str = "http://localhost:11434"
     ollama_model_name: str = "qwen2.5:3b"
 
     embedding_model_name: str = "BAAI/bge-m3"
     embedding_device: str = "cpu"
+    embedding_model_path: str | None = None
 
     model_config = SettingsConfigDict(
         env_file=".env",

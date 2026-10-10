@@ -1,0 +1,11 @@
+{
+  "status": "PASS",
+  "scope": "All supplied points and processed movies; MySQL export may contain additional movies",
+  "counts": {
+    "processed": 46923,
+    "mysql": 46923,
+    "qdrant": 46923
+  },
+  "not_run": [],
+  "issues": []
+}

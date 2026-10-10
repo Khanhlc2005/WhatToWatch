@@ -70,3 +70,5 @@ Mở `http://localhost:3000/browse`. Nếu vừa sửa `.env.local`, khởi đ�
 - **Cổng bị chiếm**: kiểm tra `docker ps` và `ss -ltn` cho các cổng `3000`, `8080` và cổng MySQL trên máy. Nếu MySQL cục bộ đã dùng `3306`, tạo file `.env` ở thư mục gốc với dòng `MYSQL_HOST_PORT=3308`, rồi chạy lại Compose. File này được Git bỏ qua; backend vẫn dùng `mysql:3306` trong mạng Docker.
 
 Tài liệu frontend: [frontend/README.md](frontend/README.md). Tài liệu retrieval và AI: [docs/retrieval_data_contract_vi.md](docs/retrieval_data_contract_vi.md).
+
+Catalog 46.923 phim và CSV ID từ bảng `movies`: xem [mapping, index GPU và audit sau integration](docs/mapped_catalog_run_vi.md). Dùng JSONL mới trong `data/raw`; snapshot 11.347 phim trong `data/processed` là bản cũ. Mapping không yêu cầu import MySQL local.
