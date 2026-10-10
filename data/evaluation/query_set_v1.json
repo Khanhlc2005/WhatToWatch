@@ -1,0 +1,333 @@
+{
+  "version": "v1",
+  "limit": 10,
+  "anchor_policy": "Catalog identity references only; not relevance labels or exhaustive expected results.",
+  "queries": [
+    {
+      "id": "Q01",
+      "category": "semantic",
+      "query": "A crew travels through a wormhole to explore distant worlds",
+      "filters": {},
+      "catalog_anchors": [
+        {
+          "movie_id": 21597,
+          "imdb_id": "tt0816692",
+          "tmdb_id": 157336,
+          "title": "Interstellar"
+        }
+      ],
+      "expected_movie_ids": [],
+      "relevance_status": "unjudged"
+    },
+    {
+      "id": "Q02",
+      "category": "semantic",
+      "query": "phim về nhóm thám hiểm đi qua hố sâu để khám phá vũ trụ",
+      "filters": {},
+      "catalog_anchors": [
+        {
+          "movie_id": 21597,
+          "imdb_id": "tt0816692",
+          "tmdb_id": 157336,
+          "title": "Interstellar"
+        }
+      ],
+      "expected_movie_ids": [],
+      "relevance_status": "unjudged"
+    },
+    {
+      "id": "Q03",
+      "category": "semantic",
+      "query": "A thief enters other people's dreams to steal and plant ideas",
+      "filters": {},
+      "catalog_anchors": [
+        {
+          "movie_id": 27034,
+          "imdb_id": "tt1375666",
+          "tmdb_id": 27205,
+          "title": "Inception"
+        }
+      ],
+      "expected_movie_ids": [],
+      "relevance_status": "unjudged"
+    },
+    {
+      "id": "Q04",
+      "category": "semantic",
+      "query": "phim về cô bé lạc vào thế giới linh hồn và tìm cách cứu cha mẹ",
+      "filters": {},
+      "catalog_anchors": [
+        {
+          "movie_id": 16053,
+          "imdb_id": "tt0245429",
+          "tmdb_id": 129,
+          "title": "Spirited Away"
+        }
+      ],
+      "expected_movie_ids": [],
+      "relevance_status": "unjudged"
+    },
+    {
+      "id": "Q05",
+      "category": "semantic",
+      "query": "Toys come alive and two rivals learn to work together",
+      "filters": {},
+      "catalog_anchors": [
+        {
+          "movie_id": 12956,
+          "imdb_id": "tt0114709",
+          "tmdb_id": 862,
+          "title": "Toy Story"
+        }
+      ],
+      "expected_movie_ids": [],
+      "relevance_status": "unjudged"
+    },
+    {
+      "id": "Q06",
+      "category": "semantic",
+      "query": "A poor family becomes entangled with a wealthy household",
+      "filters": {},
+      "catalog_anchors": [
+        {
+          "movie_id": 43791,
+          "imdb_id": "tt6751668",
+          "tmdb_id": 496243,
+          "title": "Parasite"
+        }
+      ],
+      "expected_movie_ids": [],
+      "relevance_status": "unjudged"
+    },
+    {
+      "id": "Q07",
+      "category": "keyword",
+      "query": "Interstellar",
+      "filters": {},
+      "catalog_anchors": [
+        {
+          "movie_id": 21597,
+          "imdb_id": "tt0816692",
+          "tmdb_id": 157336,
+          "title": "Interstellar"
+        }
+      ],
+      "expected_movie_ids": [],
+      "relevance_status": "unjudged"
+    },
+    {
+      "id": "Q08",
+      "category": "keyword",
+      "query": "The Matrix",
+      "filters": {},
+      "catalog_anchors": [
+        {
+          "movie_id": 14317,
+          "imdb_id": "tt0133093",
+          "tmdb_id": 603,
+          "title": "The Matrix"
+        }
+      ],
+      "expected_movie_ids": [],
+      "relevance_status": "unjudged"
+    },
+    {
+      "id": "Q09",
+      "category": "keyword",
+      "query": "Corleone Vito Michael",
+      "filters": {},
+      "catalog_anchors": [
+        {
+          "movie_id": 6203,
+          "imdb_id": "tt0068646",
+          "tmdb_id": 238,
+          "title": "The Godfather"
+        }
+      ],
+      "expected_movie_ids": [],
+      "relevance_status": "unjudged"
+    },
+    {
+      "id": "Q10",
+      "category": "keyword",
+      "query": "Nostromo alien parasite",
+      "filters": {},
+      "catalog_anchors": [
+        {
+          "movie_id": 7646,
+          "imdb_id": "tt0078748",
+          "tmdb_id": 348,
+          "title": "Alien"
+        }
+      ],
+      "expected_movie_ids": [],
+      "relevance_status": "unjudged"
+    },
+    {
+      "id": "Q11",
+      "category": "keyword",
+      "query": "Titanic",
+      "filters": {},
+      "catalog_anchors": [
+        {
+          "movie_id": 13876,
+          "imdb_id": "tt0120338",
+          "tmdb_id": 597,
+          "title": "Titanic"
+        }
+      ],
+      "expected_movie_ids": [],
+      "relevance_status": "unjudged"
+    },
+    {
+      "id": "Q12",
+      "category": "keyword",
+      "query": "Parasite",
+      "filters": {},
+      "catalog_anchors": [
+        {
+          "movie_id": 43791,
+          "imdb_id": "tt6751668",
+          "tmdb_id": 496243,
+          "title": "Parasite"
+        }
+      ],
+      "expected_movie_ids": [],
+      "relevance_status": "unjudged"
+    },
+    {
+      "id": "Q13",
+      "category": "filtered",
+      "query": "space exploration",
+      "filters": {
+        "genres": [
+          "Science Fiction"
+        ],
+        "year_min": 2010,
+        "year_max": 2020
+      },
+      "catalog_anchors": [
+        {
+          "movie_id": 21597,
+          "imdb_id": "tt0816692",
+          "tmdb_id": 157336,
+          "title": "Interstellar"
+        }
+      ],
+      "expected_movie_ids": [],
+      "relevance_status": "unjudged"
+    },
+    {
+      "id": "Q14",
+      "category": "filtered",
+      "query": "spirits and magic",
+      "filters": {
+        "genres": [
+          "Animation"
+        ],
+        "languages": [
+          "ja"
+        ],
+        "countries": [
+          "JP"
+        ]
+      },
+      "catalog_anchors": [
+        {
+          "movie_id": 16053,
+          "imdb_id": "tt0245429",
+          "tmdb_id": 129,
+          "title": "Spirited Away"
+        }
+      ],
+      "expected_movie_ids": [],
+      "relevance_status": "unjudged"
+    },
+    {
+      "id": "Q15",
+      "category": "filtered",
+      "query": "crime family",
+      "filters": {
+        "genres": [
+          "Crime"
+        ],
+        "year_min": 1970,
+        "year_max": 1980,
+        "rating_min": 8
+      },
+      "catalog_anchors": [
+        {
+          "movie_id": 6203,
+          "imdb_id": "tt0068646",
+          "tmdb_id": 238,
+          "title": "The Godfather"
+        }
+      ],
+      "expected_movie_ids": [],
+      "relevance_status": "unjudged"
+    },
+    {
+      "id": "Q16",
+      "category": "filtered",
+      "query": "toys friendship",
+      "filters": {
+        "runtime_max": 100,
+        "exclude_genres": [
+          "Horror"
+        ],
+        "languages": [
+          "en"
+        ]
+      },
+      "catalog_anchors": [
+        {
+          "movie_id": 12956,
+          "imdb_id": "tt0114709",
+          "tmdb_id": 862,
+          "title": "Toy Story"
+        }
+      ],
+      "expected_movie_ids": [],
+      "relevance_status": "unjudged"
+    },
+    {
+      "id": "Q17",
+      "category": "filtered",
+      "query": "Parasite",
+      "filters": {
+        "countries": [
+          "KR"
+        ],
+        "year_min": 2019,
+        "year_max": 2019
+      },
+      "catalog_anchors": [
+        {
+          "movie_id": 43791,
+          "imdb_id": "tt6751668",
+          "tmdb_id": 496243,
+          "title": "Parasite"
+        }
+      ],
+      "expected_movie_ids": [],
+      "relevance_status": "unjudged"
+    },
+    {
+      "id": "Q18",
+      "category": "filtered",
+      "query": "space",
+      "filters": {
+        "genres": [
+          "Science Fiction"
+        ],
+        "exclude_genres": [
+          "Science Fiction"
+        ]
+      },
+      "catalog_anchors": [],
+      "expected_movie_ids": [],
+      "relevance_status": "unjudged",
+      "structural_expectation": "empty"
+    }
+  ]
+}

@@ -8,7 +8,7 @@ def get_embedding_model():
     from FlagEmbedding import BGEM3FlagModel
 
     return BGEM3FlagModel(
-        settings.embedding_model_name,
+        settings.embedding_model_path or settings.embedding_model_name,
         devices=settings.embedding_device,
         use_fp16=settings.embedding_device.startswith("cuda"),
     )

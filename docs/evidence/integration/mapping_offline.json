@@ -1,0 +1,32 @@
+{
+  "scope": "Offline mapped catalog versus teammate-confirmed MySQL CSV; live MySQL not contacted",
+  "status": "PASS",
+  "counts": {
+    "processed": 46923,
+    "mysql": 46923,
+    "qdrant": null
+  },
+  "issues": [],
+  "artifacts": {
+    "data/raw/movies_cleaned_full.jsonl": {
+      "bytes": 218847890,
+      "sha256": "f9398604e3a9e729e007179f294a89d16cb168cee19a29da193c4af5c06eebd2"
+    },
+    "data/processed/movies_id_mapping.csv": {
+      "bytes": 1881867,
+      "sha256": "5dd7fa441fe14f2ea57e22287214fb9b8c590a4108bfdbcf33b2de93b828a81e"
+    },
+    "data/processed/movies_with_mysql_ids.jsonl": {
+      "bytes": 218836784,
+      "sha256": "f6c18688f4ba09b514bdf53cf329961441d3b759fcae769a0170b23525956400"
+    }
+  },
+  "token_preflight": {
+    "model": "BAAI/bge-m3",
+    "rows": 46923,
+    "max_tokens": 472,
+    "limit": 512,
+    "oversized": 0
+  },
+  "qdrant_audit": "PASS; see mapping_qdrant_audit.json (46923 points, no issues)"
+}

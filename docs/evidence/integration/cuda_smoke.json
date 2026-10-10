@@ -1,0 +1,8 @@
+{
+  "status": "PASS",
+  "torch": "2.14.0+cu130",
+  "torch_cuda": "13.0",
+  "device": "NVIDIA GeForce RTX 3050 Laptop GPU",
+  "vram_bytes": 3953393664,
+  "test": "float16 CUDA matrix multiplication, all outputs equal 256"
+}

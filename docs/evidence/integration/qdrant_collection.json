@@ -1,0 +1,22 @@
+{
+  "status": "green",
+  "optimizer_status": "ok",
+  "points_count": 46923,
+  "indexed_vectors_count": 92814,
+  "payload_schema": {},
+  "params": {
+    "vectors": {
+      "dense": {
+        "size": 1024,
+        "distance": "Cosine"
+      }
+    },
+    "shard_number": 1,
+    "replication_factor": 1,
+    "write_consistency_factor": 1,
+    "on_disk_payload": true,
+    "sparse_vectors": {
+      "sparse": {}
+    }
+  }
+}

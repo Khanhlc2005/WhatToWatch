@@ -1,0 +1,168 @@
+{
+  "status": "PASS",
+  "scope": "Live FastAPI GPU embedding + Qdrant; hit IDs checked against teammate CSV; live MySQL not contacted",
+  "queries": [
+    {
+      "mode": "dense",
+      "filters": {},
+      "seconds": 16.746,
+      "hits": [
+        {
+          "point_id": "f2407bf7-977b-53f7-8ae8-00b3a347f94f",
+          "movie_id": 6203,
+          "imdb_id": "tt0068646",
+          "tmdb_id": 238,
+          "title": "The Godfather",
+          "score": 0.6234199,
+          "id_status": "present_unverified"
+        },
+        {
+          "point_id": "60605403-6dc6-5ee0-8ddb-324ea277ba71",
+          "movie_id": 11250,
+          "imdb_id": "tt0101961",
+          "tmdb_id": 56205,
+          "title": "The Godfather Family: A Look Inside",
+          "score": 0.5922135,
+          "id_status": "present_unverified"
+        },
+        {
+          "point_id": "8dc5c793-87cf-5216-9133-78fc4e578420",
+          "movie_id": 10934,
+          "imdb_id": "tt0099674",
+          "tmdb_id": 242,
+          "title": "The Godfather Part III",
+          "score": 0.5877875,
+          "id_status": "present_unverified"
+        },
+        {
+          "point_id": "f33a1880-630a-5dfa-9c58-4697034162f2",
+          "movie_id": 22862,
+          "imdb_id": "tt10289996",
+          "tmdb_id": 606215,
+          "title": "The Black Godfather",
+          "score": 0.5877354,
+          "id_status": "present_unverified"
+        },
+        {
+          "point_id": "a6045a7b-e791-567d-98a2-15c965b86a3d",
+          "movie_id": 6662,
+          "imdb_id": "tt0071562",
+          "tmdb_id": 240,
+          "title": "The Godfather Part II",
+          "score": 0.5694597,
+          "id_status": "present_unverified"
+        }
+      ]
+    },
+    {
+      "mode": "sparse",
+      "filters": {},
+      "seconds": 0.03,
+      "hits": [
+        {
+          "point_id": "f2407bf7-977b-53f7-8ae8-00b3a347f94f",
+          "movie_id": 6203,
+          "imdb_id": "tt0068646",
+          "tmdb_id": 238,
+          "title": "The Godfather",
+          "score": 0.24274825,
+          "id_status": "present_unverified"
+        },
+        {
+          "point_id": "f33a1880-630a-5dfa-9c58-4697034162f2",
+          "movie_id": 22862,
+          "imdb_id": "tt10289996",
+          "tmdb_id": 606215,
+          "title": "The Black Godfather",
+          "score": 0.2177248,
+          "id_status": "present_unverified"
+        },
+        {
+          "point_id": "b59728dd-1c52-56c3-81ec-fc8410dd3ca4",
+          "movie_id": 29232,
+          "imdb_id": "tt1584131",
+          "tmdb_id": 70829,
+          "title": "The Last Godfather",
+          "score": 0.20613118,
+          "id_status": "present_unverified"
+        },
+        {
+          "point_id": "9835c3a4-0775-542c-9bb4-e536ba05cce0",
+          "movie_id": 201,
+          "imdb_id": "tt0007453",
+          "tmdb_id": 298901,
+          "title": "The Three Godfathers",
+          "score": 0.20575806,
+          "id_status": "present_unverified"
+        },
+        {
+          "point_id": "a6045a7b-e791-567d-98a2-15c965b86a3d",
+          "movie_id": 6662,
+          "imdb_id": "tt0071562",
+          "tmdb_id": 240,
+          "title": "The Godfather Part II",
+          "score": 0.20445332,
+          "id_status": "present_unverified"
+        }
+      ]
+    },
+    {
+      "mode": "dense",
+      "filters": {
+        "genres": [
+          "Drama"
+        ],
+        "year_min": 1970,
+        "year_max": 1980
+      },
+      "seconds": 0.975,
+      "hits": [
+        {
+          "point_id": "f2407bf7-977b-53f7-8ae8-00b3a347f94f",
+          "movie_id": 6203,
+          "imdb_id": "tt0068646",
+          "tmdb_id": 238,
+          "title": "The Godfather",
+          "score": 0.6234199,
+          "id_status": "present_unverified"
+        },
+        {
+          "point_id": "a6045a7b-e791-567d-98a2-15c965b86a3d",
+          "movie_id": 6662,
+          "imdb_id": "tt0071562",
+          "tmdb_id": 240,
+          "title": "The Godfather Part II",
+          "score": 0.5694597,
+          "id_status": "present_unverified"
+        },
+        {
+          "point_id": "90420590-361f-59ab-af3b-e9af7f53e00f",
+          "movie_id": 7048,
+          "imdb_id": "tt0074412",
+          "tmdb_id": 77403,
+          "title": "Disco Godfather",
+          "score": 0.4826788,
+          "id_status": "present_unverified"
+        },
+        {
+          "point_id": "e65da677-13d3-5f44-9607-ce36c7c0d0ad",
+          "movie_id": 8010,
+          "imdb_id": "tt0081036",
+          "tmdb_id": 27864,
+          "title": "The Lathe of Heaven",
+          "score": 0.4670051,
+          "id_status": "present_unverified"
+        },
+        {
+          "point_id": "dc72b008-cd0d-5f56-b318-9535868565c5",
+          "movie_id": 7687,
+          "imdb_id": "tt0078950",
+          "tmdb_id": 30547,
+          "title": "The Champ",
+          "score": 0.45875812,
+          "id_status": "present_unverified"
+        }
+      ]
+    }
+  ]
+}

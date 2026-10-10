@@ -1,0 +1,18 @@
+{
+  "python_tests": [
+    {
+      "runtime": "Python 3.14.6, isolated GPU venv",
+      "passed": 100,
+      "warnings": 1
+    },
+    {
+      "runtime": "Python 3.11.17, existing Docker AI image",
+      "passed": 100,
+      "warnings": 1
+    }
+  ],
+  "compose_config": "PASS",
+  "shell_syntax": "PASS",
+  "git_diff_check": "PASS",
+  "notes": "Unit/offline tests use fixtures; live GPU and catalog verification are separate evidence files."
+}

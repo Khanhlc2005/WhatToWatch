@@ -61,6 +61,7 @@ services:
       SPRING_DATASOURCE_USERNAME: root
       SPRING_DATASOURCE_PASSWORD: root
       SERVER_SERVLET_CONTEXT_PATH: /movie-recommendation
+      AI_SERVICE_URL: http://ai-service:8010
     networks:
       - whattowatch-network
 

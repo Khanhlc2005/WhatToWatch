@@ -1,5 +1,7 @@
 # Data contract và retrieval — Khánh Bùi
 
+> Cập nhật 10/10/2026: đã nhận CSV 46.923 ID từ bảng `movies` và tạo JSONL mapping. Xem [hướng dẫn hiện tại và evidence](mapped_catalog_run_vi.md). Các ghi chú thiếu CSV bên dưới mô tả đợt bàn giao trước đó.
+
 > Phạm vi bàn giao đã cập nhật: người dùng loại các nhiệm vụ phụ thuộc CSV MySQL khỏi đợt này. Xem [tổng kết và checklist việc hoãn](handoff_retrieval_vi.md).
 
 ## Nguồn và trạng thái

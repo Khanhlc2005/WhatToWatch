@@ -53,7 +53,7 @@ class MovieFilters(BaseModel):
 class MovieSearchRequest(BaseModel):
     model_config = ConfigDict(extra="forbid")
     query: Annotated[str, StringConstraints(strip_whitespace=True, min_length=1, max_length=4000)]
-    mode: Literal["dense", "sparse"] = "dense"
+    mode: Literal["dense", "sparse", "hybrid"] = "dense"
     limit: int = Field(default=10, ge=1, le=100, strict=True)
     filters: MovieFilters = Field(default_factory=MovieFilters)
 
@@ -71,5 +71,5 @@ class MovieSearchHit(BaseModel):
 
 class MovieSearchResponse(BaseModel):
     collection: str
-    mode: Literal["dense", "sparse"]
+    mode: Literal["dense", "sparse", "hybrid"]
     hits: list[MovieSearchHit]

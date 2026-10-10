@@ -1,0 +1,20 @@
+{
+  "branch": "feature/week4-evaluation",
+  "base_commit": "1269a5e33a216795e13bd3cf234a3ee84d29a938",
+  "working_tree": "dirty, uncommitted; base commit alone does not reproduce runtime",
+  "code_sha256": {
+    "ai-service/app/services/retrieval.py": "2f292ac9191ffeedc6260df75835e31a7c3403673f1df9838fa1e1f0143ac8db",
+    "ai-service/app/services/embedding.py": "a9d7386dbccf9d243f9bb513022ec6ed441b72ac549c78cce23bc67bb7529c74",
+    "ai-service/app/services/filters.py": "4d61e8f7691f84f591083a9eed31015e16fd27136329fdaed8babb4c2c8076e4",
+    "ai-service/app/schemas/retrieval.py": "38560454983bfbebada7104fbccfe8164fee96bc4fbdb5fd93fe234a33d5ee40",
+    "data/scripts/evaluate_retrieval.py": "34e1fc9db192d0049dc98937ae7fc5ad03a4dd9e7368b870b288f51a74785d6c"
+  },
+  "model": "BAAI/bge-m3",
+  "revision": "5617a9f61b028005a4858fdac845db406aefb181",
+  "device": "cuda:0",
+  "rrf_k": 60,
+  "limit": 10,
+  "branch_candidate_limit": 10,
+  "recommendation_live": "SKIPPED at user request; no real ratings supplied",
+  "mysql_live": "NOT RUN; identity verified against confirmed teammate CSV export"
+}

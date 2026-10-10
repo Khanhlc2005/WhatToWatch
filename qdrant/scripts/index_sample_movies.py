@@ -5,7 +5,6 @@ from pathlib import Path
 from uuid import NAMESPACE_URL, uuid5
 
 import numpy as np
-from FlagEmbedding import BGEM3FlagModel
 from qdrant_client import QdrantClient, models
 
 
@@ -13,8 +12,8 @@ ROOT = Path(__file__).resolve().parents[2]
 INPUT = ROOT / "data/seeds/movies_cleaned_sample.jsonl"
 
 MODEL_NAME = "BAAI/bge-m3"
-COLLECTION = os.environ["QDRANT_COLLECTION"]
-QDRANT_URL = os.environ["QDRANT_URL"]
+COLLECTION = os.getenv("QDRANT_COLLECTION", "movies")
+QDRANT_URL = os.getenv("QDRANT_URL", "http://localhost:6335")
 DEVICE = os.getenv("EMBEDDING_DEVICE", "cuda:0")
 
 MAX_LENGTH = 512
@@ -116,6 +115,8 @@ def ensure_collection(client, dimension):
 
 
 def main():
+    from FlagEmbedding import BGEM3FlagModel
+
     movies = [
         json.loads(line)
         for line in INPUT.read_text(encoding="utf-8").splitlines()
