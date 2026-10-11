@@ -7,24 +7,40 @@ import com.project.movie_recommendation.dto.ai.AiMovieSearchResponse;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.MediaType;
+import org.springframework.http.client.SimpleClientHttpRequestFactory;
 import org.springframework.stereotype.Component;
 import org.springframework.web.client.RestClient;
+
+import java.time.Duration;
 
 @Slf4j
 @Component
 public class AiServiceClient {
 
-    private final RestClient restClient;
+    private final RestClient searchClient;
+    private final RestClient chatClient;
 
-    public AiServiceClient(@Value("${ai-service.url:http://localhost:8010}") String aiServiceUrl) {
-        this.restClient = RestClient.builder()
+    public AiServiceClient(
+            @Value("${ai-service.url:http://localhost:8010}") String aiServiceUrl,
+            @Value("${ai-service.search-timeout-seconds:35}") int searchTimeoutSeconds,
+            @Value("${ai-service.chat-timeout-seconds:390}") int chatTimeoutSeconds) {
+        this.searchClient = client(aiServiceUrl, searchTimeoutSeconds);
+        this.chatClient = client(aiServiceUrl, chatTimeoutSeconds);
+    }
+
+    private static RestClient client(String aiServiceUrl, int readTimeoutSeconds) {
+        SimpleClientHttpRequestFactory requestFactory = new SimpleClientHttpRequestFactory();
+        requestFactory.setConnectTimeout(Duration.ofSeconds(5));
+        requestFactory.setReadTimeout(Duration.ofSeconds(readTimeoutSeconds));
+        return RestClient.builder()
                 .baseUrl(aiServiceUrl)
+                .requestFactory(requestFactory)
                 .build();
     }
 
     public AiChatResponse sendChatMessage(String message) {
         try {
-            return restClient.post()
+            return chatClient.post()
                     .uri("/internal/chat")
                     .contentType(MediaType.APPLICATION_JSON)
                     .body(AiChatRequest.builder().message(message).build())
@@ -41,7 +57,7 @@ public class AiServiceClient {
 
     public AiMovieSearchResponse searchSimilarMovies(String query, int limit) {
         try {
-            return restClient.post()
+            return searchClient.post()
                     .uri("/internal/qdrant/search")
                     .contentType(MediaType.APPLICATION_JSON)
                     .body(AiMovieSearchRequest.builder()

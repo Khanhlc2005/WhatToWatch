@@ -21,6 +21,7 @@ def test_ollama_structured_request_sends_schema(monkeypatch) -> None:
     result = OllamaClient().generate("question", "grounded system", response_format=schema)
     assert result == '{"status":"no_match"}'
     assert calls[0][1]["format"] == schema
-    assert calls[0][1]["options"] == {"temperature": 0}
+    assert calls[0][1]["options"] == {"temperature": 0, "num_predict": 512}
+    assert calls[0][2] == (5, 300)
     assert calls[0][1]["system"] == "grounded system"
     assert calls[0][1]["stream"] is False
