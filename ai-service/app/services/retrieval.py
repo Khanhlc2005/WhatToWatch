@@ -97,6 +97,9 @@ def search_movies(request: MovieSearchRequest) -> MovieSearchResponse:
             imdb_id=payload.get("imdb_id"),
             tmdb_id=payload.get("tmdb_id"),
             title=payload.get("title"),
+            genres=[genre.strip() for genre in payload.get("genres", [])
+                    if isinstance(genre, str) and genre.strip()]
+            if isinstance(payload.get("genres"), list) else [],
             score=score,
             id_status="present_unverified" if valid_id else "missing" if raw_id is None else "invalid",
         ))

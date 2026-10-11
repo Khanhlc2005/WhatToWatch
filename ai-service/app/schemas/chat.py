@@ -1,6 +1,7 @@
 from pydantic import BaseModel, ConfigDict, Field
 
 from app.schemas.rag import MovieContext, RAGAnswer
+from app.schemas.retrieval import MovieFilters
 
 
 class ChatRequest(BaseModel):
@@ -8,6 +9,7 @@ class ChatRequest(BaseModel):
 
     message: str = Field(min_length=1, max_length=2000)
     movie_context: list[MovieContext] | None = Field(default=None, max_length=20)
+    filters: MovieFilters = Field(default_factory=MovieFilters)
     # Kept for old callers. The grounded baseline always uses its own prompt.
     system_prompt: str | None = None
 

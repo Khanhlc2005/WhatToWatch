@@ -64,6 +64,7 @@ class MovieSearchHit(BaseModel):
     imdb_id: str | None
     tmdb_id: int | None
     title: str | None
+    genres: list[str] = Field(default_factory=list)
     score: float
     # Presence is not proof that the ID exists in MySQL; the offline audit proves that.
     id_status: Literal["present_unverified", "missing", "invalid"]

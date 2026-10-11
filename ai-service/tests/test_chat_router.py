@@ -6,11 +6,12 @@ from requests import ConnectionError
 
 from app.llm_client import OllamaClient
 from app.main import app
+from app.services.rag import load_sample_context
 
 client = TestClient(app)
 
 
-def test_chat_uses_sample_context_and_returns_structured_answer(monkeypatch) -> None:
+def test_chat_uses_explicit_sample_context_and_returns_structured_answer(monkeypatch) -> None:
     def fake_generate(self, prompt: str, system_prompt: str | None = None, response_format=None) -> str:
         assert "tmdb:157336" in prompt
         assert "Chỉ dùng dữ liệu" in system_prompt
@@ -21,7 +22,10 @@ def test_chat_uses_sample_context_and_returns_structured_answer(monkeypatch) -> 
         })
 
     monkeypatch.setattr(OllamaClient, "generate", fake_generate)
-    response = client.post("/internal/chat", json={"message": "Gợi ý phim du hành không gian"})
+    response = client.post("/internal/chat", json={
+        "message": "Gợi ý phim du hành không gian",
+        "movie_context": [movie.model_dump() for movie in load_sample_context()],
+    })
     assert response.status_code == 200
     assert response.json()["movies"][0]["title"] == "Interstellar"
     assert "Interstellar" in response.json()["reply"]
@@ -75,7 +79,9 @@ def test_supplied_context_is_used_instead_of_sample(monkeypatch) -> None:
 
 def test_unparseable_model_reply_is_a_gateway_error(monkeypatch) -> None:
     monkeypatch.setattr(OllamaClient, "generate", lambda *args, **kwargs: "not-json")
-    response = client.post("/internal/chat", json={"message": "Gợi ý phim"})
+    response = client.post("/internal/chat", json={
+        "message": "Gợi ý phim", "movie_context": [load_sample_context()[0].model_dump()],
+    })
     assert response.status_code == 502
 
 
@@ -83,5 +89,7 @@ def test_ollama_connection_failure_is_service_unavailable(monkeypatch) -> None:
     def unavailable(*args, **kwargs):
         raise ConnectionError("offline")
     monkeypatch.setattr(OllamaClient, "generate", unavailable)
-    response = client.post("/internal/chat", json={"message": "Gợi ý phim"})
+    response = client.post("/internal/chat", json={
+        "message": "Gợi ý phim", "movie_context": [load_sample_context()[0].model_dump()],
+    })
     assert response.status_code == 503

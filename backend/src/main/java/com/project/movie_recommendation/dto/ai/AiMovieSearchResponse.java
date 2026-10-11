@@ -38,6 +38,7 @@ public class AiMovieSearchResponse {
         Long tmdbId;
 
         String title;
+        List<String> genres;
         Double score;
 
         @JsonProperty("id_status")
