@@ -23,9 +23,9 @@ services:
       - whattowatch-network
 
   qdrant:
-    image: qdrant/qdrant
+    image: qdrant/qdrant:v1.19.0
     ports:
-      - "127.0.0.1:6335:6333"
+      - "127.0.0.1:${QDRANT_HOST_PORT:-6335}:6333"
     volumes:
       - whattowatch_qdrant_data:/qdrant/storage
     networks:
