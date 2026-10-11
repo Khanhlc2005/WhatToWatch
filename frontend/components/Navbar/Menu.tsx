@@ -31,6 +31,7 @@ export default function Menu() {
     { href: '/browse#top-rated', label: 'Đánh giá cao', active: path === '/browse' && hash === '#top-rated' },
     { href: '/browse#newest', label: 'Mới phát hành', active: path === '/browse' && hash === '#newest' },
     { href: '/search', label: 'Tìm kiếm', active: path === '/search' },
+    { href: '/chat', label: 'Chatbot W2W', active: path === '/chat' },
     { href: '/library/favorites', label: 'Yêu thích', active: path === '/library/favorites' },
     { href: '/library/watchlist', label: 'Xem sau', active: path === '/library/watchlist' }
   ];

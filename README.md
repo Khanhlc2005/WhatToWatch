@@ -5,8 +5,8 @@
 ## Yêu cầu
 
 - Docker Desktop hoặc Docker Engine với Docker Compose; kiểm tra `docker info` có phần `Server`.
-- Node.js và npm để chạy frontend.
-- File `movies_data.sql` ở thư mục gốc nếu muốn nạp bộ phim mẫu. File này không nằm trong GitHub; cần lấy riêng từ người quản lý dữ liệu.
+- Node.js và npm nếu muốn chạy frontend ngoài Docker.
+- File `data/mysql/movies_data.sql` (nhận riêng từ người quản lý dữ liệu); Compose nạp file này vào MySQL khi tạo volume mới.
 
 Trên Linux dùng Docker Desktop, có thể khởi động bằng `systemctl --user start docker-desktop` rồi chọn `docker context use desktop-linux`. Nếu Docker Desktop không lên vì thiếu RAM, đóng bớt ứng dụng trước khi thử lại.
 
@@ -15,11 +15,11 @@ Trên Linux dùng Docker Desktop, có thể khởi động bằng `systemctl --u
 Tại thư mục gốc của repo:
 
 ```bash
-docker compose up -d --build mysql backend
+docker compose up -d --build mysql backend frontend
 docker compose ps
 ```
 
-`docker compose ps` phải hiện cả `mysql` và `backend` thuộc **project của thư mục này**. Backend phục vụ ở `http://localhost:8080/movie-recommendation`. MySQL luôn dùng cổng `3306` bên trong mạng Docker; cổng trên máy mặc định là `3306` và có thể đặt bằng `MYSQL_HOST_PORT` trong file `.env` ở thư mục gốc. Chờ backend khởi động xong, rồi kiểm tra:
+`docker compose ps` phải hiện `mysql`, `backend` và `frontend` thuộc **project của thư mục này**. Mở `http://localhost:3000/browse`; backend phục vụ ở `http://localhost:8080/movie-recommendation`. MySQL dùng cổng `3306` trong mạng Docker. Chờ backend khởi động xong, rồi kiểm tra:
 
 ```bash
 curl http://localhost:8080/movie-recommendation/movies/home-feed/top-rated
@@ -27,21 +27,17 @@ curl http://localhost:8080/movie-recommendation/movies/home-feed/top-rated
 
 Nếu nhận `{"code":1000,"result":[]}`, backend đã hoạt động nhưng chưa có phim; làm bước 2. Nếu không kết nối được, xem `docker compose logs --tail=80 backend mysql`.
 
-## 2. Nạp phim vào cơ sở dữ liệu mới — chỉ một lần
+## 2. Kiểm tra dữ liệu phim
 
-Backend đọc bảng `movies`. File `movies_data.sql` nạp vào bảng cũ `movie`, sau đó `data/mysql/import_legacy_movies.sql` chuyển sang `movies`. **Chỉ chạy các lệnh nhập khi `movies` đang có 0 phim**; nạp lại file nguồn có thể tạo dữ liệu trùng.
+Backend đọc bảng `movies`. Compose mount `data/mysql/movies_data.sql` vào MySQL và tự nạp khi volume MySQL được tạo lần đầu. Dump hiện tại có 46.923 phim với ID khớp CSV mapping dùng cho Qdrant. Init script của MySQL không chạy lại trên volume đã tồn tại; kiểm tra trước khi thao tác với dữ liệu cũ.
 
 ```bash
 docker exec -e MYSQL_PWD=root whattowatch-mysql mysql -u root -N whattowatch_db -e 'SELECT COUNT(*) FROM movies;'
-docker exec -i -e MYSQL_PWD=root whattowatch-mysql mysql -u root whattowatch_db < movies_data.sql
-docker exec -i -e MYSQL_PWD=root whattowatch-mysql mysql -u root whattowatch_db < data/mysql/import_legacy_movies.sql
-docker exec -i -e MYSQL_PWD=root whattowatch-mysql mysql -u root whattowatch_db < data/mysql/sample_trailers.sql
-docker exec -e MYSQL_PWD=root whattowatch-mysql mysql -u root -N whattowatch_db -e 'SELECT COUNT(*), COUNT(trailer_key) FROM movies;'
 ```
 
-Với file dữ liệu hiện dùng, kết quả cuối là `11347` phim và `3` trailer gắn sẵn. Khi dùng volume MySQL mới, tài khoản và danh sách cá nhân từ volume khác không tự chuyển sang; dữ liệu cũ vẫn còn trong volume cũ.
+Với dump hiện dùng, kết quả là `46923`. Khi dùng volume MySQL mới, tài khoản và danh sách cá nhân từ volume khác không tự chuyển sang.
 
-## 3. Chạy frontend
+## 3. Chạy frontend ngoài Docker (tùy chọn)
 
 Tạo `frontend/.env.local` nếu chưa có, theo mẫu `frontend/.env.example`. Giữ `BACKEND_URL=http://localhost:8080/movie-recommendation`. Điền `TMDB_KEY` và `YOUTUBE_API_KEY` để tự tìm trailer cho phim chưa có trailer trong SQL. File `.env.local` được Git bỏ qua; không đưa khóa API vào commit.
 
@@ -54,7 +50,7 @@ npm run dev
 
 Mở `http://localhost:3000/browse`. Nếu vừa sửa `.env.local`, khởi động lại frontend để Next.js đọc giá trị mới. Dùng `Ctrl+C` để dừng frontend; tại thư mục gốc, `docker compose down` dừng backend/MySQL nhưng giữ volume dữ liệu. Không dùng `docker compose down -v` nếu muốn giữ cơ sở dữ liệu.
 
-Ở những lần chạy sau, chỉ cần làm bước 1 và 3; bỏ qua bước nạp phim nếu bảng `movies` đã có dữ liệu.
+Ở những lần chạy sau, chỉ cần `docker compose up -d` nếu dùng frontend trong Compose; dữ liệu trên volume MySQL được giữ lại.
 
 ## Khi gặp lỗi
 
@@ -100,5 +96,11 @@ Kết quả mong đợi là collection `green`, dense 1024/Cosine + sparse, và 
 ### Dung lượng AI trên máy đồng đội
 
 Nếu chỉ cần dữ liệu Qdrant, chạy `docker compose up -d qdrant`; lệnh này không build AI image và không tải BGE-M3. Khi cần chạy AI Search, mới dùng `docker compose --profile ai up -d --build qdrant ai-service`. Dockerfile AI của repo cài PyTorch bản CPU; không cần CUDA image để tìm kiếm trên CPU. BGE-M3 vẫn cần cho việc biến câu hỏi mới thành vector. `.dockerignore` loại cache model và môi trường Python cục bộ khỏi build context, nên chúng không bị gửi vào quá trình build.
+
+### Chatbot trên CPU
+
+Chat qua backend cần đăng nhập. Máy không có GPU có thể mất thêm thời gian ở lần hỏi đầu vì BGE-M3 và Qwen phải nạp vào bộ nhớ. Các ngưỡng mặc định: AI chờ Ollama tối đa 300 giây, backend chờ AI chat 390 giây, backend chờ AI search 35 giây và frontend chờ search 45 giây. AI giới hạn 4 luồng embedding CPU; có thể chỉnh `EMBEDDING_CPU_THREADS`, `OLLAMA_READ_TIMEOUT_SECONDS`, `AI_SERVICE_CHAT_TIMEOUT_SECONDS` và `AI_SERVICE_SEARCH_TIMEOUT_SECONDS` trong `.env` ở thư mục gốc. Giữ timeout backend chat lớn hơn timeout Ollama để backend nhận được lỗi thực thay vì ngắt trước.
+
+Nếu Ollama trên Linux chỉ lắng nghe `127.0.0.1:11434`, đặt `OLLAMA_BASE_URL=http://host.docker.internal:11435` trong `.env` và chạy `docker compose --profile ai --profile ai-local up -d --build`. Profile `ai-local` mở proxy trên Docker bridge `172.17.0.1:11435`, không mở ra LAN. Nếu Docker bridge dùng IP khác, đặt `OLLAMA_PROXY_BIND` trong `.env`. Khi Ollama đã lắng nghe trên địa chỉ Docker truy cập được, dùng `--profile ai` và URL tương ứng, không cần proxy.
 
 Trên máy có báo đầy ổ, kiểm tra riêng image, build cache và volume bằng `docker system df -v`; kích thước của từng image trong `docker image ls` không cộng trực tiếp vì các image có thể chia sẻ layer. Nếu build cache cũ chiếm nhiều chỗ, `docker builder prune` chỉ xóa cache build không còn dùng; lệnh này không xóa Qdrant volume, nhưng lần build sau có thể phải tải lại dependencies. Không dùng `docker compose down -v` hoặc `docker system prune --volumes` với volume Qdrant đang giữ catalog.

@@ -12,9 +12,9 @@ export class BackendApiError extends Error {
 
 const baseUrl = (process.env.BACKEND_URL || 'http://localhost:8080/movie-recommendation').replace(/\/$/, '');
 
-export async function backendRequest<T>(path: string, init: RequestInit = {}): Promise<T> {
+export async function backendRequest<T>(path: string, init: RequestInit = {}, timeoutMs = 10000): Promise<T> {
   const controller = new AbortController();
-  const timeout = setTimeout(() => controller.abort(), 10000);
+  const timeout = setTimeout(() => controller.abort(), timeoutMs);
   try {
     const response = await fetch(baseUrl + path, {
       ...init,
@@ -39,6 +39,7 @@ export async function backendRequest<T>(path: string, init: RequestInit = {}): P
     return body.result;
   } catch (error) {
     if (error instanceof BackendApiError) throw error;
+    if (controller.signal.aborted) throw new BackendApiError(504, 'Yêu cầu xử lý quá lâu, vui lòng thử lại');
     throw new BackendApiError(502, 'Không kết nối được backend');
   } finally {
     clearTimeout(timeout);

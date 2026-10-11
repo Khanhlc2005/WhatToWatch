@@ -37,10 +37,10 @@ class OllamaClient:
             payload["system"] = system_prompt
         if response_format is not None:
             payload["format"] = response_format
-            payload["options"] = {"temperature": 0}
+            payload["options"] = {"temperature": 0, "num_predict": 512}
 
         try:
-            response = requests.post(url, json=payload, timeout=120)
+            response = requests.post(url, json=payload, timeout=(5, int(os.getenv("OLLAMA_READ_TIMEOUT_SECONDS", "300"))))
             response.raise_for_status()
             data = response.json()
             return data.get("response", "")

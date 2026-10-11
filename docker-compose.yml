@@ -10,9 +10,13 @@ services:
       QDRANT_URL: http://qdrant:6333
       QDRANT_COLLECTION: ${QDRANT_COLLECTION:-movies}
       EMBEDDING_MODEL_NAME: BAAI/bge-m3
+      EMBEDDING_MODEL_PATH: ${EMBEDDING_MODEL_PATH:-}
       EMBEDDING_DEVICE: cpu
-      OLLAMA_BASE_URL: http://host.docker.internal:11434
+      EMBEDDING_CPU_THREADS: ${EMBEDDING_CPU_THREADS:-4}
+      HF_HUB_OFFLINE: ${HF_HUB_OFFLINE:-0}
+      OLLAMA_BASE_URL: ${OLLAMA_BASE_URL:-http://host.docker.internal:11434}
       OLLAMA_MODEL_NAME: qwen2.5:3b
+      OLLAMA_READ_TIMEOUT_SECONDS: ${OLLAMA_READ_TIMEOUT_SECONDS:-300}
       BACKEND_BASE_URL: http://backend:8080/movie-recommendation
     extra_hosts:
       - "host.docker.internal:host-gateway"
@@ -22,6 +26,16 @@ services:
       - qdrant
     networks:
       - whattowatch-network
+
+  ollama-proxy:
+    profiles: ["ai-local"]
+    build:
+      context: ./tools/ollama-proxy
+    network_mode: host
+    command:
+      - TCP-LISTEN:11435,bind=${OLLAMA_PROXY_BIND:-172.17.0.1},reuseaddr,fork
+      - TCP:127.0.0.1:11434
+    restart: unless-stopped
 
   qdrant:
     image: qdrant/qdrant:v1.19.0
@@ -40,10 +54,15 @@ services:
       MYSQL_ROOT_PASSWORD: root
       MYSQL_DATABASE: whattowatch_db
     ports:
-      - "3306:3306"
+      - "${MYSQL_HOST_PORT:-3306}:3306"
     volumes:
       - mysql_data:/var/lib/mysql
-      - ./data/mysql/movies_data.sql:/docker-entrypoint-initdb.d/init.sql
+      - ./data/mysql/movies_data.sql:/docker-entrypoint-initdb.d/01-movies_data.sql:ro
+    healthcheck:
+      test: ["CMD-SHELL", "mysqladmin ping -h 127.0.0.1 -uroot -p$$MYSQL_ROOT_PASSWORD --silent"]
+      interval: 10s
+      timeout: 5s
+      retries: 15
     networks:
       - whattowatch-network
 
@@ -54,7 +73,8 @@ services:
     container_name: whattowatch-backend
     restart: always
     depends_on:
-      - mysql
+      mysql:
+        condition: service_healthy
     ports:
       - "8080:8080"
     environment:
@@ -63,6 +83,21 @@ services:
       SPRING_DATASOURCE_PASSWORD: root
       SERVER_SERVLET_CONTEXT_PATH: /movie-recommendation
       AI_SERVICE_URL: http://ai-service:8010
+      AI_SERVICE_SEARCH_TIMEOUT_SECONDS: ${AI_SERVICE_SEARCH_TIMEOUT_SECONDS:-35}
+      AI_SERVICE_CHAT_TIMEOUT_SECONDS: ${AI_SERVICE_CHAT_TIMEOUT_SECONDS:-390}
+    networks:
+      - whattowatch-network
+
+  frontend:
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile
+    ports:
+      - "127.0.0.1:3000:3000"
+    environment:
+      BACKEND_URL: http://backend:8080/movie-recommendation
+    depends_on:
+      - backend
     networks:
       - whattowatch-network
 

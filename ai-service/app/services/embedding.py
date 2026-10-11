@@ -6,6 +6,9 @@ from app.core.config import settings
 @lru_cache
 def get_embedding_model():
     from FlagEmbedding import BGEM3FlagModel
+    if settings.embedding_device == "cpu":
+        import torch
+        torch.set_num_threads(max(1, settings.embedding_cpu_threads))
 
     return BGEM3FlagModel(
         settings.embedding_model_path or settings.embedding_model_name,
