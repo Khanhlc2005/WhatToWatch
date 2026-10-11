@@ -9,4 +9,6 @@
 backend/target
 data/raw
 data/processed
+data/model_cache
+ai-service/.venv-gpu
 docs/evidence
