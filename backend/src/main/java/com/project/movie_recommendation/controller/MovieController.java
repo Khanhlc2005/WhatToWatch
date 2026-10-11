@@ -1,6 +1,8 @@
 package com.project.movie_recommendation.controller;
 
 import com.project.movie_recommendation.dto.response.*;
+import com.project.movie_recommendation.exception.AppException;
+import com.project.movie_recommendation.exception.ErrorCode;
 import com.project.movie_recommendation.service.MovieService;
 import com.project.movie_recommendation.dto.request.MovieFilterRequest;
 import org.springframework.data.domain.Page;
@@ -65,7 +67,7 @@ public class MovieController {
             @RequestParam(defaultValue = "20") int size) {
         String term = query.trim();
         if (term.isEmpty() || term.length() > 100 || page < 0 || size < 1 || size > 40) {
-            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Invalid search parameters");
+            throw new AppException(ErrorCode.INVALID_SEARCH_PARAMS);
         }
         return ApiResponse.<PageResponse<MovieSummaryResponse>>builder()
                 .result(movieService.searchMovies(term, page, size))

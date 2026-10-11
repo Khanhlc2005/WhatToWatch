@@ -2,6 +2,8 @@ package com.project.movie_recommendation.client;
 
 import com.project.movie_recommendation.dto.ai.AiChatRequest;
 import com.project.movie_recommendation.dto.ai.AiChatResponse;
+import com.project.movie_recommendation.dto.ai.AiMovieSearchRequest;
+import com.project.movie_recommendation.dto.ai.AiMovieSearchResponse;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.MediaType;
@@ -34,6 +36,24 @@ public class AiServiceClient {
                     .status("error")
                     .reply("Sorry, the AI service is currently unavailable. Please try again later.")
                     .build();
+        }
+    }
+
+    public AiMovieSearchResponse searchSimilarMovies(String query, int limit) {
+        try {
+            return restClient.post()
+                    .uri("/internal/qdrant/search")
+                    .contentType(MediaType.APPLICATION_JSON)
+                    .body(AiMovieSearchRequest.builder()
+                            .query(query)
+                            .mode("dense")
+                            .limit(limit)
+                            .build())
+                    .retrieve()
+                    .body(AiMovieSearchResponse.class);
+        } catch (Exception e) {
+            log.warn("Failed to call Qdrant vector search from AI Service: {}. Falling back to lexical search.", e.getMessage());
+            return null;
         }
     }
 }

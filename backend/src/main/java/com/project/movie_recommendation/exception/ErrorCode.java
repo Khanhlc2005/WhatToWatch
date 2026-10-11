@@ -13,6 +13,7 @@ public enum ErrorCode {
 
     MOVIE_NOT_FOUND(2001, "Movie not found"),
     TRAILER_NOT_FOUND(2002, "Trailer not found for this movie"),
+    INVALID_SEARCH_PARAMS(2003, "Invalid search parameters"),
 
     WATCHLIST_NOT_FOUND(3001, "Watchlist not found"),
     MOVIE_ALREADY_IN_WATCHLIST(3002, "Movie is already in watchlist"),
