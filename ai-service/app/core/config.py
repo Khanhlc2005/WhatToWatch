@@ -12,6 +12,7 @@ class Settings(BaseSettings):
 
     ollama_base_url: str = "http://localhost:11434"
     ollama_model_name: str = "qwen2.5:3b"
+    backend_base_url: str = "http://localhost:8080/movie-recommendation"
 
     embedding_model_name: str = "BAAI/bge-m3"
     embedding_device: str = "cpu"
