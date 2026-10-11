@@ -1,7 +1,7 @@
 """Derived profiles from complete rating snapshots; MySQL remains authoritative."""
 
 import math
-from datetime import datetime, timezone
+from datetime import UTC, datetime
 
 from qdrant_client import models
 
@@ -69,7 +69,7 @@ def rebuild_preference(snapshot: PreferenceSnapshot) -> PreferenceResponse:
     reason = "insufficient_ratings" if usable < MIN_RATINGS else "zero_vector" if profile is None else None
     response = PreferenceResponse(
         user_id=snapshot.user_id, status="cold_start" if reason else "ready", reason=reason,
-        profile_version=PROFILE_VERSION, last_updated=datetime.now(timezone.utc).isoformat(),
+        profile_version=PROFILE_VERSION, last_updated=datetime.now(UTC).isoformat(),
         rating_count=len(snapshot.ratings), usable_rating_count=usable, skipped_movies=skipped,
     )
     # Only mutate after all reads succeed. No zero vector or stale warm profile.

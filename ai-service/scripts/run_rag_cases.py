@@ -3,7 +3,7 @@
 import json
 import sys
 import time
-from datetime import datetime, timezone
+from datetime import UTC, datetime
 from pathlib import Path
 
 PROJECT_ROOT = Path(__file__).resolve().parents[2]
@@ -44,7 +44,7 @@ def main() -> None:
             started = time.monotonic()
             record = {
                 "case": name,
-                "tested_at_utc": datetime.now(timezone.utc).isoformat(),
+                "tested_at_utc": datetime.now(UTC).isoformat(),
                 "model": client.model_name if context else "not_called",
                 "question": question,
                 "context_ids": [movie.movie_id for movie in context],
