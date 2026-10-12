@@ -25,7 +25,7 @@ export async function chatRequest<T>(
 ): Promise<T | null> {
   const token = req.cookies.wtw_session;
   if (!token) {
-    res.status(401).json({ message: 'Vui lòng đăng nhập để trò chuyện' });
+    res.status(401).json({ message: 'Please sign in to chat' });
     return null;
   }
   try {

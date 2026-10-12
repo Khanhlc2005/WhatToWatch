@@ -42,54 +42,54 @@ def _catalog_movies(ids: list[int], context: list[MovieContext]) -> list[MovieCo
 def _fact(question: str, movie: MovieContext) -> tuple[str, str] | None:
     text = question.casefold()
     if any(term in text for term in ("đạo diễn", "director")) and movie.director:
-        return "đạo diễn", movie.director
+        return "Director", movie.director
     if any(term in text for term in ("diễn viên", "actor", "cast")) and movie.cast:
-        return "diễn viên", ", ".join(movie.cast[:5])
+        return "Cast", ", ".join(movie.cast[:5])
     if any(term in text for term in ("năm phát hành", "năm nào", "release year")) and movie.year:
-        return "năm phát hành", str(movie.year)
+        return "Release year", str(movie.year)
     if any(term in text for term in ("thời lượng", "runtime")) and movie.runtime_minutes:
-        return "thời lượng", f"{movie.runtime_minutes} phút"
+        return "Runtime", f"{movie.runtime_minutes} minutes"
     if any(term in text for term in ("điểm imdb", "rating")) and movie.imdb_rating is not None:
-        return "điểm IMDb", str(movie.imdb_rating)
+        return "IMDb rating", str(movie.imdb_rating)
     if any(term in text for term in ("thể loại", "genre")) and movie.genres:
-        return "thể loại", ", ".join(movie.genres)
+        return "Genres", ", ".join(movie.genres)
     if any(term in text for term in ("nội dung", "tóm tắt", "plot", "summary")) and movie.overview:
-        return "nội dung", movie.overview
+        return "Overview", movie.overview
     return None
 
 
 def answer_with_detail_tool(question: str, context: list[MovieContext], history: list[ChatHistoryMessage]) -> RAGAnswer:
     ids = _selected_ids(question, context, history)
     if len(ids) != 1:
-        return RAGAnswer(status="insufficient_context", answer="Bạn muốn hỏi chi tiết phim nào?", movies=[])
+        return RAGAnswer(status="insufficient_context", answer="Which movie would you like to ask about?", movies=[])
     movies = _catalog_movies(ids, context)
     if not movies:
-        return RAGAnswer(status="no_match", answer="Không tìm thấy phim này trong catalog hiện có.", movies=[])
+        return RAGAnswer(status="no_match", answer="This movie was not found in the catalog.", movies=[])
     movie = movies[0]
     fact = _fact(question, movie)
     if fact is None:
-        return RAGAnswer(status="insufficient_context", answer="Catalog chưa có dữ kiện cần hỏi về phim này.", movies=[])
+        return RAGAnswer(status="insufficient_context", answer="The catalog does not have the requested fact for this movie.", movies=[])
     label, value = fact
     return RAGAnswer(
-        status="answered", answer=f"{label.capitalize()} của {movie.title}: {value}.",
-        movies=[AnswerMovie(movie_id=movie.movie_id, title=movie.title, reason=f"{label.capitalize()}: {value}")],
+        status="answered", answer=f"{label} for {movie.title}: {value}.",
+        movies=[AnswerMovie(movie_id=movie.movie_id, title=movie.title, reason=f"{label}: {value}")],
     )
 
 
 def answer_with_comparison_tool(question: str, context: list[MovieContext], history: list[ChatHistoryMessage]) -> RAGAnswer:
     ids = _selected_ids(question, context, history)
     if len(ids) != 2:
-        return RAGAnswer(status="insufficient_context", answer="Cần xác định đúng hai phim để so sánh.", movies=[])
+        return RAGAnswer(status="insufficient_context", answer="Please identify two movies to compare.", movies=[])
     movies = _catalog_movies(ids, context)
     if len(movies) != 2:
-        return RAGAnswer(status="no_match", answer="Không tìm thấy đủ hai phim trong catalog hiện có.", movies=[])
-    labels = (("năm phát hành", "year"), ("thời lượng", "runtime_minutes"),
-              ("đạo diễn", "director"), ("điểm IMDb", "imdb_rating"))
+        return RAGAnswer(status="no_match", answer="Both movies could not be found in the catalog.", movies=[])
+    labels = (("Release year", "year"), ("Runtime", "runtime_minutes"),
+              ("Director", "director"), ("IMDb rating", "imdb_rating"))
     comparable = [(label, getattr(movies[0], field), getattr(movies[1], field))
                   for label, field in labels if getattr(movies[0], field) is not None
                   and getattr(movies[1], field) is not None]
     if not comparable:
-        return RAGAnswer(status="insufficient_context", answer="Catalog chưa có dữ kiện chung để so sánh hai phim.", movies=[])
+        return RAGAnswer(status="insufficient_context", answer="The catalog does not have enough shared facts to compare these movies.", movies=[])
     lines = [f"{label}: {movies[0].title} {left}; {movies[1].title} {right}."
              for label, left, right in comparable]
     return RAGAnswer(

@@ -9,6 +9,7 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
 import java.util.Optional;
+import java.util.List;
 
 @Repository
 public interface RatingRepository extends JpaRepository<Rating, Long> {
@@ -17,6 +18,8 @@ public interface RatingRepository extends JpaRepository<Rating, Long> {
     Optional<Rating> findByUserAndMovieId(User user, Long movieId);
 
     Page<Rating> findByUserOrderByCreatedAtDesc(User user, Pageable pageable);
+
+    List<Rating> findByUser(User user);
 
     void deleteByUserAndMovie(User user, Movie movie);
 }

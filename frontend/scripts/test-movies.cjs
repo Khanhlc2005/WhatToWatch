@@ -19,6 +19,7 @@ const detail = { id: 7, title: 'Fixture', overview: 'Overview', posterPath: null
   tmdbVoteAverage: 0, imdbRating: 7.5, runtimeMinutes: 110, trailerKey: 'abc', trailerSite: 'YouTube', releaseDate: null };
 assert.equal(toMovie(detail).id, toMovie(summary).id);
 assert.equal(toMovie(detail).rating, 7.5);
+assert.equal(toMovie({ ...detail, tmdbVoteAverage: 10 }).rating, 7.5);
 assert.equal(toMovie(detail).runtime, 110);
 assert.equal(toMovie(detail).trailerKey, 'abc');
 assert.equal(toMovie({ ...detail, trailerSite: 'Vimeo' }).trailerKey, null);
@@ -56,3 +57,19 @@ async function testRoutes() {
   console.log('Movie API routes: PASS (numeric IDs forwarded; UUID/unsafe IDs rejected)');
 }
 testRoutes().catch(error => { console.error(error); process.exitCode = 1; });
+
+async function testJsonResponse() {
+  const code = ts.transpileModule(fs.readFileSync(path.join(__dirname, '../lib/readApiJson.ts'), 'utf8'), {
+    compilerOptions: { module: ts.ModuleKind.CommonJS, target: ts.ScriptTarget.ES2019 }
+  });
+  const context = { exports: {} };
+  vm.runInNewContext(code.outputText, context);
+  const { readApiJson } = context.exports;
+  const response = (body, ok = true) => ({ ok, text: async () => body });
+  assert.equal(await readApiJson(response(''), 'Could not load', true), null);
+  assert.equal((await readApiJson(response('{"rating":4}'), 'Could not load')).rating, 4);
+  await assert.rejects(readApiJson(response(''), 'Could not load'), /Could not load/);
+  await assert.rejects(readApiJson(response('{'), 'Could not load'), /Could not load/);
+  console.log('Movie JSON responses: PASS (empty unrated response, malformed body)');
+}
+testJsonResponse().catch(error => { console.error(error); process.exitCode = 1; });

@@ -27,6 +27,6 @@ export default function Profile(): React.ReactElement {
 
   return <button className={styles.accountButton} onClick={onAccountClick}>
     <span className={styles.accountDot} aria-hidden='true' />
-    {authenticated ? 'Đăng xuất' : 'Đăng nhập'}
+    {authenticated ? 'Sign out' : 'Sign in'}
   </button>;
 }

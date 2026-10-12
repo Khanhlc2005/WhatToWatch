@@ -94,6 +94,15 @@
 .trailerError { margin: .8rem 0 0; color: #e6eaeb; font-size: .82rem; }
 .trailerError a { color: #ffba72; text-decoration: underline; }
 .trailerHint { margin: .8rem 0 0; color: #b9c4c8; font-size: .82rem; }
+.userRating { display: flex; flex-direction: column; align-items: flex-start; gap: .55rem; margin: 1rem 0; color: #d8e0e3; font-size: .85rem; }
+.userRating strong { color: #fff9ee; }
+.userRating a { color: #ffba72; text-decoration: underline; }
+.ratingChoices { display: flex; flex-wrap: wrap; gap: .4rem; }
+.ratingChoices button { padding: .4rem .6rem; border: 1px solid rgba(255,255,255,.25); border-radius: .4rem; background: #20313c; color: #fff9ee; font: inherit; cursor: pointer; }
+.ratingChoices button[aria-pressed='true'] { border-color: #ffba72; background: #644322; color: #fff; }
+.ratingChoices button:hover, .ratingChoices button:focus-visible { border-color: #ffba72; }
+.ratingChoices button:disabled { opacity: .55; cursor: wait; }
+.ratingError { color: #ffabab; }
 
 .bottomContainer {
   display: grid;

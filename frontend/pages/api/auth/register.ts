@@ -7,7 +7,7 @@ type User = { id: string; email: string };
 export default async function handler(req: NextApiRequest, res: NextApiResponse) {
   if (!allowMethod(req, res, 'POST')) return;
   if (!isCredentials(req.body)) {
-    res.status(400).json({ message: 'Email không hợp lệ hoặc mật khẩu dưới 8 ký tự' });
+    res.status(400).json({ message: 'Invalid email or password shorter than 8 characters' });
     return;
   }
   try {

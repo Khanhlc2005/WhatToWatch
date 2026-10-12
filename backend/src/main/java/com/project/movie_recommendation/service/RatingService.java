@@ -15,7 +15,6 @@ import org.springframework.data.domain.PageRequest;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
-import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -24,7 +23,6 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
-@Slf4j
 @Service
 @RequiredArgsConstructor
 @FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
@@ -65,8 +63,6 @@ public class RatingService {
 
         rating = ratingRepository.save(rating);
 
-        notifyAiPreferenceUpdate(user.getId(), movie.getId(), rating.getRating());
-
         return toResponse(rating);
     }
 
@@ -88,12 +84,6 @@ public class RatingService {
                     throw new AppException(ErrorCode.RATING_NOT_FOUND);
                 });
 
-        notifyAiPreferenceUpdate(user.getId(), movie.getId(), null);
-    }
-
-    private void notifyAiPreferenceUpdate(Long userId, Long movieId, Double ratingScore) {
-        log.info("Triggered AI Preference Update Webhook for userId={}, movieId={}, score={}",
-                userId, movieId, ratingScore);
     }
 
     public PageResponse<RatingResponse> getMyRatings(int page, int size) {

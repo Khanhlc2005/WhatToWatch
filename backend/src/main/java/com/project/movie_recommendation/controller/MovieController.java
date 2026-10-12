@@ -4,6 +4,8 @@ import com.project.movie_recommendation.dto.response.*;
 import com.project.movie_recommendation.exception.AppException;
 import com.project.movie_recommendation.exception.ErrorCode;
 import com.project.movie_recommendation.service.MovieService;
+import com.project.movie_recommendation.service.RecommendationService;
+import com.project.movie_recommendation.dto.response.RecommendationMovieResponse;
 import com.project.movie_recommendation.dto.request.MovieFilterRequest;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -22,6 +24,18 @@ import java.util.List;
 @FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
 public class MovieController {
     MovieService movieService;
+    RecommendationService recommendationService;
+
+    @GetMapping("/recommendations")
+    public ApiResponse<RecommendationMovieResponse> recommendations(
+            @RequestParam(defaultValue = "10") int limit) {
+        if (limit < 1 || limit > 100) {
+            throw new AppException(ErrorCode.INVALID_SEARCH_PARAMS);
+        }
+        return ApiResponse.<RecommendationMovieResponse>builder()
+                .result(recommendationService.recommend(limit))
+                .build();
+    }
 
     @GetMapping("/{id}")
     public ApiResponse<MovieDetailResponse> getMovieDetail(@PathVariable Long id) {

@@ -14,7 +14,7 @@ client = TestClient(app)
 def test_chat_uses_explicit_sample_context_and_returns_structured_answer(monkeypatch) -> None:
     def fake_generate(self, prompt: str, system_prompt: str | None = None, response_format=None) -> str:
         assert "tmdb:157336" in prompt
-        assert "Chỉ dùng dữ liệu" in system_prompt
+        assert "Always answer in English" in system_prompt
         assert response_format["type"] == "object"
         return json.dumps({
             "status": "answered", "answer": "Một lựa chọn về du hành không gian.",
@@ -101,7 +101,7 @@ def test_history_is_prompt_context_but_not_movie_source(monkeypatch) -> None:
     def generate(self, prompt: str, system_prompt: str | None = None, response_format=None) -> str:
         assert '"role": "user"' in prompt
         assert '"content": "Tôi thích phim về không gian"' in prompt
-        assert "CONVERSATION_HISTORY chỉ giúp hiểu" in system_prompt
+        assert "CONVERSATION_HISTORY helps resolve references" in system_prompt
         return json.dumps({
             "status": "answered", "answer": "Một lựa chọn phù hợp.",
             "movies": [{"movie_id": movie.movie_id, "title": movie.title, "reason": "Science Fiction"}],

@@ -8,7 +8,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
   if (!body || typeof body.message !== 'string' || !body.message.trim() || body.message.length > 2000 ||
     (body.conversationId !== undefined && body.conversationId !== null &&
       (typeof body.conversationId !== 'number' || !Number.isSafeInteger(body.conversationId) || body.conversationId <= 0))) {
-    res.status(400).json({ message: 'Tin nhắn hoặc cuộc hội thoại không hợp lệ' });
+    res.status(400).json({ message: 'Invalid message or conversation' });
     return;
   }
   const result = await chatRequest<ChatReply>(req, res, '/chat', 'POST', {

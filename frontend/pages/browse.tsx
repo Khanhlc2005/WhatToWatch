@@ -10,6 +10,7 @@ const List = dynamic(import('../components/List'));
 const Modal = dynamic(import('../components/Modal'));
 const Layout = dynamic(import('../components/Layout'));
 const Banner = dynamic(import('../components/Banner'));
+const Recommendations = dynamic(import('../components/Recommendations'));
 
 export default function Browse(): React.ReactElement {
   const { isModal } = useContext(ModalContext);
@@ -20,14 +21,16 @@ export default function Browse(): React.ReactElement {
         <Banner />
         <div className={styles.contentContainer}>
           <div className={styles.intro}>
-            <span className={styles.eyebrow}>KHÁM PHÁ ĐIỆN ẢNH</span>
-            <h1>Một bộ phim hay cho tối nay.</h1>
-            <p>Bắt đầu từ những bộ phim được yêu thích và các tựa phim mới nhất.</p>
+            <span className={styles.eyebrow}>DISCOVER MOVIES</span>
+            <h1>Find a great movie for tonight.</h1>
+            <p>Explore picks for you, top rated movies, and the latest releases.</p>
           </div>
-          <nav className={styles.quickLinks} aria-label='Danh mục phim'>
-            <a href='#top-rated'>Đánh giá cao</a>
-            <a href='#newest'>Mới phát hành</a>
+          <nav className={styles.quickLinks} aria-label='Movie sections'>
+            <a href='#for-you'>For you</a>
+            <a href='#top-rated'>Top rated</a>
+            <a href='#newest'>New releases</a>
           </nav>
+          <Recommendations />
           {sections.map((item) => {
             return (
               <List
@@ -47,12 +50,12 @@ export default function Browse(): React.ReactElement {
 const sections: (Section & { id: string })[] = [
   {
     id: 'top-rated',
-    heading: 'Được đánh giá cao',
+    heading: 'Top rated',
     endpoint: '/api/movies/top-rated'
   },
   {
     id: 'newest',
-    heading: 'Mới phát hành',
+    heading: 'New releases',
     endpoint: '/api/movies/newest'
   }
 ];

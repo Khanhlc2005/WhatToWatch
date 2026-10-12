@@ -7,7 +7,7 @@ type LoginResult = { token: string; authenticated: boolean };
 export default async function handler(req: NextApiRequest, res: NextApiResponse) {
   if (!allowMethod(req, res, 'POST')) return;
   if (!isCredentials(req.body)) {
-    res.status(400).json({ message: 'Email hoặc mật khẩu không hợp lệ' });
+    res.status(400).json({ message: 'Invalid email or password' });
     return;
   }
   try {
@@ -16,7 +16,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
       body: JSON.stringify(req.body)
     });
     if (!result.authenticated || !result.token) {
-      res.status(401).json({ message: 'Đăng nhập không thành công' });
+      res.status(401).json({ message: 'Sign in failed' });
       return;
     }
     const secure = process.env.NODE_ENV === 'production' ? '; Secure' : '';

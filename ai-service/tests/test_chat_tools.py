@@ -15,6 +15,7 @@ def test_detail_tool_reads_canonical_catalog_and_never_uses_model(monkeypatch) -
     assert result.status == "answered"
     assert result.movies[0].movie_id == "1"
     assert "2010" in result.answer
+    assert result.answer.startswith("Release year")
 
 
 def test_compare_tool_requires_two_known_movies(monkeypatch) -> None:
@@ -23,6 +24,7 @@ def test_compare_tool_requires_two_known_movies(monkeypatch) -> None:
     assert result.status == "answered"
     assert [movie.movie_id for movie in result.movies] == ["1", "2"]
     assert "2010" in result.answer and "2020" in result.answer
+    assert result.answer.startswith("Release year")
 
 
 def test_compare_tool_does_not_guess_missing_second_movie() -> None:

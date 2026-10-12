@@ -10,9 +10,9 @@ import java.time.LocalDate;
 
 @Repository
 public interface MovieRepository extends JpaRepository<Movie, Long>, JpaSpecificationExecutor<Movie> {
-    @Query(value = "SELECT * FROM movies ORDER BY COALESCE(NULLIF(tmdb_vote_average, 0), imdb_rating, 0) DESC, id ASC LIMIT 10", nativeQuery = true)
-    List<Movie> findTop10ByEffectiveRating();
-    List<Movie> findTop10ByOrderByReleaseDateDesc();
+    @Query(value = "SELECT * FROM movies WHERE imdb_rating IS NOT NULL AND imdb_vote_count >= 50000 ORDER BY imdb_rating DESC, imdb_vote_count DESC, id ASC LIMIT 50", nativeQuery = true)
+    List<Movie> findTop50ByImdbRating();
+    List<Movie> findTop50ByOrderByReleaseDateDesc();
 
     @Query(value = "SELECT * FROM movies WHERE LOWER(title) LIKE LOWER(CONCAT('%', :query, '%')) OR LOWER(original_title) LIKE LOWER(CONCAT('%', :query, '%')) ORDER BY COALESCE(NULLIF(tmdb_vote_average, 0), imdb_rating, 0) DESC, id ASC",
             countQuery = "SELECT COUNT(*) FROM movies WHERE LOWER(title) LIKE LOWER(CONCAT('%', :query, '%')) OR LOWER(original_title) LIKE LOWER(CONCAT('%', :query, '%'))",
