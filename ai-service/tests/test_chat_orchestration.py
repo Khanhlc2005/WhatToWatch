@@ -2,9 +2,9 @@ from fastapi.testclient import TestClient
 
 from app.api.routers import chat as chat_router
 from app.main import app
+from app.schemas.rag import MovieContext
 from app.schemas.retrieval import MovieSearchResponse
 from app.services import chat_tools
-from app.schemas.rag import MovieContext
 
 
 def test_natural_filters_reach_retrieval_as_valid_json(monkeypatch) -> None:

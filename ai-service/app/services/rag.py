@@ -6,8 +6,8 @@ from pathlib import Path
 
 from pydantic import ValidationError
 
-from app.schemas.rag import MovieContext, RAGAnswer
 from app.schemas.chat import ChatHistoryMessage
+from app.schemas.rag import MovieContext, RAGAnswer
 
 SAMPLE_CONTEXT_PATH = Path(__file__).resolve().parents[1] / "data" / "sample_movie_context.json"
 

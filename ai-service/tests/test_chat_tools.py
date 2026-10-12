@@ -2,7 +2,6 @@ from app.schemas.chat import ChatHistoryMessage
 from app.schemas.rag import MovieContext
 from app.services import chat_tools
 
-
 MOVIES = [
     MovieContext(movie_id="1", title="Film One", year=2010, director="A Director", runtime_minutes=100),
     MovieContext(movie_id="2", title="Film Two", year=2020, director="B Director", runtime_minutes=120),

@@ -1,5 +1,6 @@
-from pydantic import BaseModel, ConfigDict, Field
 from typing import Literal
+
+from pydantic import BaseModel, ConfigDict, Field
 
 from app.schemas.rag import MovieContext, RAGAnswer
 from app.schemas.retrieval import MovieFilters

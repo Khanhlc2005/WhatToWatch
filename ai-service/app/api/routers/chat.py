@@ -8,12 +8,19 @@ from app.llm_client import OllamaClient
 from app.schemas.chat import ChatFilterRequest, ChatRequest, ChatResponse
 from app.schemas.rag import RAGAnswer
 from app.schemas.retrieval import MovieSearchRequest
+from app.services.chat_filters import ExtractedChatFilters, extract_chat_filters
+from app.services.chat_tools import (
+    answer_with_comparison_tool,
+    answer_with_detail_tool,
+    is_comparison,
+    is_detail,
+)
 from app.services.context_builder import (
+    MAX_CONTEXT_MOVIES,
     MAX_RETRIEVAL_CANDIDATES,
     MovieCatalogUnavailable,
-    build_movie_context,
     build_context_for_movie_ids,
-    MAX_CONTEXT_MOVIES,
+    build_movie_context,
 )
 from app.services.rag import (
     RAGFormatError,
@@ -22,10 +29,6 @@ from app.services.rag import (
     answer_question,
 )
 from app.services.retrieval import search_movies
-from app.services.chat_filters import ExtractedChatFilters, extract_chat_filters
-from app.services.chat_tools import (
-    answer_with_comparison_tool, answer_with_detail_tool, is_comparison, is_detail,
-)
 
 logger = logging.getLogger(__name__)
 
