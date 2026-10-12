@@ -200,3 +200,69 @@ def test_hybrid_qdrant_failure_returns_generic_503(search, monkeypatch):
     response = http.post('/internal/qdrant/search', json={'query': 'film', 'mode': 'hybrid'})
     assert response.status_code == 503
     assert 'sensitive' not in response.text
+
+
+def test_reranking_changes_order_and_preserves_ids_filters_and_scores(search, monkeypatch):
+    http, client = search
+    calls = []
+    original = client.query_points
+    def record(**kwargs):
+        calls.append(kwargs)
+        return original(**kwargs)
+    monkeypatch.setattr(client, 'query_points', record)
+    monkeypatch.setattr(retrieval, 'score_pairs', lambda query, docs: [
+        9.0 if 'Fixture 2' in doc else 1.0 for doc in docs
+    ])
+    result = http.post('/internal/qdrant/search', json={
+        'query': 'drama', 'mode': 'hybrid', 'rerank': True,
+        'candidate_k': 3, 'limit': 2, 'filters': {'genres': ['Drama']},
+    })
+    assert result.status_code == 200
+    hits = result.json()['hits']
+    assert [hit['movie_id'] for hit in hits] == [2, None]
+    assert hits[0]['score'] == hits[0]['rerank_score'] == 9
+    assert hits[0]['retrieval_score'] > 0
+    assert hits[0]['id_status'] == 'present_unverified'
+    assert all(call['limit'] == 3 and call['query_filter'] is not None for call in calls)
+
+
+def test_reranking_deduplicates_before_scoring(search, monkeypatch):
+    search[1].set_payload('movies', {'movie_id': 2}, points=[3])
+    documents = []
+    def score(query, docs):
+        documents.extend(docs)
+        return [0.5] * len(docs)
+    monkeypatch.setattr(retrieval, 'score_pairs', score)
+    result = search[0].post('/internal/qdrant/search', json={
+        'query': 'film', 'mode': 'hybrid', 'rerank': True,
+    })
+    assert result.status_code == 200
+    assert len(documents) == 2
+    assert len(result.json()['hits']) == 2
+
+
+def test_reranking_empty_results_does_not_load_model(search, monkeypatch):
+    monkeypatch.setattr(retrieval, 'score_pairs', lambda *_: pytest.fail('unexpected reranking'))
+    result = search[0].post('/internal/qdrant/search', json={
+        'query': 'film', 'rerank': True, 'filters': {'year_min': 2025},
+    })
+    assert result.status_code == 200
+    assert result.json()['hits'] == []
+
+
+def test_reranker_error_returns_generic_503(search, monkeypatch):
+    def fail(*_):
+        raise RuntimeError('sensitive model path')
+    monkeypatch.setattr(retrieval, 'score_pairs', fail)
+    result = search[0].post('/internal/qdrant/search', json={
+        'query': 'film', 'rerank': True,
+    })
+    assert result.status_code == 503
+    assert 'sensitive' not in result.text
+
+
+def test_candidate_k_validation(search):
+    result = search[0].post('/internal/qdrant/search', json={
+        'query': 'film', 'rerank': True, 'candidate_k': 1, 'limit': 2,
+    })
+    assert result.status_code == 422

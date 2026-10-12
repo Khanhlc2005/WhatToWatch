@@ -13,6 +13,7 @@ from app.schemas.retrieval import (
 )
 from app.services.embedding import embed_query
 from app.services.filters import build_payload_filter
+from app.services.reranker import score_pairs
 
 RRF_K = 60
 
@@ -43,6 +44,10 @@ def fetch_sample_movies(limit: int = 5) -> SampleRetrievalResponse:
 
 
 def search_movies(request: MovieSearchRequest) -> MovieSearchResponse:
+    candidate_k = (max(request.limit, request.candidate_k or settings.retrieval_candidate_k)
+                   if request.rerank else request.limit)
+    if candidate_k > 500:
+        raise ValueError("Invalid candidate pool size")
     vectors = embed_query(request.query)
     queries = {}
     if request.mode in ("dense", "hybrid"):
@@ -71,26 +76,47 @@ def search_movies(request: MovieSearchRequest) -> MovieSearchResponse:
             query=query,
             using=mode,
             query_filter=query_filter,
-            limit=request.limit,
+            limit=candidate_k,
             with_payload=True,
             with_vectors=False,
         )
         results[mode] = sorted(result.points, key=lambda point: (-point.score, str(point.id)))
 
     if request.mode == "hybrid":
-        ranked = _fuse_rrf(results, request.limit)
+        ranked = _fuse_rrf(results, candidate_k)
     else:
-        ranked = ((point, point.score) for point in results[request.mode])
-    hits = []
-    seen = set()
+        ranked = [(point, point.score) for point in results[request.mode]]
+    deduplicated = []
+    identities = set()
     for point, score in ranked:
+        identity = _identity(point)
+        if identity not in identities and math.isfinite(score):
+            deduplicated.append((point, score))
+            identities.add(identity)
+    candidates = [(point, score, None) for point, score in deduplicated]
+    if request.rerank and deduplicated:
+        documents = []
+        indexes = []
+        for index, (point, _) in enumerate(deduplicated):
+            document = _reranker_document(point.payload or {})
+            if document:
+                indexes.append(index)
+                documents.append(document)
+        rerank_scores = dict(zip(indexes, score_pairs(request.query, documents))) if documents else {}
+        candidates = [(point, score, rerank_scores.get(index))
+                      for index, (point, score) in enumerate(deduplicated)]
+        # Python's stable sort keeps retrieval order when reranker scores tie.
+        candidates.sort(key=lambda item: (item[2] is None, -(item[2] or 0)))
+    hits = []
+    for point, score, rerank_score in candidates[:request.limit]:
         payload = point.payload or {}
         identity = _identity(point)
-        if identity in seen:
-            continue
-        seen.add(identity)
         raw_id = payload.get("movie_id")
         valid_id = identity[0] == "movie"
+        # The request is opt-in: baseline score retains its established meaning.
+        extra_scores = {"retrieval_score": score} if request.rerank else {}
+        if rerank_score is not None:
+            extra_scores["rerank_score"] = rerank_score
         hits.append(MovieSearchHit(
             point_id=str(point.id),
             movie_id=raw_id if valid_id else None,
@@ -100,10 +126,24 @@ def search_movies(request: MovieSearchRequest) -> MovieSearchResponse:
             genres=[genre.strip() for genre in payload.get("genres", [])
                     if isinstance(genre, str) and genre.strip()]
             if isinstance(payload.get("genres"), list) else [],
-            score=score,
+            score=rerank_score if rerank_score is not None else score,
+            **extra_scores,
             id_status="present_unverified" if valid_id else "missing" if raw_id is None else "invalid",
         ))
     return MovieSearchResponse(collection=settings.qdrant_collection, mode=request.mode, hits=hits)
+
+
+def _reranker_document(payload: dict) -> str:
+    parts = []
+    for label, key in (("Title", "title"), ("Genres", "genres"), ("Keywords", "keywords")):
+        value = payload.get(key)
+        if isinstance(value, str) and value.strip():
+            parts.append(f"{label}: {value.strip()}")
+        elif isinstance(value, list):
+            values = [item.strip() for item in value if isinstance(item, str) and item.strip()]
+            if values:
+                parts.append(f"{label}: {', '.join(values)}")
+    return "\n".join(parts)
 
 
 def _identity(point):

@@ -9,7 +9,7 @@ logger = logging.getLogger(__name__)
 router = APIRouter(prefix="/internal/recommendations", tags=["Recommendations"])
 
 
-@router.post("", response_model=RecommendationResponse)
+@router.post("", response_model=RecommendationResponse, response_model_exclude_unset=True)
 def recommendations(request: RecommendationRequest) -> RecommendationResponse:
     try:
         return recommend_movies(request)

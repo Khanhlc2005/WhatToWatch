@@ -19,7 +19,7 @@ router = APIRouter(
 )
 
 
-@router.post("/search", response_model=MovieSearchResponse)
+@router.post("/search", response_model=MovieSearchResponse, response_model_exclude_unset=True)
 def qdrant_search(request: MovieSearchRequest) -> MovieSearchResponse:
     try:
         return search_movies(request)
