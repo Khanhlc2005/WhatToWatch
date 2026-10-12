@@ -5,6 +5,7 @@ import lombok.*;
 import lombok.experimental.FieldDefaults;
 
 import java.util.List;
+import java.util.Map;
 
 @Data
 @Builder
@@ -16,6 +17,10 @@ public class AiChatResponse {
     String answer;
     String reply;
     List<AiMovieItem> movies;
+    @JsonProperty("applied_filters")
+    Map<String, Object> appliedFilters;
+    @JsonProperty("tool_name")
+    String toolName;
 
     @Data
     @Builder

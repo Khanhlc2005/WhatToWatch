@@ -1,6 +1,7 @@
 package com.project.movie_recommendation.client;
 
 import com.project.movie_recommendation.dto.ai.AiChatRequest;
+import com.project.movie_recommendation.dto.ai.AiChatHistoryMessage;
 import com.project.movie_recommendation.dto.ai.AiChatResponse;
 import com.project.movie_recommendation.dto.ai.AiMovieSearchRequest;
 import com.project.movie_recommendation.dto.ai.AiMovieSearchResponse;
@@ -10,6 +11,7 @@ import org.springframework.http.MediaType;
 import org.springframework.http.client.SimpleClientHttpRequestFactory;
 import org.springframework.stereotype.Component;
 import org.springframework.web.client.RestClient;
+import java.util.List;
 
 import java.time.Duration;
 
@@ -38,12 +40,12 @@ public class AiServiceClient {
                 .build();
     }
 
-    public AiChatResponse sendChatMessage(String message) {
+    public AiChatResponse sendChatMessage(String message, List<AiChatHistoryMessage> history, String summary) {
         try {
             return chatClient.post()
                     .uri("/internal/chat")
                     .contentType(MediaType.APPLICATION_JSON)
-                    .body(AiChatRequest.builder().message(message).build())
+                    .body(AiChatRequest.builder().message(message).history(history).summary(summary).build())
                     .retrieve()
                     .body(AiChatResponse.class);
         } catch (Exception e) {
