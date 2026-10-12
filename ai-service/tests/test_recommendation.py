@@ -133,3 +133,49 @@ def test_snapshot_to_recommendation_update_and_delete(api):
     assert first[0]['movie_id'] != second[0]['movie_id']
     http.put('/internal/preferences/snapshot', json={'user_id': 8, 'ratings': []})
     assert http.post(URL, json={'user_id': 8}).json()['status'] == 'cold_start'
+
+
+def test_final_ranking_components_and_reasons(api, caplog):
+    http, client = api
+    client.set_payload('movies', {'rating': 9.0}, points=[2])
+    client.set_payload('movies', {'rating': 2.0}, points=[1])
+    with caplog.at_level('INFO', logger=recommendation.__name__):
+        result = http.post(URL, json={'user_id': 7, 'ranking': 'final', 'limit': 2})
+    assert result.status_code == 200
+    hits = result.json()['hits']
+    assert [hit['movie_id'] for hit in hits] == [102, 101]
+    assert hits[0]['score'] == pytest.approx(.8 * .9 + .2 * .9)
+    assert hits[1]['score'] == pytest.approx(.8 * 1 + .2 * .2)
+    assert hits[0]['score_components']['weights'] == {
+        'profile_similarity': .8, 'imdb_rating': .2}
+    assert [reason['code'] for reason in hits[0]['reasons']] == [
+        'profile_similarity', 'imdb_rating']
+    assert 'recommendation_score_components user_id=7 movie_id=102' in caplog.text
+
+
+def test_final_ranking_weights_are_configurable(monkeypatch):
+    monkeypatch.setattr(recommendation.settings, 'recommendation_similarity_weight', 1.0)
+    monkeypatch.setattr(recommendation.settings, 'recommendation_imdb_weight', 0.0)
+    hit = recommendation._final_hit(9, 0.4, 10.0)
+    assert hit.score == pytest.approx(0.7)
+    assert [reason.code for reason in hit.reasons] == ['profile_similarity']
+
+
+def test_final_missing_rating_renormalizes_and_no_rating_reason(api):
+    api[1].set_payload('movies', {'rating': None}, points=[1, 2, 3, 4, 5, 6])
+    response = api[0].post(URL, json={'user_id': 7, 'ranking': 'final'})
+    hits = response.json()['hits']
+    assert response.status_code == 200
+    assert hits[0]['score'] == pytest.approx(1)
+    assert hits[0]['score_components']['imdb_rating'] is None
+    assert hits[0]['score_components']['weights']['profile_similarity'] == 1
+    assert all(reason['code'] != 'imdb_rating' for reason in hits[0]['reasons'])
+    assert hits[-1]['reasons'] == []
+
+
+def test_final_exclusions_and_cold_start(api):
+    assert [hit['movie_id'] for hit in api[0].post(URL, json={
+        'user_id': 7, 'ranking': 'final', 'exclude_movie_ids': [101]
+    }).json()['hits']] == [102, 103, 104]
+    assert api[0].post(URL, json={'user_id': 8, 'ranking': 'final'}).json() == {
+        'user_id': 8, 'status': 'cold_start', 'hits': []}

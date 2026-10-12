@@ -2,6 +2,8 @@ from typing import Annotated, Literal
 
 from pydantic import BaseModel, ConfigDict, Field, StringConstraints, model_validator
 
+from app.core.config import settings
+
 
 class SampleMoviePoint(BaseModel):
     id: str
@@ -54,8 +56,16 @@ class MovieSearchRequest(BaseModel):
     model_config = ConfigDict(extra="forbid")
     query: Annotated[str, StringConstraints(strip_whitespace=True, min_length=1, max_length=4000)]
     mode: Literal["dense", "sparse", "hybrid"] = "dense"
-    limit: int = Field(default=10, ge=1, le=100, strict=True)
+    limit: int = Field(default_factory=lambda: settings.retrieval_final_k, ge=1, le=100, strict=True)
+    rerank: bool = False
+    candidate_k: int | None = Field(default=None, ge=1, le=500, strict=True)
     filters: MovieFilters = Field(default_factory=MovieFilters)
+
+    @model_validator(mode="after")
+    def candidate_pool_covers_final(self):
+        if self.rerank and self.candidate_k is not None and self.candidate_k < self.limit:
+            raise ValueError("candidate_k must be at least limit when reranking")
+        return self
 
 
 class MovieSearchHit(BaseModel):
@@ -66,6 +76,8 @@ class MovieSearchHit(BaseModel):
     title: str | None
     genres: list[str] = Field(default_factory=list)
     score: float
+    retrieval_score: float | None = None
+    rerank_score: float | None = None
     # Presence is not proof that the ID exists in MySQL; the offline audit proves that.
     id_status: Literal["present_unverified", "missing", "invalid"]
 

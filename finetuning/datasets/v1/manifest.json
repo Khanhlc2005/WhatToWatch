@@ -1,0 +1,20 @@
+{
+  "version": "catalog_fact_templates_v1",
+  "source_sha256": "f6c18688f4ba09b514bdf53cf329961441d3b759fcae769a0170b23525956400",
+  "max_movies": 1000,
+  "selected_movies": 1000,
+  "examples": {
+    "train": 1613,
+    "validation": 185,
+    "test": 198
+  },
+  "movies": {
+    "train": 808,
+    "validation": 93,
+    "test": 99
+  },
+  "origin": "synthetic_template_from_catalog_facts",
+  "split_key": "movie_id",
+  "duplicate_examples": 0,
+  "cross_split_movie_ids": 0
+}

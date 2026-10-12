@@ -18,6 +18,13 @@ class Settings(BaseSettings):
     embedding_device: str = "cpu"
     embedding_cpu_threads: int = 4
     embedding_model_path: str | None = None
+    reranker_model_name: str = "BAAI/bge-reranker-v2-m3"
+    reranker_model_path: str | None = None
+    reranker_device: str = "cpu"
+    retrieval_candidate_k: int = 50
+    retrieval_final_k: int = 10
+    recommendation_similarity_weight: float = 0.8
+    recommendation_imdb_weight: float = 0.2
 
     model_config = SettingsConfigDict(
         env_file=".env",
