@@ -6,7 +6,11 @@ from qdrant_client import models
 
 from app.core.config import settings
 from app.core.qdrant import get_qdrant_client
-from app.schemas.recommendation import RecommendationHit, RecommendationRequest, RecommendationResponse
+from app.schemas.recommendation import (
+    RecommendationHit,
+    RecommendationRequest,
+    RecommendationResponse,
+)
 from app.services.filters import build_payload_filter
 from app.services.preference import PROFILE_VERSION, normalize
 

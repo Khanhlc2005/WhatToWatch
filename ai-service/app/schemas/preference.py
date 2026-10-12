@@ -2,7 +2,6 @@ from typing import Annotated, Literal
 
 from pydantic import BaseModel, ConfigDict, Field, model_validator
 
-
 Identifier = Annotated[int, Field(strict=True, gt=0, le=2**63 - 1)]
 
 

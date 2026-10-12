@@ -39,6 +39,7 @@ export async function backendRequest<T>(path: string, init: RequestInit = {}, ti
     return body.result;
   } catch (error) {
     if (error instanceof BackendApiError) throw error;
+    if (controller.signal.aborted) throw new BackendApiError(504, 'Yêu cầu xử lý quá lâu, vui lòng thử lại');
     throw new BackendApiError(502, 'Không kết nối được backend');
   } finally {
     clearTimeout(timeout);

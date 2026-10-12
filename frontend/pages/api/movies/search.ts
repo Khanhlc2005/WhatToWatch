@@ -14,7 +14,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
   }
   try {
     const params = new URLSearchParams({ query: query.trim(), page: String(page), size: '20' });
-    res.status(200).json(await backendRequest<PageResult<MovieSummary>>('/movies/search?' + params));
+    res.status(200).json(await backendRequest<PageResult<MovieSummary>>('/movies/search?' + params, {}, 45000));
   } catch (error) {
     sendError(res, error);
   }

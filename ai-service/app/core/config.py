@@ -16,6 +16,7 @@ class Settings(BaseSettings):
 
     embedding_model_name: str = "BAAI/bge-m3"
     embedding_device: str = "cpu"
+    embedding_cpu_threads: int = 4
     embedding_model_path: str | None = None
 
     model_config = SettingsConfigDict(

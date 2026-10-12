@@ -4,7 +4,7 @@ WORKDIR /build
 
 COPY pom.xml .
 COPY src ./src
-RUN mvn clean package -DskipTests
+RUN --mount=type=cache,target=/root/.m2 mvn -q clean package -DskipTests
 
 # Tìm chính xác file executable jar của Spring Boot và đổi tên thành app.jar
 RUN find target/ -name "*.jar" ! -name "original-*.jar" -exec mv {} target/app.jar \;

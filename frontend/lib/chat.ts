@@ -33,7 +33,7 @@ export async function chatRequest<T>(
       method,
       headers: { Authorization: 'Bearer ' + token },
       ...(body === undefined ? {} : { body: JSON.stringify(body) })
-    }, method === 'POST' ? 270000 : 10000);
+    }, method === 'POST' ? 400000 : 10000);
   } catch (error) {
     sendError(res, error);
     return null;
