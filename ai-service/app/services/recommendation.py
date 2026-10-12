@@ -9,9 +9,9 @@ from app.core.config import settings
 from app.core.qdrant import get_qdrant_client
 from app.schemas.recommendation import (
     RecommendationHit,
+    RecommendationReason,
     RecommendationRequest,
     RecommendationResponse,
-    RecommendationReason,
     ScoreComponents,
 )
 from app.services.filters import build_payload_filter
