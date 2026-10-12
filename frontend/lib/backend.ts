@@ -12,9 +12,9 @@ export class BackendApiError extends Error {
 
 const baseUrl = (process.env.BACKEND_URL || 'http://localhost:8080/movie-recommendation').replace(/\/$/, '');
 
-export async function backendRequest<T>(path: string, init: RequestInit = {}): Promise<T> {
+export async function backendRequest<T>(path: string, init: RequestInit = {}, timeoutMs = 10000): Promise<T> {
   const controller = new AbortController();
-  const timeout = setTimeout(() => controller.abort(), 10000);
+  const timeout = setTimeout(() => controller.abort(), timeoutMs);
   try {
     const response = await fetch(baseUrl + path, {
       ...init,

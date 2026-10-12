@@ -34,6 +34,9 @@ public class Conversation {
     @Column(columnDefinition = "TEXT")
     String summary;
 
+    @Column(name = "summary_through_message_id")
+    Long summaryThroughMessageId;
+
     @CreationTimestamp
     @Column(name = "created_at", updatable = false)
     LocalDateTime createdAt;

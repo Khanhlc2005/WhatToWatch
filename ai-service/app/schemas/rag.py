@@ -15,6 +15,9 @@ class MovieContext(BaseModel):
     overview: str | None = Field(default=None, min_length=1)
     director: str | None = None
     runtime_minutes: int | None = Field(default=None, gt=0)
+    cast: list[str] = Field(default_factory=list, max_length=10)
+    imdb_rating: float | None = Field(default=None, ge=0, le=10)
+    original_language: str | None = None
 
 
 class AnswerMovie(BaseModel):

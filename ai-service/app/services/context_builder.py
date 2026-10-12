@@ -81,6 +81,11 @@ def _to_context(hit: MovieSearchHit, detail: dict) -> MovieContext | None:
     overview = " ".join(overview.split())[:MAX_OVERVIEW_CHARS] if isinstance(overview, str) else None
     runtime = detail.get("runtimeMinutes")
     runtime = runtime if type(runtime) is int and runtime > 0 else None
+    rating = detail.get("imdbRating")
+    rating = float(rating) if type(rating) in (int, float) and 0 <= rating <= 10 else None
+    cast = detail.get("cast")
+    cast_names = [member.get("name") for member in cast if isinstance(member, dict)
+                  and isinstance(member.get("name"), str)] if isinstance(cast, list) else []
     genres = list(dict.fromkeys(genre for genre in hit.genres if genre))[:8]
     try:
         return MovieContext(
@@ -91,13 +96,16 @@ def _to_context(hit: MovieSearchHit, detail: dict) -> MovieContext | None:
             overview=overview or None,
             director=_director(detail.get("crew")),
             runtime_minutes=runtime,
+            cast=list(dict.fromkeys(cast_names))[:10],
+            imdb_rating=rating,
+            original_language=detail.get("originalLanguage") or None,
         )
     except ValidationError:
         logger.warning("Skipping movie %s: invalid catalog fields", hit.movie_id)
         return None
 
 
-def build_movie_context(search: MovieSearchResponse) -> list[MovieContext]:
+def build_movie_context(search: MovieSearchResponse, director: str | None = None, actor: str | None = None) -> list[MovieContext]:
     """Preserve retrieval order while omitting missing or inconsistent movies."""
     context = []
     seen = set()
@@ -110,6 +118,32 @@ def build_movie_context(search: MovieSearchResponse) -> list[MovieContext]:
         detail = fetch_movie_detail(hit.movie_id)
         if detail is None:
             continue
+        if actor:
+            cast = detail.get("cast")
+            if not isinstance(cast, list) or not any(
+                isinstance(member, dict) and isinstance(member.get("name"), str)
+                and actor.casefold() in member["name"].casefold() for member in cast
+            ):
+                continue
+        movie = _to_context(hit, detail)
+        if movie is not None and director and (not movie.director or director.casefold() not in movie.director.casefold()):
+            continue
+        if movie is not None:
+            context.append(movie)
+    return context
+
+
+def build_context_for_movie_ids(movie_ids: list[int]) -> list[MovieContext]:
+    """Rehydrate prior recommendations from the canonical catalog for follow-up questions."""
+    context = []
+    for movie_id in dict.fromkeys(movie_ids[:MAX_CONTEXT_MOVIES]):
+        detail = fetch_movie_detail(movie_id)
+        if detail is None:
+            continue
+        hit = MovieSearchHit(
+            point_id=str(movie_id), movie_id=movie_id, imdb_id=None, tmdb_id=None,
+            title=None, score=0.0, id_status="present_unverified",
+        )
         movie = _to_context(hit, detail)
         if movie is not None:
             context.append(movie)

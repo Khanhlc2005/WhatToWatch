@@ -4,6 +4,7 @@ import com.project.movie_recommendation.dto.request.ChatMessageRequest;
 import com.project.movie_recommendation.dto.response.ApiResponse;
 import com.project.movie_recommendation.dto.response.ChatMessageResponse;
 import com.project.movie_recommendation.dto.response.ConversationResponse;
+import com.project.movie_recommendation.dto.response.ConversationDetailResponse;
 import com.project.movie_recommendation.service.ConversationService;
 import jakarta.validation.Valid;
 import lombok.AccessLevel;
@@ -33,6 +34,12 @@ public class ChatController {
         return ApiResponse.<List<ConversationResponse>>builder()
                 .result(conversationService.getMyConversations())
                 .build();
+    }
+
+    @GetMapping("/conversations/{id}")
+    public ApiResponse<ConversationDetailResponse> getConversation(@PathVariable Long id) {
+        return ApiResponse.<ConversationDetailResponse>builder()
+                .result(conversationService.getConversation(id)).build();
     }
 
     @DeleteMapping("/conversations/{id}")

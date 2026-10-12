@@ -159,3 +159,39 @@ def test_context_builder_fills_five_movies_in_retrieval_order(monkeypatch):
     context = context_builder.build_movie_context(search)
     assert [movie.movie_id for movie in context] == ["1", "3", "4", "5", "6"]
     assert calls == [1, 2, 3, 4, 5, 6]
+
+
+def test_actor_filter_checks_full_catalog_cast(monkeypatch):
+    monkeypatch.setattr(context_builder, "fetch_movie_detail", lambda movie_id: {
+        "id": movie_id, "title": "Ensemble Film", "overview": "An ensemble story.",
+        "cast": [{"name": f"Actor {index}"} for index in range(10)] + [{"name": "Target Actor"}],
+    })
+    search = MovieSearchResponse(collection="movies", mode="hybrid", hits=[MovieSearchHit(
+        point_id="1", movie_id=1, imdb_id=None, tmdb_id=None, title="Ensemble Film",
+        score=1.0, id_status="present_unverified",
+    )])
+    context = context_builder.build_movie_context(search, actor="Target Actor")
+    assert [movie.movie_id for movie in context] == ["1"]
+
+
+def test_follow_up_rehydrates_previous_recommendation(catalog_chat, monkeypatch):
+    def get_detail(url, timeout):
+        movie_id = int(url.rsplit("/", 1)[-1])
+        return _response(200, {"code": 1000, "result": {
+            "id": movie_id, "title": "Previous Film" if movie_id == 43 else "Catalog Film",
+            "overview": "A journey through space.", "releaseDate": "2020-01-01",
+        }})
+
+    monkeypatch.setattr(context_builder.requests, "get", get_detail)
+    monkeypatch.setattr(OllamaClient, "generate", lambda *_, **__: pytest.fail("Model called for catalog fact"))
+    response = catalog_chat.post("/internal/chat", json={
+        "message": "Phim đó phát hành năm nào?",
+        "history": [
+            {"role": "user", "content": "Gợi ý phim không gian"},
+            {"role": "assistant", "content": "Previous Film", "movie_ids": [43]},
+        ],
+    })
+    assert response.status_code == 200
+    assert response.json()["movies"][0]["movie_id"] == "43"
+    assert "2020" in response.json()["answer"]
+    assert response.json()["tool_name"] == "movie_detail"
