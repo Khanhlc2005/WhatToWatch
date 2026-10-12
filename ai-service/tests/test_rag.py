@@ -82,11 +82,11 @@ def test_fallback_and_malformed_answer_text_are_normalized() -> None:
     no_match = parse_answer(
         '{"status":"no_match","answer":"no_match only","movies":[]}', [movie]
     )
-    assert no_match.answer.startswith("Không tìm thấy")
+    assert no_match.answer.startswith("No matching movies")
     payload = json.loads(_output(movie))
     payload["answer"] = "movies: [{movie_id: tmdb:157336}]"
     answered = parse_answer(json.dumps(payload), [movie])
-    assert answered.answer.startswith("Mình tìm thấy")
+    assert answered.answer.startswith("I found")
 
 
 def test_invalid_first_response_is_retried_once() -> None:

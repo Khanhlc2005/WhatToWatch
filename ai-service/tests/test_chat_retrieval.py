@@ -43,6 +43,7 @@ def catalog_chat(monkeypatch):
     monkeypatch.setattr(retrieval, "embed_query", lambda _: {
         "dense": [1.0] + [0.0] * 1023, "sparse": {"42": 1.0},
     })
+    monkeypatch.setattr(retrieval, "score_pairs", lambda query, docs: [1.0] * len(docs))
     with TestClient(app) as http:
         yield http
     qdrant.close()
@@ -77,7 +78,7 @@ def test_chat_uses_retrieved_mysql_movie_and_canonical_id(catalog_chat, monkeypa
 
     assert response.status_code == 200
     assert response.json()["movies"][0]["movie_id"] == "42"
-    assert response.json()["movies"][0]["reason"] == "Thể loại: Science Fiction"
+    assert response.json()["movies"][0]["reason"] == "Genres: Science Fiction"
     assert detail_calls[0][0].endswith("/movies/42")
 
 
@@ -92,9 +93,10 @@ def test_chat_applies_explicit_filters_and_handles_no_results(catalog_chat, monk
     assert response.json()["movies"] == []
 
 
-def test_chat_reports_catalog_outage_without_using_fixture(catalog_chat, monkeypatch):
+@pytest.mark.parametrize("error", [requests.ConnectionError("backend offline"), requests.Timeout("backend timed out")])
+def test_chat_reports_catalog_outage_without_using_fixture(catalog_chat, monkeypatch, error):
     def unavailable(*_, **__):
-        raise requests.ConnectionError("backend offline")
+        raise error
 
     monkeypatch.setattr(context_builder.requests, "get", unavailable)
     monkeypatch.setattr(OllamaClient, "generate", lambda *_, **__: pytest.fail("Ollama called"))
