@@ -27,11 +27,11 @@ export default function Search() {
     fetch('/api/movies/search?q=' + encodeURIComponent(query) + '&page=' + (Number.isSafeInteger(page) && page >= 0 ? page : 0))
       .then(async response => {
         const body = await response.json();
-        if (!response.ok) throw new Error(body.message || 'Không thể tìm kiếm phim.');
+        if (!response.ok) throw new Error(body.message || 'Could not search for movies.');
         return body as PageResult<MovieSummary>;
       })
       .then(body => { if (active) setResults(body); })
-      .catch(reason => { if (active) setError(reason instanceof Error ? reason.message : 'Không thể tìm kiếm phim.'); })
+      .catch(reason => { if (active) setError(reason instanceof Error ? reason.message : 'Could not search for movies.'); })
       .finally(() => { if (active) setLoading(false); });
     return () => { active = false; };
   }, [router.isReady, query, page]);
@@ -42,28 +42,28 @@ export default function Search() {
   }
 
   return <>
-    <Head><title>Tìm kiếm phim | WhatToWatch</title></Head>
+    <Head><title>Search movies | WhatToWatch</title></Head>
     {isModal && <Modal />}
     <Layout><main className={styles.page}>
-      <span className={styles.eyebrow}>KHÁM PHÁ WHAT TO WATCH</span>
-      <h1>Tìm phim theo tên</h1>
+      <span className={styles.eyebrow}>EXPLORE WHAT TO WATCH</span>
+      <h1>Search for a movie</h1>
       <form className={styles.searchForm} onSubmit={submit}>
-        <label htmlFor='movie-query'>Tên phim</label>
+        <label htmlFor='movie-query'>Movie title</label>
         <div><input id='movie-query' value={input} onChange={event => setInput(event.target.value)}
-          maxLength={100} placeholder='Ví dụ: The Godfather' autoComplete='off' />
-          <button type='submit'>Tìm phim</button></div>
+          maxLength={100} placeholder='For example: The Godfather' autoComplete='off' />
+          <button type='submit'>Search</button></div>
       </form>
-      {!query && <p>Nhập tên phim để tìm trong bộ sưu tập.</p>}
-      {loading && <p role='status'>Đang tìm phim…</p>}
+      {!query && <p>Enter a movie title to search the collection.</p>}
+      {loading && <p role='status'>Searching movies…</p>}
       {error && <p role='alert' className={styles.error}>{error}</p>}
       {!loading && results && <>
-        <p className={styles.count}>{results.totalElements} kết quả cho “{query}”</p>
-        {results.data.length === 0 && <p>Chưa tìm thấy phim phù hợp. Hãy thử tên khác.</p>}
+        <p className={styles.count}>{results.totalElements} results for “{query}”</p>
+        {results.data.length === 0 && <p>No matching movies found. Try another title.</p>}
         <div className={styles.grid}>{results.data.map(movie => <MovieCard key={movie.id} item={toMovie(movie)} />)}</div>
         {results.totalPages > 1 && <div className={styles.pagination}>
-          <button disabled={page <= 0} onClick={() => void router.push('/search?q=' + encodeURIComponent(query) + '&page=' + (page - 1))}>Trang trước</button>
-          <span>Trang {(Number.isSafeInteger(page) ? page : 0) + 1} / {results.totalPages}</span>
-          <button disabled={page + 1 >= results.totalPages} onClick={() => void router.push('/search?q=' + encodeURIComponent(query) + '&page=' + (page + 1))}>Trang sau</button>
+          <button disabled={page <= 0} onClick={() => void router.push('/search?q=' + encodeURIComponent(query) + '&page=' + (page - 1))}>Previous</button>
+          <span>Page {(Number.isSafeInteger(page) ? page : 0) + 1} / {results.totalPages}</span>
+          <button disabled={page + 1 >= results.totalPages} onClick={() => void router.push('/search?q=' + encodeURIComponent(query) + '&page=' + (page + 1))}>Next</button>
         </div>}
       </>}
     </main></Layout>

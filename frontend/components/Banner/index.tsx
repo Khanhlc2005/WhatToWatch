@@ -46,7 +46,7 @@ export default function Banner() {
   };
 
   return (
-    <section className={styles.spotlight} aria-label='Phim nổi bật'>
+    <section className={styles.spotlight} aria-label='Featured movie'>
       {media?.banner && <img
         src={media.banner}
         alt=''
@@ -59,15 +59,15 @@ export default function Banner() {
       />}
       <div className={styles.spotlight__shade} />
       <div className={styles.spotlight__details}>
-        <span className={styles.kicker}><span className={styles.kickerLine} /> PHIM NỔI BẬT</span>
-        <h2 className={styles.title}>{media?.title || 'Khám phá câu chuyện tiếp theo của bạn'}</h2>
+        <span className={styles.kicker}><span className={styles.kickerLine} /> FEATURED MOVIE</span>
+        <h2 className={styles.title}>{media?.title || 'Discover your next story'}</h2>
         <div className={styles.metadata}>
-          {media?.rating != null && <span className={styles.rating} aria-label={`Điểm đánh giá ${media.rating.toFixed(1)} trên 10`}>★ {media.rating.toFixed(1)} / 10</span>}
+          {media?.rating != null && <span className={styles.rating} aria-label={`IMDb rating ${media.rating.toFixed(1)} out of 10`}>IMDb ★ {media.rating.toFixed(1)} / 10</span>}
           {media?.releaseDate && <span className={styles.releaseYear}>{media.releaseDate.slice(0, 4)}</span>}
         </div>
-        <p className={styles.synopsis}>{media?.overview || 'Tìm bộ phim phù hợp với bạn từ bộ sưu tập WhatToWatch.'}</p>
+        <p className={styles.synopsis}>{media?.overview || 'Find a movie that fits your mood in the WhatToWatch collection.'}</p>
         {media && <button className={styles.detailButton} onClick={openDetail}>
-          <Info aria-hidden='true' /> Xem chi tiết <span aria-hidden='true'>↗</span>
+          <Info aria-hidden='true' /> View details <span aria-hidden='true'>↗</span>
         </button>}
       </div>
       <div className={styles.heroIndex} aria-hidden='true'>TOP 10 / WHAT TO WATCH</div>

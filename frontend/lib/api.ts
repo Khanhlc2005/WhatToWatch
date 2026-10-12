@@ -4,7 +4,7 @@ import { BackendApiError } from './backend';
 export function allowMethod(req: NextApiRequest, res: NextApiResponse, method: string): boolean {
   if (req.method === method) return true;
   res.setHeader('Allow', method);
-  res.status(405).json({ message: 'Phương thức không được hỗ trợ' });
+  res.status(405).json({ message: 'Method not allowed' });
   return false;
 }
 
@@ -13,7 +13,7 @@ export function sendError(res: NextApiResponse, error: unknown): void {
     res.status(error.status).json({ message: error.message });
     return;
   }
-  res.status(500).json({ message: 'Lỗi máy chủ' });
+  res.status(500).json({ message: 'Server error' });
 }
 
 export function isCredentials(value: unknown): value is { email: string; password: string } {

@@ -9,7 +9,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
   const page = Number(req.query.page || 0);
   if (typeof query !== 'string' || !query.trim() || query.length > 100 ||
       !Number.isSafeInteger(page) || page < 0 || page > 500) {
-    res.status(400).json({ message: 'Từ khóa tìm kiếm không hợp lệ' });
+    res.status(400).json({ message: 'Invalid search query' });
     return;
   }
   try {

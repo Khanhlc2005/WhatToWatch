@@ -6,12 +6,12 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
   if (!kind) return;
   const id = req.query.movieId;
   if (typeof id !== 'string' || !/^[1-9][0-9]*$/.test(id) || !Number.isSafeInteger(Number(id))) {
-    res.status(400).json({ message: 'ID phim không hợp lệ' });
+    res.status(400).json({ message: 'Invalid movie ID' });
     return;
   }
   if (!['GET', 'POST', 'DELETE'].includes(req.method || '')) {
     res.setHeader('Allow', 'GET, POST, DELETE');
-    res.status(405).json({ message: 'Phương thức không được hỗ trợ' });
+    res.status(405).json({ message: 'Method not allowed' });
     return;
   }
   const base = kind === 'favorites' ? '/favorites' : '/watchlists';

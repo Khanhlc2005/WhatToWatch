@@ -32,13 +32,13 @@ export default function List({ id, heading, endpoint }: ListProps) {
     <div className={styles.sectionHeading}>
       <h2 className={styles.category}>{heading}</h2>
       <span className={styles.sectionLine} />
-      <span className={styles.sectionCount}>{!loading && !error ? `${movies.length} phim` : 'KHÁM PHÁ'}</span>
+      <span className={styles.sectionCount}>{!loading && !error ? `${movies.length} movies` : 'EXPLORE'}</span>
     </div>
-    {loading && <div className={styles.skeletonRow} role='status' aria-label='Đang tải phim'>
+    {loading && <div className={styles.skeletonRow} role='status' aria-label='Loading movies'>
       {[0, 1, 2, 3, 4].map(index => <span key={index} />)}
     </div>}
-    {error && <p role='alert' className={styles.listError}>Không tải được danh sách phim.</p>}
-    {!loading && !error && movies.length === 0 && <p role='status'>Chưa có phim.</p>}
+    {error && <p role='alert' className={styles.listError}>Could not load movies.</p>}
+    {!loading && !error && movies.length === 0 && <p role='status'>No movies yet.</p>}
     {!loading && !error && <MovieRow movies={movies} />}
   </section>;
 }

@@ -37,7 +37,7 @@ export default function LibraryActions({ movieId, compact = false }: { movieId: 
         if (active) setStatus({ favorites: Boolean(favorite.favorite ?? favorite.isFavorite), watchlist: Boolean(watchlist.inWatchlist) });
       } catch {
         sessionPromise = null;
-        if (active) setError('Không tải được trạng thái lưu phim.');
+        if (active) setError('Could not load your saved movie status.');
       }
     }
     void load();
@@ -74,12 +74,12 @@ export default function LibraryActions({ movieId, compact = false }: { movieId: 
       }
       if (!response.ok) {
         const body = await response.json();
-        throw new Error(body.message || 'Không lưu được phim.');
+        throw new Error(body.message || 'Could not update your list.');
       }
       setStatus(current => ({ ...current, [kind]: !current[kind] }));
       window.dispatchEvent(new CustomEvent('wtw-library-change', { detail: movieId }));
     } catch (reason) {
-      setError(reason instanceof Error ? reason.message : 'Không lưu được phim.');
+      setError(reason instanceof Error ? reason.message : 'Could not update your list.');
     } finally {
       setBusy(null);
     }
@@ -87,12 +87,12 @@ export default function LibraryActions({ movieId, compact = false }: { movieId: 
 
   return <div className={`${styles.actions} ${compact ? styles.compact : ''}`} onClick={event => event.stopPropagation()}>
     <button type='button' aria-pressed={status.favorites} disabled={busy !== null}
-      onClick={() => void toggle('favorites')} title={status.favorites ? 'Bỏ yêu thích' : 'Thêm vào yêu thích'}>
-      {status.favorites ? '♥' : '♡'} {!compact && (status.favorites ? 'Đã yêu thích' : 'Yêu thích')}
+      onClick={() => void toggle('favorites')} title={status.favorites ? 'Remove from favourites' : 'Add to favourites'}>
+      {status.favorites ? '♥' : '♡'} {!compact && (status.favorites ? 'In favourites' : 'Favourite')}
     </button>
     <button type='button' aria-pressed={status.watchlist} disabled={busy !== null}
-      onClick={() => void toggle('watchlist')} title={status.watchlist ? 'Bỏ khỏi danh sách xem' : 'Thêm vào danh sách xem'}>
-      {status.watchlist ? '✓' : '+'} {!compact && (status.watchlist ? 'Đã lưu xem sau' : 'Xem sau')}
+      onClick={() => void toggle('watchlist')} title={status.watchlist ? 'Remove from Watch later' : 'Add to Watch later'}>
+      {status.watchlist ? '✓' : '+'} {!compact && (status.watchlist ? 'Saved for later' : 'Watch later')}
     </button>
     {error && <span className={styles.error} role='alert'>{error}</span>}
   </div>;

@@ -12,8 +12,8 @@ function App({ Component, pageProps, router }: AppProps) {
   return (
     <>
       <Head>
-        <title>WhatToWatch — Chọn phim cho tối nay</title>
-        <meta name='description' content='Khám phá phim hay và tìm câu chuyện phù hợp với bạn trên WhatToWatch.' />
+        <title>WhatToWatch — Find your next movie</title>
+        <meta name='description' content='Discover great movies and find your next story on WhatToWatch.' />
         <link rel='icon' href='/favicon.svg' type='image/svg+xml' />
       </Head>
       <ModalProvider>

@@ -7,7 +7,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
   if (!allowMethod(req, res, 'GET')) return;
   const id = req.query.id;
   if (typeof id !== 'string' || !/^[1-9][0-9]*$/.test(id) || !Number.isSafeInteger(Number(id))) {
-    res.status(400).json({ message: 'ID phim không hợp lệ' });
+    res.status(400).json({ message: 'Invalid movie ID' });
     return;
   }
   try {

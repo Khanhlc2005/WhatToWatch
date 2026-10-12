@@ -3,6 +3,7 @@ import { useRouter } from 'next/router';
 import { useContext, useEffect, useState } from 'react';
 import { ModalContext } from '../../context/ModalContext';
 import { MovieDetail, toMedia } from '../../lib/movies';
+import { readApiJson } from '../../lib/readApiJson';
 import styles from '../../styles/WhatToWatch.module.scss';
 
 export default function MoviePage() {
@@ -17,8 +18,8 @@ export default function MoviePage() {
     setError('');
     fetch('/api/movies/' + encodeURIComponent(id))
       .then(async response => {
-        const body = await response.json();
-        if (!response.ok) throw new Error(body.message || 'Không tìm thấy phim');
+        const body = await readApiJson<MovieDetail & { message?: string }>(response, 'Could not load movie details.');
+        if (!response.ok) throw new Error(body.message || 'Movie not found.');
         return body as MovieDetail;
       })
       .then(movie => {
@@ -29,7 +30,7 @@ export default function MoviePage() {
       .catch(reason => {
         if (active) {
           setIsModal(false);
-          setError(reason instanceof Error ? reason.message : 'Không tải được phim');
+          setError(reason instanceof Error ? reason.message : 'Could not load the movie.');
         }
       });
     return () => { active = false; };
@@ -38,9 +39,9 @@ export default function MoviePage() {
   useEffect(() => () => setIsModal(false), [setIsModal]);
 
   return <>
-    <Head><title>Chi tiết phim | WhatToWatch</title></Head>
+    <Head><title>Movie details | WhatToWatch</title></Head>
     {error && <div role='alert' className={styles.detailError} onClick={() => router.replace('/browse', undefined, { scroll: false })}>
-      {error} · Quay lại
+      {error} · Go back
     </div>}
   </>;
 }

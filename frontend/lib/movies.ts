@@ -56,14 +56,14 @@ export function toMovie(movie: MovieSummary | MovieDetail): Movie {
   const detail = 'posterPath' in movie ? movie : null;
   const summary = 'posterUrl' in movie ? movie : null;
   const poster = posterUrl(detail ? detail.posterPath : summary?.posterUrl) || '/assets/poster-placeholder.svg';
-  const tmdbRating = detail?.tmdbVoteAverage;
+  const imdbRating = detail?.imdbRating;
   return {
     id: String(movie.id),
     title: movie.title,
     overview: detail?.overview || '',
     poster,
     banner: backdropUrl(detail?.backdropPath) || poster,
-    rating: summary ? summary.voteAverage : (tmdbRating != null && tmdbRating > 0 ? tmdbRating : detail?.imdbRating ?? null),
+    rating: summary ? summary.voteAverage : (imdbRating != null && imdbRating > 0 ? imdbRating : detail?.tmdbVoteAverage ?? null),
     // Genres are not included in the current detail DTO.
     genre: [],
     cast: detail?.cast?.length ? detail.cast.slice(0, 8).map(person => person.name).join(', ') : null,

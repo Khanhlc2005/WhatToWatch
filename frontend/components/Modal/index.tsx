@@ -7,6 +7,8 @@ import { Genre } from '../../types';
 import { Trailer, youtubeTrailerSearchUrl } from '../../lib/movies';
 import LibraryActions from '../LibraryActions';
 import MovieRow from '../List/MovieRow';
+import MovieRating from '../MovieRating';
+import { readApiJson } from '../../lib/readApiJson';
 
 export default function Modal() {
   const router = useRouter();
@@ -47,18 +49,18 @@ export default function Modal() {
           if (!controller.signal.aborted) setTrailerUnavailable(true);
           return null;
         }
-        const body = await response.json();
-        if (!response.ok) throw new Error(body.message || 'Không tải được trailer');
+        const body = await readApiJson<Trailer & { message?: string }>(response, 'Could not load the trailer.');
+        if (!response.ok) throw new Error(body.message || 'Could not load the trailer.');
         return body as Trailer;
       })
       .then(trailer => {
         if (!trailer || controller.signal.aborted) return;
         if (/^[A-Za-z0-9_-]{11}$/.test(trailer.trailerKey)) setTrailerKey(trailer.trailerKey);
-        else setTrailerError('Trailer không hợp lệ.');
+        else setTrailerError('The trailer is invalid.');
       })
       .catch(reason => {
         if (reason instanceof Error && reason.name !== 'AbortError')
-          setTrailerError(reason.message || 'Không tải được trailer.');
+          setTrailerError(reason.message || 'Could not load the trailer.');
       });
     return () => controller.abort();
   }, [isModal, id, modalData.trailerKey]);
@@ -79,37 +81,38 @@ export default function Modal() {
               onLoad={() => setVideoReady(true)} />
           </div>}
         </div>
-        <div className={styles.cross} onClick={close} role='button' aria-label='Đóng chi tiết phim'>
+        <div className={styles.cross} onClick={close} role='button' aria-label='Close movie details'>
           &#10005;
         </div>
         <div className={styles.details}>
           <div className={styles.title}>{title}</div>
           <LibraryActions movieId={id} />
-          {trailerKey && <p className={styles.trailerHint}>Trailer tự phát ở chế độ tắt tiếng. Bạn có thể bật tiếng trong khung video.</p>}
+          {id && <MovieRating movieId={id} />}
+          {trailerKey && <p className={styles.trailerHint}>The trailer starts muted. You can turn on sound in the video player.</p>}
           {(trailerUnavailable || trailerError) &&
             <p role={trailerError ? 'alert' : 'status'} className={styles.trailerError}>
-              {trailerError || 'Phim này chưa có trailer để phát tự động.'}{' '}
+              {trailerError || 'No trailer is available for this movie.'}{' '}
               <a href={youtubeTrailerSearchUrl(title, releaseDate)} target='_blank' rel='noopener noreferrer'>
-                Tìm trailer trên YouTube
+                Search for a trailer on YouTube
               </a>
             </p>}
         </div>
         <div className={styles.bottomContainer}>
-          <div className={styles.column}><h3>Giới thiệu</h3><p>{overview || 'Phim này chưa có mô tả.'}</p></div>
+          <div className={styles.column}><h3>Overview</h3><p>{overview || 'No overview is available for this movie.'}</p></div>
           <div className={styles.column}>
             <div className={styles.metadataRow}>
-              <span className={styles.greenText}>{rating == null ? 'Chưa có điểm' : `${rating}/10`}</span>
-              {releaseDate && <span>Năm: {releaseDate.slice(0, 4)}</span>}
+              <span className={styles.greenText}>{rating == null ? 'Not rated' : `IMDb ${rating.toFixed(1)}/10`}</span>
+              {releaseDate && <span>Year: {releaseDate.slice(0, 4)}</span>}
             </div>
-            {genre.length > 0 && <div className={styles.genre}>Thể loại: {renderGenre(genre)} </div>}
-            {runtime && <div>Thời lượng: {runtime} phút</div>}
-            <div><strong>Diễn viên:</strong> {cast || 'Chưa có dữ liệu diễn viên.'}</div>
+            {genre.length > 0 && <div className={styles.genre}>Genres: {renderGenre(genre)} </div>}
+            {runtime && <div>Runtime: {runtime} minutes</div>}
+            <div><strong>Cast:</strong> {cast || 'No cast information available.'}</div>
           </div>
         </div>
         <section className={styles.related}>
-          <h3>Cùng ngôn ngữ và thời kỳ</h3>
-          <p>Những phim phát hành gần thời điểm này và có cùng ngôn ngữ gốc.</p>
-          {modalData.similarMovies?.length ? <MovieRow movies={modalData.similarMovies} /> : <p>Chưa có phim gợi ý phù hợp.</p>}
+          <h3>Similar language and era</h3>
+          <p>Movies from around the same time with the same original language.</p>
+          {modalData.similarMovies?.length ? <MovieRow movies={modalData.similarMovies} /> : <p>No similar movies found.</p>}
         </section>
       </div>
     </div>
