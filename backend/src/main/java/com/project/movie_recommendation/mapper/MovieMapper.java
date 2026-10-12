@@ -22,6 +22,6 @@ public interface MovieMapper {
     MovieDetailResponse.CrewResponse toCrewResponse(MovieCrew movieCrew);
 
     @Mapping(target = "posterUrl", source = "posterPath")
-    @Mapping(target = "voteAverage", expression = "java(movie.getTmdbVoteAverage() != null && movie.getTmdbVoteAverage() > 0 ? movie.getTmdbVoteAverage() : movie.getImdbRating())")
+    @Mapping(target = "voteAverage", expression = "java(movie.getImdbRating() != null && movie.getImdbRating() > 0 ? movie.getImdbRating() : movie.getTmdbVoteAverage())")
     MovieSummaryResponse toMovieSummaryResponse(Movie movie);
 }

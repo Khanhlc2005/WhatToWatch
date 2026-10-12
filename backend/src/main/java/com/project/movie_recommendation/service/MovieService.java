@@ -21,8 +21,6 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 
-import java.util.Collections;
-import java.util.HashMap;
 import java.util.List;
 import java.time.LocalDate;
 import java.util.Map;
@@ -38,7 +36,6 @@ public class MovieService {
     MovieRepository movieRepository;
     MovieMapper movieMapper;
     AiServiceClient aiServiceClient;
-    private static final int RRF_K = 60;
 
     @Transactional(readOnly = true)
     public MovieDetailResponse getMovieDetail(Long id) {
@@ -69,13 +66,13 @@ public class MovieService {
     }
 
     public List<MovieSummaryResponse> getTopRatedMovies() {
-        return movieRepository.findTop10ByEffectiveRating().stream()
+        return movieRepository.findTop50ByImdbRating().stream()
                 .map(movieMapper::toMovieSummaryResponse)
                 .collect(Collectors.toList());
     }
 
     public List<MovieSummaryResponse> getNewestMovies() {
-        return movieRepository.findTop10ByOrderByReleaseDateDesc().stream()
+        return movieRepository.findTop50ByOrderByReleaseDateDesc().stream()
                 .map(movieMapper::toMovieSummaryResponse)
                 .collect(Collectors.toList());
     }
@@ -100,19 +97,8 @@ public class MovieService {
     public PageResponse<MovieSummaryResponse> searchMovies(String query, int page, int size) {
         String cleanQuery = query.trim();
         int fetchLimit = 50;
-
-        List<Movie> lexicalMovies = movieRepository.searchByTitle(cleanQuery, PageRequest.of(0, fetchLimit)).getContent();
-
         AiMovieSearchResponse vectorResponse = aiServiceClient.searchSimilarMovies(cleanQuery, fetchLimit);
-        List<Long> semanticMovieIds = Collections.emptyList();
-        if (vectorResponse != null && vectorResponse.getHits() != null) {
-            semanticMovieIds = vectorResponse.getHits().stream()
-                    .map(AiMovieSearchResponse.Hit::getMovieId)
-                    .filter(Objects::nonNull)
-                    .toList();
-        }
-
-        if (semanticMovieIds.isEmpty()) {
+        if (vectorResponse == null || vectorResponse.getHits() == null) {
             Page<Movie> fallbackPage = movieRepository.searchByTitle(cleanQuery, PageRequest.of(page, size));
             return PageResponse.<MovieSummaryResponse>builder()
                     .currentPage(page + 1)
@@ -123,43 +109,23 @@ public class MovieService {
                     .build();
         }
 
-        Map<Long, Double> rrfScores = new HashMap<>();
-
-        for (int rank = 0; rank < lexicalMovies.size(); rank++) {
-            Long movieId = lexicalMovies.get(rank).getId();
-            double score = 1.0 / (RRF_K + (rank + 1));
-            rrfScores.merge(movieId, score, Double::sum);
-        }
-
-        for (int rank = 0; rank < semanticMovieIds.size(); rank++) {
-            Long movieId = semanticMovieIds.get(rank);
-            double score = 1.0 / (RRF_K + (rank + 1));
-            rrfScores.merge(movieId, score, Double::sum);
-        }
-
-        List<Long> sortedIds = rrfScores.entrySet().stream()
-                .sorted(Map.Entry.<Long, Double>comparingByValue().reversed())
-                .map(Map.Entry::getKey)
+        List<Long> rankedIds = vectorResponse.getHits().stream()
+                .map(AiMovieSearchResponse.Hit::getMovieId)
+                .filter(Objects::nonNull)
+                .distinct()
                 .toList();
-
-        int totalElements = sortedIds.size();
+        Map<Long, Movie> movieMap = movieRepository.findAllById(rankedIds).stream()
+                .collect(Collectors.toMap(Movie::getId, movie -> movie));
+        List<MovieSummaryResponse> hydrated = rankedIds.stream()
+                .map(movieMap::get)
+                .filter(Objects::nonNull)
+                .map(movieMapper::toMovieSummaryResponse)
+                .toList();
+        int totalElements = hydrated.size();
         int totalPages = (int) Math.ceil((double) totalElements / size);
-        int fromIndex = page * size;
-
-        List<MovieSummaryResponse> pagedData = Collections.emptyList();
-        if (fromIndex < totalElements) {
-            int toIndex = Math.min(fromIndex + size, totalElements);
-            List<Long> pageIds = sortedIds.subList(fromIndex, toIndex);
-
-            Map<Long, Movie> movieMap = movieRepository.findAllById(pageIds).stream()
-                    .collect(Collectors.toMap(Movie::getId, m -> m));
-
-            pagedData = pageIds.stream()
-                    .map(movieMap::get)
-                    .filter(Objects::nonNull)
-                    .map(movieMapper::toMovieSummaryResponse)
-                    .toList();
-        }
+        long fromIndex = (long) page * size;
+        List<MovieSummaryResponse> pagedData = fromIndex >= totalElements ? List.of()
+                : hydrated.subList((int) fromIndex, (int) Math.min(fromIndex + size, totalElements));
 
         return PageResponse.<MovieSummaryResponse>builder()
                 .currentPage(page + 1)

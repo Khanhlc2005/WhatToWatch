@@ -24,6 +24,9 @@ def test_natural_filters_reach_retrieval_as_valid_json(monkeypatch) -> None:
     assert captured[0].filters.model_dump(exclude_defaults=True) == {
         "genres": ["Horror"], "year_min": 2010, "year_max": 2020, "rating_min": 7.0,
     }
+    assert captured[0].mode == "hybrid"
+    assert captured[0].rerank is True
+    assert captured[0].candidate_k == 20
     assert response.json()["applied_filters"]["retrieval"]["genres"] == ["Horror"]
 
 

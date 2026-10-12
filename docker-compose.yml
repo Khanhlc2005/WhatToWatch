@@ -13,6 +13,13 @@ services:
       EMBEDDING_MODEL_PATH: ${EMBEDDING_MODEL_PATH:-}
       EMBEDDING_DEVICE: cpu
       EMBEDDING_CPU_THREADS: ${EMBEDDING_CPU_THREADS:-4}
+      RERANKER_MODEL_NAME: ${RERANKER_MODEL_NAME:-BAAI/bge-reranker-v2-m3}
+      RERANKER_MODEL_PATH: ${RERANKER_MODEL_PATH:-}
+      RERANKER_DEVICE: ${RERANKER_DEVICE:-cpu}
+      RETRIEVAL_CANDIDATE_K: ${RETRIEVAL_CANDIDATE_K:-50}
+      RETRIEVAL_FINAL_K: ${RETRIEVAL_FINAL_K:-10}
+      RECOMMENDATION_SIMILARITY_WEIGHT: ${RECOMMENDATION_SIMILARITY_WEIGHT:-0.8}
+      RECOMMENDATION_IMDB_WEIGHT: ${RECOMMENDATION_IMDB_WEIGHT:-0.2}
       HF_HUB_OFFLINE: ${HF_HUB_OFFLINE:-0}
       OLLAMA_BASE_URL: ${OLLAMA_BASE_URL:-http://host.docker.internal:11434}
       OLLAMA_MODEL_NAME: qwen2.5:3b
@@ -22,6 +29,7 @@ services:
       - "host.docker.internal:host-gateway"
     volumes:
       - whattowatch_model_cache:/home/app/.cache/huggingface
+      - ./data/model_cache:/model-cache:ro
     depends_on:
       - qdrant
     networks:
@@ -83,7 +91,7 @@ services:
       SPRING_DATASOURCE_PASSWORD: root
       SERVER_SERVLET_CONTEXT_PATH: /movie-recommendation
       AI_SERVICE_URL: http://ai-service:8010
-      AI_SERVICE_SEARCH_TIMEOUT_SECONDS: ${AI_SERVICE_SEARCH_TIMEOUT_SECONDS:-35}
+      AI_SERVICE_SEARCH_TIMEOUT_SECONDS: ${AI_SERVICE_SEARCH_TIMEOUT_SECONDS:-120}
       AI_SERVICE_CHAT_TIMEOUT_SECONDS: ${AI_SERVICE_CHAT_TIMEOUT_SECONDS:-390}
     networks:
       - whattowatch-network

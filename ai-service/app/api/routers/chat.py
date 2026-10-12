@@ -53,7 +53,7 @@ def _validated_filters(message: str, filters) -> ExtractedChatFilters:
     try:
         return extract_chat_filters(message, filters)
     except ValidationError as exc:
-        raise HTTPException(status_code=422, detail="Bộ lọc trong câu hỏi không hợp lệ") from exc
+        raise HTTPException(status_code=422, detail="Invalid filters in the question") from exc
 
 
 @router.post("/filters", response_model=ExtractedChatFilters)
@@ -72,6 +72,7 @@ def chat(request: ChatRequest) -> ChatResponse:
         try:
             search = search_movies(MovieSearchRequest(
                 query=request.message, mode="hybrid",
+                rerank=True, candidate_k=20,
                 limit=MAX_RETRIEVAL_CANDIDATES, filters=extracted.retrieval,
             ))
         except Exception as exc:
@@ -97,7 +98,7 @@ def chat(request: ChatRequest) -> ChatResponse:
         tool_name = None
         if request.movie_context is None and not search.hits and not context:
             result = RAGAnswer(
-                status="no_match", answer="Không tìm thấy phim phù hợp trong dữ liệu hiện có.", movies=[],
+                status="no_match", answer="No matching movies were found in the available data.", movies=[],
             )
         elif is_comparison(request.message):
             result = answer_with_comparison_tool(request.message, context, request.history)
@@ -124,7 +125,7 @@ def chat(request: ChatRequest) -> ChatResponse:
     except (RAGFormatError, RAGGroundingError) as exc:
         raise HTTPException(status_code=502, detail=str(exc)) from exc
     except RequestException as exc:
-        raise HTTPException(status_code=503, detail="Ollama không khả dụng") from exc
+        raise HTTPException(status_code=503, detail="Ollama is unavailable") from exc
 
     details = "\n".join(f"- {movie.title}: {movie.reason}" for movie in result.movies)
     reply = result.answer + ("\n" + details if details else "")

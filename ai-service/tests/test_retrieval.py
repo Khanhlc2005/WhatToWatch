@@ -226,6 +226,34 @@ def test_reranking_changes_order_and_preserves_ids_filters_and_scores(search, mo
     assert all(call['limit'] == 3 and call['query_filter'] is not None for call in calls)
 
 
+@pytest.mark.parametrize('mode', ['dense', 'sparse', 'hybrid'])
+def test_reranking_all_modes_keep_filters_and_valid_response_schema(search, monkeypatch, mode):
+    http, client = search
+    calls = []
+    original = client.query_points
+
+    def record(**kwargs):
+        calls.append(kwargs)
+        return original(**kwargs)
+
+    monkeypatch.setattr(client, 'query_points', record)
+    monkeypatch.setattr(retrieval, 'score_pairs', lambda query, docs: [float(i) for i in range(len(docs))])
+    response = http.post('/internal/qdrant/search', json={
+        'query': 'drama', 'mode': mode, 'rerank': True, 'candidate_k': 3,
+        'limit': 2, 'filters': {'genres': ['Drama']},
+    })
+    assert response.status_code == 200
+    hits = response.json()['hits']
+    assert response.json()['mode'] == mode
+    assert len(hits) == 2
+    assert {hit['point_id'] for hit in hits} == {'1', '2'}
+    assert [hit['rerank_score'] for hit in hits] == [1.0, 0.0]
+    assert all(hit['score'] == hit['rerank_score'] for hit in hits)
+    assert all(hit['retrieval_score'] is not None for hit in hits)
+    assert {call['using'] for call in calls} == ({'dense', 'sparse'} if mode == 'hybrid' else {mode})
+    assert all(call['limit'] == 3 and call['query_filter'] is not None for call in calls)
+
+
 def test_reranking_deduplicates_before_scoring(search, monkeypatch):
     search[1].set_payload('movies', {'movie_id': 2}, points=[3])
     documents = []
