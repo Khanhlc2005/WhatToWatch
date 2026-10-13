@@ -14,6 +14,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+import jakarta.validation.Valid;
 
 import java.text.ParseException;
 
@@ -24,7 +25,7 @@ import java.text.ParseException;
 public class AuthenticationController {
     AuthenticationService authenticationService;
     @PostMapping("/log-in")
-    ApiResponse<AuthenticationResponse> authenticate(@RequestBody AuthenticationRequest request){
+    ApiResponse<AuthenticationResponse> authenticate(@RequestBody  @Valid  AuthenticationRequest request){
         var resultAuthentication = authenticationService.authenticate(request);
         return ApiResponse.<AuthenticationResponse>builder()
                 .result(resultAuthentication)

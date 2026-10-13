@@ -13,6 +13,7 @@ import com.project.movie_recommendation.exception.ErrorCode;
 import com.project.movie_recommendation.mapper.MovieMapper;
 import com.project.movie_recommendation.repository.MovieRepository;
 import com.project.movie_recommendation.repository.specification.MovieSpecification;
+import org.springframework.cache.annotation.Cacheable;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
@@ -65,12 +66,14 @@ public class MovieService {
                 .build();
     }
 
+    @Cacheable("topRatedMovies")
     public List<MovieSummaryResponse> getTopRatedMovies() {
         return movieRepository.findTop50ByImdbRating().stream()
                 .map(movieMapper::toMovieSummaryResponse)
                 .collect(Collectors.toList());
     }
 
+    @Cacheable("newestMovies")
     public List<MovieSummaryResponse> getNewestMovies() {
         return movieRepository.findTop50ByOrderByReleaseDateDesc().stream()
                 .map(movieMapper::toMovieSummaryResponse)
@@ -97,11 +100,14 @@ public class MovieService {
     public PageResponse<MovieSummaryResponse> searchMovies(String query, int page, int size) {
         String cleanQuery = query.trim();
         int fetchLimit = 50;
+        int queryPage = Math.max(page - 1, 0);
+
         AiMovieSearchResponse vectorResponse = aiServiceClient.searchSimilarMovies(cleanQuery, fetchLimit);
+
         if (vectorResponse == null || vectorResponse.getHits() == null) {
-            Page<Movie> fallbackPage = movieRepository.searchByTitle(cleanQuery, PageRequest.of(page, size));
+            Page<Movie> fallbackPage = movieRepository.searchByTitle(cleanQuery, PageRequest.of(queryPage, size));
             return PageResponse.<MovieSummaryResponse>builder()
-                    .currentPage(page + 1)
+                    .currentPage(page)
                     .pageSize(size)
                     .totalPages(fallbackPage.getTotalPages())
                     .totalElements(fallbackPage.getTotalElements())
@@ -114,21 +120,25 @@ public class MovieService {
                 .filter(Objects::nonNull)
                 .distinct()
                 .toList();
+
         Map<Long, Movie> movieMap = movieRepository.findAllById(rankedIds).stream()
                 .collect(Collectors.toMap(Movie::getId, movie -> movie));
+
         List<MovieSummaryResponse> hydrated = rankedIds.stream()
                 .map(movieMap::get)
                 .filter(Objects::nonNull)
                 .map(movieMapper::toMovieSummaryResponse)
                 .toList();
+
         int totalElements = hydrated.size();
         int totalPages = (int) Math.ceil((double) totalElements / size);
-        long fromIndex = (long) page * size;
+        long fromIndex = (long) queryPage * size;
+
         List<MovieSummaryResponse> pagedData = fromIndex >= totalElements ? List.of()
                 : hydrated.subList((int) fromIndex, (int) Math.min(fromIndex + size, totalElements));
 
         return PageResponse.<MovieSummaryResponse>builder()
-                .currentPage(page + 1)
+                .currentPage(page)
                 .pageSize(size)
                 .totalPages(totalPages)
                 .totalElements(totalElements)

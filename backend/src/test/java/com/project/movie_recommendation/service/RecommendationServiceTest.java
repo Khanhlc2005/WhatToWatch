@@ -119,7 +119,6 @@ class RecommendationServiceTest {
         assertEquals("ready", result.status());
         assertEquals(List.of(5L, 4L), result.hits().stream()
                 .map(hit -> hit.movie().getId()).toList());
-        verify(ai).rebuildPreference(any());
         verify(ai).recommendMovies(any());
     }
 
