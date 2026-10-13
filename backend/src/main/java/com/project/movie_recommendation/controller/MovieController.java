@@ -77,7 +77,7 @@ public class MovieController {
     @GetMapping("/search")
     public ApiResponse<PageResponse<MovieSummaryResponse>> searchMovies(
             @RequestParam String query,
-            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "1") int page,
             @RequestParam(defaultValue = "20") int size) {
         String term = query.trim();
         if (term.isEmpty() || term.length() > 100 || page < 0 || size < 1 || size > 40) {

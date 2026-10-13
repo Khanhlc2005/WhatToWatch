@@ -16,5 +16,5 @@ public class AiChatHistoryMessage {
     private String role;
     private String content;
     @JsonProperty("movie_ids")
-    private List<Integer> movieIds;
+    private List<Long> movieIds;
 }

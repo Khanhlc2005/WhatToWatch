@@ -12,7 +12,9 @@ import com.project.movie_recommendation.mapper.MovieMapper;
 import com.project.movie_recommendation.repository.MovieRepository;
 import com.project.movie_recommendation.repository.RatingRepository;
 import com.project.movie_recommendation.repository.UserRepository;
+import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
+import lombok.experimental.FieldDefaults;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -27,18 +29,20 @@ import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
+@FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
 public class RecommendationService {
-    private final UserRepository userRepository;
-    private final RatingRepository ratingRepository;
-    private final MovieRepository movieRepository;
-    private final MovieMapper movieMapper;
-    private final AiServiceClient aiServiceClient;
+    UserRepository userRepository;
+    RatingRepository ratingRepository;
+    MovieRepository movieRepository;
+    MovieMapper movieMapper;
+    AiServiceClient aiServiceClient;
 
     @Transactional(readOnly = true)
     public RecommendationMovieResponse recommend(int limit) {
         String email = SecurityContextHolder.getContext().getAuthentication().getName();
         User user = userRepository.findByEmail(email)
                 .orElseThrow(() -> new AppException(ErrorCode.USER_NOT_EXISTED));
+
         List<Rating> ratings = ratingRepository.findByUser(user);
         if (ratings.size() < 3) {
             return new RecommendationMovieResponse("cold_start", List.of());
@@ -47,36 +51,28 @@ public class RecommendationService {
             return new RecommendationMovieResponse("unavailable", List.of());
         }
 
-        List<AiRecommendationContracts.RatingSignal> signals = ratings.stream()
-                .map(rating -> new AiRecommendationContracts.RatingSignal(
-                        rating.getMovie().getId(), rating.getRating()))
-                .toList();
-        AiRecommendationContracts.PreferenceResponse preference = aiServiceClient.rebuildPreference(
-                new AiRecommendationContracts.PreferenceSnapshot(user.getId(), signals));
-        if (preference == null) {
-            return new RecommendationMovieResponse("unavailable", List.of());
-        }
-        if (!"ready".equals(preference.status())) {
-            return new RecommendationMovieResponse(preference.status(), List.of());
-        }
-
-        List<Long> excluded = signals.stream()
-                .map(AiRecommendationContracts.RatingSignal::movieId)
+        List<Long> excluded = ratings.stream()
+                .map(r -> r.getMovie().getId())
                 .distinct().toList();
+
+
         AiRecommendationContracts.RecommendationResponse response = aiServiceClient.recommendMovies(
                 new AiRecommendationContracts.RecommendationRequest(user.getId(), limit, "final", excluded));
+
         if (response == null || response.hits() == null) {
             return new RecommendationMovieResponse("unavailable", List.of());
         }
 
-        Set<Long> excludedSet = Set.copyOf(excluded);
+        Set<Long> excludedSet = new HashSet<>(excluded);
         List<Long> rankedIds = response.hits().stream()
                 .map(AiRecommendationContracts.Hit::movieId)
                 .filter(Objects::nonNull)
                 .filter(id -> !excludedSet.contains(id))
                 .distinct().toList();
+
         Map<Long, Movie> movies = movieRepository.findAllById(rankedIds).stream()
                 .collect(Collectors.toMap(Movie::getId, Function.identity()));
+
         Set<Long> seen = new HashSet<>();
         List<RecommendationMovieResponse.Hit> hits = response.hits().stream()
                 .filter(hit -> hit.movieId() != null && !excludedSet.contains(hit.movieId()))
@@ -86,6 +82,7 @@ public class RecommendationService {
                         movieMapper.toMovieSummaryResponse(movies.get(hit.movieId())),
                         hit.score(), hit.scoreComponents(), hit.reasons()))
                 .toList();
+
         return new RecommendationMovieResponse(response.status(), hits);
     }
 }

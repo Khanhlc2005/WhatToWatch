@@ -152,14 +152,16 @@ public class ConversationService {
         }
     }
 
-    private List<Integer> movieIds(List<AiChatResponse.AiMovieItem> movies) {
-        List<Integer> ids = new ArrayList<>();
+    private List<Long> movieIds(List<AiChatResponse.AiMovieItem> movies) {
+        if (movies == null || movies.isEmpty()) return List.of();
+
+        List<Long> ids = new ArrayList<>();
         for (AiChatResponse.AiMovieItem movie : movies) {
             try {
-                int id = Integer.parseInt(movie.getMovieId());
+                long id = Long.parseLong(movie.getMovieId());
                 if (id > 0) ids.add(id);
-            } catch (NumberFormatException | NullPointerException ignored) {
-                // Older or external movie IDs cannot be hydrated from the catalog.
+            } catch (NumberFormatException | NullPointerException e) {
+                log.warn("Không thể parse ID phim từ AI trả về: {}", movie.getMovieId());
             }
         }
         return ids;

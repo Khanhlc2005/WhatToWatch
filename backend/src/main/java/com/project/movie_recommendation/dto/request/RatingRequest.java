@@ -1,8 +1,6 @@
 package com.project.movie_recommendation.dto.request;
 
-import jakarta.validation.constraints.DecimalMax;
-import jakarta.validation.constraints.DecimalMin;
-import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.*;
 import lombok.*;
 import lombok.experimental.FieldDefaults;
 
@@ -16,7 +14,7 @@ public class RatingRequest {
     Long movieId;
 
     @NotNull(message = "Rating score is required")
-    @DecimalMin(value = "1.0", message = "Rating must be at least 1.0")
-    @DecimalMax(value = "5.0", message = "Rating must not exceed 5.0")
+    @Min(value = 1, message = "RATING_INVALID")
+    @Max(value = 5, message = "RATING_INVALID")
     Double rating;
 }
