@@ -1,0 +1,55 @@
+F                                                                        [100%]
+=================================== FAILURES ===================================
+_______ test_overlapping_old_update_cannot_restore_profile_after_delete ________
+
+api = (<starlette.testclient.TestClient object at 0x71ca55279550>, <qdrant_client.qdrant_client.QdrantClient object at 0x71ca55278d70>)
+monkeypatch = <_pytest.monkeypatch.MonkeyPatch object at 0x71ca552c4050>
+
+    def test_overlapping_old_update_cannot_restore_profile_after_delete(api, monkeypatch):
+        """An old PUT may keep running even after the Backend read timeout."""
+        from concurrent.futures import ThreadPoolExecutor
+        from threading import Event
+    
+        from app.schemas.preference import PreferenceSnapshot
+    
+        client = api[1]
+        original_upsert = client.upsert
+        first_write_started = Event()
+        release_first_write = Event()
+        delete_attempted = Event()
+        delete_completed = Event()
+    
+        def delayed_upsert(*args, **kwargs):
+            first_write_started.set()
+            assert release_first_write.wait(5)
+            return original_upsert(*args, **kwargs)
+    
+        def delete_snapshot():
+            delete_attempted.set()
+            result = preference.rebuild_preference(PreferenceSnapshot(user_id=7, ratings=[]))
+            delete_completed.set()
+            return result
+    
+        monkeypatch.setattr(client, 'upsert', delayed_upsert)
+        with ThreadPoolExecutor(max_workers=2) as pool:
+            old = pool.submit(preference.rebuild_preference, PreferenceSnapshot.model_validate(body()))
+            try:
+                assert first_write_started.wait(5)
+                new = pool.submit(delete_snapshot)
+                assert delete_attempted.wait(5)
+>               assert not delete_completed.wait(.1), 'Delete must wait for the older write'
+E               AssertionError: Delete must wait for the older write
+E               assert not True
+E                +  where True = wait(0.1)
+E                +    where wait = <threading.Event at 0x71ca55289490: set>.wait
+
+ai-service/tests/test_preference.py:193: AssertionError
+=============================== warnings summary ===============================
+../../miniconda3/envs/WhatToWatch/lib/python3.14/site-packages/starlette/testclient.py:53
+  /home/khanhbui/miniconda3/envs/WhatToWatch/lib/python3.14/site-packages/starlette/testclient.py:53: DeprecationWarning: The anyio.abc.BlockingPortal alias is deprecated, use anyio.from_thread.BlockingPortal instead.
+    _PortalFactoryType = Callable[[], AbstractContextManager[anyio.abc.BlockingPortal]]
+
+-- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html
+=========================== short test summary info ============================
+FAILED ai-service/tests/test_preference.py::test_overlapping_old_update_cannot_restore_profile_after_delete
+1 failed, 1 warning in 0.20s

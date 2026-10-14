@@ -23,6 +23,12 @@ public class AiServiceClient {
     private final RestClient searchClient;
     private final RestClient chatClient;
 
+    AiServiceClient(RestClient searchClient, RestClient chatClient) {
+        this.searchClient = searchClient;
+        this.chatClient = chatClient;
+    }
+
+    @org.springframework.beans.factory.annotation.Autowired
     public AiServiceClient(
             @Value("${ai-service.url:http://localhost:8010}") String aiServiceUrl,
             @Value("${ai-service.search-timeout-seconds:35}") int searchTimeoutSeconds,

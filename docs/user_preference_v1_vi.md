@@ -4,9 +4,12 @@
 
 RatingService có tạo/sửa/xóa rating thang 1–5; unique (user_id, movie_id).
 GET /ratings/my-ratings trả dữ liệu phân trang của user đăng nhập, gồm movieId,
-rating, source, createdAt. Rating không có updated_at. notifyAiPreferenceUpdate
-hiện chỉ log, chưa gửi HTTP. Favorite/watchlist/history tồn tại nhưng không được
-đưa vào profile v1. Chưa xác minh dữ liệu tài khoản/rating trong MySQL live.
+rating, source, createdAt. Rating không có updated_at. Trên branch tuần 6,
+RatingService xếp user vào PreferenceSyncService sau commit; worker đọc snapshot
+đầy đủ trong transaction read-only REQUIRES_NEW rồi gửi HTTP, kể cả snapshot rỗng.
+Favorite/watchlist/history không được đưa vào profile v1. Kiểm tra live 14/10/2026:
+MySQL có 1 user và 7 APP ratings; vector hiện có khớp 7 ratings này.
+GET recommendation bằng session user qua Backend/frontend đã trả ready/10 hits.
 
 AI dùng dense embedding đã index trong movies qua payload movie_id, không gọi
 embedding model, không suy ID từ point ID/IMDb/TMDB. Mapping cần được pipeline
@@ -78,15 +81,28 @@ Phải tạo collections trước; endpoint không tự thay schema hoặc tạo
 
 ## Handoff backend
 
-Backend chưa bị sửa. Để nối tự động, teammate cần:
+Trạng thái code branch `feature/week6-backlog-fixes` ngày 14/10/2026:
 
-1. Sau transaction rating commit, đọc snapshot đầy đủ từ MySQL (kể cả sau delete).
-2. Gửi user_id từ identity đã xác thực, ratings theo snake_case như trên.
-3. Serialize update theo user, gửi snapshot mới nhất; retry không phát lại snapshot
-   cũ sau snapshot mới. V1 chưa có source revision/CAS, không bảo vệ event đến
-   sai thứ tự hay concurrent writers từ nhiều backend instances.
-4. AI failure không rollback rating; retry/reconcile từ MySQL. Bỏ sót notification
-   cần rebuild lại, endpoint chưa có queue/outbox hay lịch reconcile tự động.
+1. Hook chạy sau transaction commit; rollback/commit failure không gửi snapshot.
+2. Worker đơn trong backend đọc snapshot đầy đủ từ transaction mới, mapping movie
+   IDs khi persistence context còn mở; không truyền JPA entities sang HTTP worker.
+3. Worker coalesce theo user, gửi tuần tự và retry sau mỗi vòng với delay 5 giây
+   kể từ vòng trước hoàn tất. Response null/lỗi/khác ready hoặc cold_start giữ user
+   trong pending; mỗi retry đọc snapshot mới nhất. Commit xảy ra trong khi gửi
+   vẫn giữ một lần cập nhật tiếp theo. HTTP không nằm trong transaction đọc DB.
+4. AI dùng 64 locks trong một process để tránh hai rebuild cùng user ghi chồng
+   nhau, gồm update cũ vẫn chạy sau read timeout của backend. User trùng bucket
+   có thể phải chờ. Lock bảo vệ tính loại trừ, không cung cấp revision/CAS.
+5. Queue nằm trong RAM, mất khi restart; chưa có outbox/reconcile và không điều
+   phối nhiều backend/AI instances. Request đến sai thứ tự qua mạng, timeout ở
+   Qdrant mà server vẫn hoàn tất ghi và lost notification chưa được bảo đảm.
+   PROFILE_VERSION là version thuật toán; không dùng nó như sequence sự kiện.
+6. Recommendation GET chỉ đọc profile; không rebuild mỗi lần GET. Vì sync là
+   eventual consistency, request ngay sau rating có thể nhận profile cũ/cold_start.
+   API rating không chờ AI và AI failure không rollback rating đã commit.
+
+Bằng chứng/giới hạn live và tests: [báo cáo tuần 6](week06_backlog_fixes_vi.md).
+Backend container đang chạy image cũ; các fixes mới chưa được deploy.
 
 Endpoint theo convention /internal hiện tại; chưa có service authentication.
 Chỉ cho trusted backend truy cập qua mạng nội bộ; không cho frontend/client tự

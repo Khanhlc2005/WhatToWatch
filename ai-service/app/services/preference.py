@@ -2,6 +2,7 @@
 
 import math
 from datetime import UTC, datetime
+from threading import Lock
 
 from qdrant_client import models
 
@@ -12,6 +13,9 @@ from app.schemas.preference import PreferenceResponse, PreferenceSnapshot, Skipp
 PROFILE_VERSION = "ratings-v1"
 DIMENSION = 1024
 MIN_RATINGS = 3
+# Bounded locks serialize overlapping writes in this AI process, including a
+# request still running after its caller timed out. Colliding users may wait.
+_PROFILE_LOCKS = [Lock() for _ in range(64)]
 
 
 def normalize(vector):
@@ -31,6 +35,11 @@ def rating_weight(rating: float) -> float:
 
 
 def rebuild_preference(snapshot: PreferenceSnapshot) -> PreferenceResponse:
+    with _PROFILE_LOCKS[snapshot.user_id % len(_PROFILE_LOCKS)]:
+        return _rebuild_preference(snapshot)
+
+
+def _rebuild_preference(snapshot: PreferenceSnapshot) -> PreferenceResponse:
     client = get_qdrant_client()
     total = [0.0] * DIMENSION
     usable = 0

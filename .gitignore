@@ -49,6 +49,9 @@ __pycache__/
 # --- General ---
 .env
 .env.local
+/wtw-session.token
+/session
+/session.*
 *.log
 docker-compose.override.yml
 docs/evidence/**/*.zip

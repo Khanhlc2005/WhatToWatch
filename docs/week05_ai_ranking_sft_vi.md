@@ -1,5 +1,13 @@
 # Tuần 5 — reranking, final ranking và SFT v1
 
+> Cập nhật 14/10/2026: tài liệu này ghi kết quả lịch sử tuần 5. Hiện MySQL có
+> 1 user/7 ratings, Qdrant có profile user 1 và smoke recommendation read-only
+> trả ready/10 hits. RecommendationService trên main không gửi snapshot mỗi GET;
+> RatingService main gửi async trước commit, đã sửa trên branch tuần 6.
+> Xem [báo cáo tuần 6](week06_backlog_fixes_vi.md) cho code, evidence và các phần còn PARTIAL/BLOCKED.
+> Các số PASS và trạng thái dịch vụ bên dưới không phải kết quả chạy lại tuần 6.
+
+
 ## Search: Hybrid + BGE reranker v1
 
 `POST /internal/qdrant/search` giữ mặc định `mode=dense`, `rerank=false` và

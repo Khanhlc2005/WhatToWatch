@@ -6,7 +6,9 @@ POST `/internal/recommendations` → đọc user_profiles theo point ID = user_i
 validate payload user_id, profile_version=ratings-v1 và dense 1024 hữu hạn/nonzero →
 query movies named dense bằng cosine → loại ID lỗi, dedup → trả movie_id/score.
 Reuse normalize của preference và MovieFilters/build_payload_filter của retrieval.
-Không inference embedding, không reranker/final ranking Tuần 5, không tạo interactions.
+Không inference embedding hoặc tạo interactions. `ranking=cosine` giữ hành vi
+MVP; `ranking=final` đã có trong code tuần 5, trả score_components/reasons và
+sắp final score giảm dần. Xem [ranking v1](week05_ai_ranking_sft_vi.md).
 
 Request:
 
@@ -40,15 +42,20 @@ Không fallback sang point ID/IMDb/TMDB. Không tự áp chính sách adult/stat
 Query dùng filters và exclusions ngay trong Qdrant, lấy max(50, 5*limit) candidates
 (tối đa 500), không nới filter. Nếu pool thiếu unique valid IDs thì trả ít hơn limit;
 không scan toàn catalog để lấp đầy. Tie order chỉ bảo đảm trong pool Qdrant trả về.
-Đây là candidate retrieval theo cosine, không phải final ranking.
+Mô tả cosine trên áp dụng cho `ranking=cosine`; final ranking dùng cùng candidate
+pool rồi chấm lại điểm theo profile similarity và IMDb rating.
 
 ## Backend handoff
 
-Repo chưa có public recommendation gateway; task này thêm endpoint phía FastAPI.
-Backend cần xác thực user, truyền exclusions, gọi AI, batch resolve movie_id trong
-MySQL và giữ thứ tự score. Bỏ IDs không tồn tại/không hợp lệ nghiệp vụ khi hydrate;
-AI chỉ xác nhận hình dạng ID, không xác nhận MySQL live.
-Cold-start chọn feed fallback ở backend; profile/service lỗi 503 xử lý riêng.
+Backend đã có `GET /movies/recommendations` cho user đăng nhập. Service đọc
+ratings thật, trả cold_start nếu ít hơn 3 ratings, unavailable nếu hơn 10.000;
+gửi ranking=final và loại tất cả phim đã rate. Backend hydrate từ MySQL, loại
+ID thiếu/trùng/rated và giữ thứ tự, score_components/reasons của AI.
+AI client lỗi/timeout trả null; Backend trả unavailable/hits=[]. Frontend hiển thị
+thông báo unavailable; cold_start/chưa đăng nhập dùng feed IMDb chung.
+Không tự loại watch_history vì chưa chốt chính sách event.
+Recommendation GET không gửi snapshot; sync thuộc RatingService sau commit.
+
 Endpoint theo convention internal hiện có, chưa có service auth; không expose cho
 frontend trực tiếp. Internal authentication cần phối hợp backend/AI.
 
@@ -84,4 +91,6 @@ PYTHONPATH=ai-service ai-service/.venv-gpu/bin/python -m pytest -q ai-service/te
 Tests dùng FastAPI TestClient và Qdrant in-memory: cosine/order, signed scores,
 duplicate, invalid IDs, ties, filters/exclusions, validation, cold-start, profile
 lỗi, storage errors và snapshot → recommendation → update → delete.
-Chưa xác minh backend/MySQL/Qdrant live end-to-end.
+Ngày 14/10/2026: smoke live read-only với 7 ratings của user 1 xác nhận vector,
+exclusions, final ranking/reasons và 10 IDs có trong MySQL. Chưa xác minh thao tác
+rating qua phiên đăng nhập thật hoặc deployment fixes mới. Xem [báo cáo tuần 6](week06_backlog_fixes_vi.md).

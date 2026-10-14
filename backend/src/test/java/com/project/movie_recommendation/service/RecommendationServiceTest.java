@@ -78,7 +78,7 @@ class RecommendationServiceTest {
     }
 
     @Test
-    void sendsRealRatingSnapshotAndRequestsFinalRankingWithExclusions() {
+    void preservesFinalRankingExclusionsAndExplanationAfterHydration() {
         UserRepository users = mock(UserRepository.class);
         RatingRepository ratings = mock(RatingRepository.class);
         MovieRepository movies = mock(MovieRepository.class);
@@ -89,19 +89,15 @@ class RecommendationServiceTest {
         when(users.findByEmail("user@example.com")).thenReturn(Optional.of(user));
         when(ratings.findByUser(user)).thenReturn(List.of(
                 rating(user, 1L, 5.0), rating(user, 2L, 4.0), rating(user, 3L, 1.0)));
-        when(ai.rebuildPreference(any())).thenAnswer(invocation -> {
-            AiRecommendationContracts.PreferenceSnapshot snapshot = invocation.getArgument(0);
-            assertEquals(7L, snapshot.userId());
-            assertEquals(List.of(1L, 2L, 3L), snapshot.ratings().stream()
-                    .map(AiRecommendationContracts.RatingSignal::movieId).toList());
-            return new AiRecommendationContracts.PreferenceResponse("ready");
-        });
         when(ai.recommendMovies(any())).thenAnswer(invocation -> {
             AiRecommendationContracts.RecommendationRequest request = invocation.getArgument(0);
             assertEquals("final", request.ranking());
             assertEquals(List.of(1L, 2L, 3L), request.excludeMovieIds());
             return new AiRecommendationContracts.RecommendationResponse("ready", List.of(
-                    new AiRecommendationContracts.Hit(5L, 0.9, null, List.of()),
+                    new AiRecommendationContracts.Hit(5L, 0.9,
+                            new AiRecommendationContracts.ScoreComponents(0.95, 0.7, java.util.Map.of(
+                                    "profile_similarity", 0.8, "imdb_rating", 0.2)),
+                            List.of(new AiRecommendationContracts.Reason("profile_similarity", 0.95))),
                     new AiRecommendationContracts.Hit(4L, 0.8, null, List.of()),
                     new AiRecommendationContracts.Hit(5L, 0.7, null, List.of()),
                     new AiRecommendationContracts.Hit(1L, 0.6, null, List.of())));
@@ -119,7 +115,28 @@ class RecommendationServiceTest {
         assertEquals("ready", result.status());
         assertEquals(List.of(5L, 4L), result.hits().stream()
                 .map(hit -> hit.movie().getId()).toList());
+        assertEquals(0.95, result.hits().get(0).scoreComponents().profileSimilarity());
+        assertEquals("profile_similarity", result.hits().get(0).reasons().get(0).code());
         verify(ai).recommendMovies(any());
+        verify(ai, never()).rebuildPreference(any());
+    }
+
+    @Test
+    void unavailableAiReturnsEmptyUnavailableInsteadOfStaleHits() {
+        UserRepository users = mock(UserRepository.class);
+        RatingRepository ratings = mock(RatingRepository.class);
+        AiServiceClient ai = mock(AiServiceClient.class);
+        User user = User.builder().id(7L).email("user@example.com").build();
+        SecurityContextHolder.getContext().setAuthentication(
+                new UsernamePasswordAuthenticationToken("user@example.com", null));
+        when(users.findByEmail("user@example.com")).thenReturn(Optional.of(user));
+        when(ratings.findByUser(user)).thenReturn(List.of(
+                rating(user, 1L, 5), rating(user, 2L, 4), rating(user, 3L, 1)));
+        var service = new RecommendationService(users, ratings, mock(MovieRepository.class),
+                mock(MovieMapper.class), ai);
+        var result = service.recommend(10);
+        assertEquals("unavailable", result.status());
+        assertTrue(result.hits().isEmpty());
     }
 
     private Rating rating(User user, long movieId, double score) {
