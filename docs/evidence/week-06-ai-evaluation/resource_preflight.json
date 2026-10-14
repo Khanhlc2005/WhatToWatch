@@ -1,0 +1,16 @@
+{
+  "ai_health_8010": "Connection refused; no AI service container running at check time",
+  "available_ram_gib": 3.6,
+  "swap_used_gib": 2.0,
+  "model_cache_gib": 4.9,
+  "ollama_models": [
+    "qwen2.5:3b",
+    "gemma4:e2b-it-qat"
+  ],
+  "fine_tuned_model_available": false,
+  "live_retrieval_run": false,
+  "live_reranker_run": false,
+  "live_chatbot_comparison_run": false,
+  "models_downloaded": false,
+  "services_changed": false
+}

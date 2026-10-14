@@ -1,0 +1,33 @@
+{
+  "passed": true,
+  "issues": [],
+  "warnings": [
+    "Synthetic templates only; no human-reviewed conversations or relevance labels.",
+    "Only answered/director/genre tasks; no no_match, insufficient_context, multi-turn or recommendation supervision."
+  ],
+  "examples": {
+    "train": 1613,
+    "validation": 185,
+    "test": 198
+  },
+  "movies": {
+    "train": 808,
+    "validation": 93,
+    "test": 99
+  },
+  "source_sha256": "f6c18688f4ba09b514bdf53cf329961441d3b759fcae769a0170b23525956400",
+  "artifact_sha256": {
+    "manifest.json": "28807d6ebe0046a5d43be848fd3b56df72648ef4c0c095fcc2a7ec4ad920c336",
+    "test.jsonl": "70f0d2b93f713d80abf3386c6e431fd5abcb269a14bf98b70a8dee8c843d4a9e",
+    "train.jsonl": "cbdd8d45b0deab5f1f2aa0b5f572dc95dd82eb85fcf34739ab8e5dc434b0c400",
+    "validation.jsonl": "28c4e907fc54dcd7b38967bfb8f7141906e3ea95d5f5aa471c7ec009026f3c35"
+  },
+  "retrieval_anchor_overlap": {
+    "train": 0,
+    "validation": 0,
+    "test": 0
+  },
+  "training_ready": true,
+  "training_blockers": [],
+  "scope": "Format and catalog facts only; semantic/human quality requires owner review."
+}

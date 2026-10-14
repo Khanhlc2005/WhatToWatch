@@ -1,0 +1,13 @@
+{
+  "status": "INCOMPLETE",
+  "scope": "All supplied points and processed movies; MySQL export may contain additional movies",
+  "counts": {
+    "processed": 46923,
+    "mysql": 46923,
+    "qdrant": null
+  },
+  "not_run": [
+    "Qdrant: no snapshot or URL supplied"
+  ],
+  "issues": []
+}

@@ -1,0 +1,448 @@
+{
+  "version": "chatbot_v1",
+  "scope": "Fixed catalog context; no retrieval or personalized recommendation gain claims.",
+  "source_queries_sha256": "e9ca421d90e0beffeba95cea3a86dbaab8d11797cfa6eb4ce8a6f140a9b32338",
+  "source_catalog_sha256": "943c2c884b1f6089b51907a1aa27856cf5a79088297128ebe6405afe93b14a51",
+  "sft_train_sha256": "cbdd8d45b0deab5f1f2aa0b5f572dc95dd82eb85fcf34739ab8e5dc434b0c400",
+  "cases": [
+    {
+      "id": "Q01",
+      "question": "A crew travels through a wormhole to explore distant worlds",
+      "context": [
+        {
+          "movie_id": "21597",
+          "title": "Interstellar",
+          "genres": [
+            "Adventure",
+            "Drama",
+            "Science Fiction"
+          ],
+          "overview": "The adventures of a group of explorers who make use of a newly discovered wormhole to surpass the limitations on human space travel and conquer the vast distances involved in an interstellar voyage.",
+          "director": "Christopher Nolan",
+          "runtime_minutes": 169,
+          "cast": [],
+          "imdb_rating": 8.7
+        }
+      ],
+      "category": "fixed_context",
+      "provenance": "Verified catalog anchors; context inclusion is not a relevance label."
+    },
+    {
+      "id": "Q02",
+      "question": "phim về nhóm thám hiểm đi qua hố sâu để khám phá vũ trụ",
+      "context": [
+        {
+          "movie_id": "21597",
+          "title": "Interstellar",
+          "genres": [
+            "Adventure",
+            "Drama",
+            "Science Fiction"
+          ],
+          "overview": "The adventures of a group of explorers who make use of a newly discovered wormhole to surpass the limitations on human space travel and conquer the vast distances involved in an interstellar voyage.",
+          "director": "Christopher Nolan",
+          "runtime_minutes": 169,
+          "cast": [],
+          "imdb_rating": 8.7
+        }
+      ],
+      "category": "fixed_context",
+      "provenance": "Verified catalog anchors; context inclusion is not a relevance label."
+    },
+    {
+      "id": "Q03",
+      "question": "A thief enters other people's dreams to steal and plant ideas",
+      "context": [
+        {
+          "movie_id": "27034",
+          "title": "Inception",
+          "genres": [
+            "Action",
+            "Adventure",
+            "Science Fiction"
+          ],
+          "overview": "Cobb, a skilled thief who commits corporate espionage by infiltrating the subconscious of his targets is offered a chance to regain his old life as payment for a task considered to be impossible: \"inception\", the implantation of another person's idea into a target's subconscious.",
+          "director": "Christopher Nolan",
+          "runtime_minutes": 148,
+          "cast": [],
+          "imdb_rating": 8.8
+        }
+      ],
+      "category": "fixed_context",
+      "provenance": "Verified catalog anchors; context inclusion is not a relevance label."
+    },
+    {
+      "id": "Q04",
+      "question": "phim về cô bé lạc vào thế giới linh hồn và tìm cách cứu cha mẹ",
+      "context": [
+        {
+          "movie_id": "16053",
+          "title": "Spirited Away",
+          "genres": [
+            "Animation",
+            "Family",
+            "Fantasy"
+          ],
+          "overview": "A young girl, Chihiro, becomes trapped in a strange new world of spirits. When her parents undergo a mysterious transformation, she must call upon the courage she never knew she had to free her family.",
+          "director": "Hayao Miyazaki",
+          "runtime_minutes": 125,
+          "cast": [],
+          "imdb_rating": 8.6
+        }
+      ],
+      "category": "fixed_context",
+      "provenance": "Verified catalog anchors; context inclusion is not a relevance label."
+    },
+    {
+      "id": "Q05",
+      "question": "Toys come alive and two rivals learn to work together",
+      "context": [
+        {
+          "movie_id": "12956",
+          "title": "Toy Story",
+          "genres": [
+            "Adventure",
+            "Animation",
+            "Comedy",
+            "Family"
+          ],
+          "overview": "Led by Woody, Andy's toys live happily in his room until Andy's birthday brings Buzz Lightyear onto the scene. Afraid of losing his place in Andy's heart, Woody plots against Buzz. But when circumstances separate Buzz and Woody from their owner, the duo eventually learns to put aside their differences.",
+          "director": "John Lasseter",
+          "runtime_minutes": 81,
+          "cast": [],
+          "imdb_rating": 8.3
+        }
+      ],
+      "category": "fixed_context",
+      "provenance": "Verified catalog anchors; context inclusion is not a relevance label."
+    },
+    {
+      "id": "Q06",
+      "question": "A poor family becomes entangled with a wealthy household",
+      "context": [
+        {
+          "movie_id": "43791",
+          "title": "Parasite",
+          "genres": [
+            "Comedy",
+            "Drama",
+            "Thriller"
+          ],
+          "overview": "All unemployed, Ki-taek's family takes peculiar interest in the wealthy and glamorous Parks for their livelihood until they get entangled in an unexpected incident.",
+          "director": "Bong Joon Ho",
+          "runtime_minutes": 133,
+          "cast": [],
+          "imdb_rating": 8.5
+        }
+      ],
+      "category": "fixed_context",
+      "provenance": "Verified catalog anchors; context inclusion is not a relevance label."
+    },
+    {
+      "id": "Q07",
+      "question": "Interstellar",
+      "context": [
+        {
+          "movie_id": "21597",
+          "title": "Interstellar",
+          "genres": [
+            "Adventure",
+            "Drama",
+            "Science Fiction"
+          ],
+          "overview": "The adventures of a group of explorers who make use of a newly discovered wormhole to surpass the limitations on human space travel and conquer the vast distances involved in an interstellar voyage.",
+          "director": "Christopher Nolan",
+          "runtime_minutes": 169,
+          "cast": [],
+          "imdb_rating": 8.7
+        }
+      ],
+      "category": "fixed_context",
+      "provenance": "Verified catalog anchors; context inclusion is not a relevance label."
+    },
+    {
+      "id": "Q08",
+      "question": "The Matrix",
+      "context": [
+        {
+          "movie_id": "14317",
+          "title": "The Matrix",
+          "genres": [
+            "Action",
+            "Science Fiction"
+          ],
+          "overview": "Set in the 22nd century, The Matrix tells the story of a computer hacker who joins a group of underground insurgents fighting the vast and powerful computers who now rule the earth.",
+          "director": "Lana Wachowski, Lilly Wachowski",
+          "runtime_minutes": 136,
+          "cast": [],
+          "imdb_rating": 8.7
+        }
+      ],
+      "category": "fixed_context",
+      "provenance": "Verified catalog anchors; context inclusion is not a relevance label."
+    },
+    {
+      "id": "Q09",
+      "question": "Corleone Vito Michael",
+      "context": [
+        {
+          "movie_id": "6203",
+          "title": "The Godfather",
+          "genres": [
+            "Crime",
+            "Drama"
+          ],
+          "overview": "Spanning the years 1945 to 1955, a chronicle of the fictional Italian-American Corleone crime family. When organized crime family patriarch, Vito Corleone barely survives an attempt on his life, his youngest son, Michael steps in to take care of the would-be killers, launching a campaign of bloody revenge.",
+          "director": "Francis Ford Coppola",
+          "runtime_minutes": 175,
+          "cast": [],
+          "imdb_rating": 9.2
+        }
+      ],
+      "category": "fixed_context",
+      "provenance": "Verified catalog anchors; context inclusion is not a relevance label."
+    },
+    {
+      "id": "Q10",
+      "question": "Nostromo alien parasite",
+      "context": [
+        {
+          "movie_id": "7646",
+          "title": "Alien",
+          "genres": [
+            "Horror",
+            "Science Fiction"
+          ],
+          "overview": "During its return to the earth, commercial spaceship Nostromo intercepts a distress signal from a distant planet. When a three-member team of the crew discovers a chamber containing thousands of eggs on the planet, a creature inside one of the eggs attacks an explorer. The entire crew is unaware of the impending nightmare set to descend upon them when the alien parasite planted inside its unfortunate host is birthed.",
+          "director": "Ridley Scott",
+          "runtime_minutes": 117,
+          "cast": [],
+          "imdb_rating": 8.4
+        }
+      ],
+      "category": "fixed_context",
+      "provenance": "Verified catalog anchors; context inclusion is not a relevance label."
+    },
+    {
+      "id": "Q11",
+      "question": "Titanic",
+      "context": [
+        {
+          "movie_id": "13876",
+          "title": "Titanic",
+          "genres": [
+            "Drama",
+            "Romance"
+          ],
+          "overview": "101-year-old Rose DeWitt Bukater tells the story of her life aboard the Titanic, 84 years later. A young Rose boards the ship with her mother and fiancé. Meanwhile, Jack Dawson and Fabrizio De Rossi win third-class tickets aboard the ship. Rose tells the whole story from Titanic's departure through to its death—on its first and last voyage—on April 15, 1912.",
+          "director": "James Cameron",
+          "runtime_minutes": 194,
+          "cast": [],
+          "imdb_rating": 8.0
+        }
+      ],
+      "category": "fixed_context",
+      "provenance": "Verified catalog anchors; context inclusion is not a relevance label."
+    },
+    {
+      "id": "Q12",
+      "question": "Parasite",
+      "context": [
+        {
+          "movie_id": "43791",
+          "title": "Parasite",
+          "genres": [
+            "Comedy",
+            "Drama",
+            "Thriller"
+          ],
+          "overview": "All unemployed, Ki-taek's family takes peculiar interest in the wealthy and glamorous Parks for their livelihood until they get entangled in an unexpected incident.",
+          "director": "Bong Joon Ho",
+          "runtime_minutes": 133,
+          "cast": [],
+          "imdb_rating": 8.5
+        }
+      ],
+      "category": "fixed_context",
+      "provenance": "Verified catalog anchors; context inclusion is not a relevance label."
+    },
+    {
+      "id": "Q13",
+      "question": "space exploration",
+      "context": [
+        {
+          "movie_id": "21597",
+          "title": "Interstellar",
+          "genres": [
+            "Adventure",
+            "Drama",
+            "Science Fiction"
+          ],
+          "overview": "The adventures of a group of explorers who make use of a newly discovered wormhole to surpass the limitations on human space travel and conquer the vast distances involved in an interstellar voyage.",
+          "director": "Christopher Nolan",
+          "runtime_minutes": 169,
+          "cast": [],
+          "imdb_rating": 8.7
+        }
+      ],
+      "category": "fixed_context",
+      "provenance": "Verified catalog anchors; context inclusion is not a relevance label."
+    },
+    {
+      "id": "Q14",
+      "question": "spirits and magic",
+      "context": [
+        {
+          "movie_id": "16053",
+          "title": "Spirited Away",
+          "genres": [
+            "Animation",
+            "Family",
+            "Fantasy"
+          ],
+          "overview": "A young girl, Chihiro, becomes trapped in a strange new world of spirits. When her parents undergo a mysterious transformation, she must call upon the courage she never knew she had to free her family.",
+          "director": "Hayao Miyazaki",
+          "runtime_minutes": 125,
+          "cast": [],
+          "imdb_rating": 8.6
+        }
+      ],
+      "category": "fixed_context",
+      "provenance": "Verified catalog anchors; context inclusion is not a relevance label."
+    },
+    {
+      "id": "Q15",
+      "question": "crime family",
+      "context": [
+        {
+          "movie_id": "6203",
+          "title": "The Godfather",
+          "genres": [
+            "Crime",
+            "Drama"
+          ],
+          "overview": "Spanning the years 1945 to 1955, a chronicle of the fictional Italian-American Corleone crime family. When organized crime family patriarch, Vito Corleone barely survives an attempt on his life, his youngest son, Michael steps in to take care of the would-be killers, launching a campaign of bloody revenge.",
+          "director": "Francis Ford Coppola",
+          "runtime_minutes": 175,
+          "cast": [],
+          "imdb_rating": 9.2
+        }
+      ],
+      "category": "fixed_context",
+      "provenance": "Verified catalog anchors; context inclusion is not a relevance label."
+    },
+    {
+      "id": "Q16",
+      "question": "toys friendship",
+      "context": [
+        {
+          "movie_id": "12956",
+          "title": "Toy Story",
+          "genres": [
+            "Adventure",
+            "Animation",
+            "Comedy",
+            "Family"
+          ],
+          "overview": "Led by Woody, Andy's toys live happily in his room until Andy's birthday brings Buzz Lightyear onto the scene. Afraid of losing his place in Andy's heart, Woody plots against Buzz. But when circumstances separate Buzz and Woody from their owner, the duo eventually learns to put aside their differences.",
+          "director": "John Lasseter",
+          "runtime_minutes": 81,
+          "cast": [],
+          "imdb_rating": 8.3
+        }
+      ],
+      "category": "fixed_context",
+      "provenance": "Verified catalog anchors; context inclusion is not a relevance label."
+    },
+    {
+      "id": "Q17",
+      "question": "Parasite",
+      "context": [
+        {
+          "movie_id": "43791",
+          "title": "Parasite",
+          "genres": [
+            "Comedy",
+            "Drama",
+            "Thriller"
+          ],
+          "overview": "All unemployed, Ki-taek's family takes peculiar interest in the wealthy and glamorous Parks for their livelihood until they get entangled in an unexpected incident.",
+          "director": "Bong Joon Ho",
+          "runtime_minutes": 133,
+          "cast": [],
+          "imdb_rating": 8.5
+        }
+      ],
+      "category": "fixed_context",
+      "provenance": "Verified catalog anchors; context inclusion is not a relevance label."
+    },
+    {
+      "id": "Q18",
+      "question": "space",
+      "context": [],
+      "category": "fixed_context",
+      "provenance": "Verified catalog anchors; context inclusion is not a relevance label."
+    },
+    {
+      "id": "C19",
+      "question": "Who directed this movie?",
+      "context": [
+        {
+          "movie_id": "21597",
+          "title": "Interstellar",
+          "genres": [
+            "Adventure",
+            "Drama",
+            "Science Fiction"
+          ],
+          "overview": "The adventures of a group of explorers who make use of a newly discovered wormhole to surpass the limitations on human space travel and conquer the vast distances involved in an interstellar voyage.",
+          "director": "Christopher Nolan",
+          "runtime_minutes": 169,
+          "cast": [],
+          "imdb_rating": 8.7
+        }
+      ],
+      "category": "fact"
+    },
+    {
+      "id": "C20",
+      "question": "Recommend a movie.",
+      "context": [],
+      "category": "empty_context",
+      "expected_status": "insufficient_context"
+    },
+    {
+      "id": "C21",
+      "question": "Who directed this movie?",
+      "context": [
+        {
+          "movie_id": "21597",
+          "title": "Interstellar"
+        }
+      ],
+      "category": "missing_fact",
+      "expected_status": "insufficient_context"
+    },
+    {
+      "id": "C22",
+      "question": "What genres does this movie belong to?",
+      "context": [
+        {
+          "movie_id": "21597",
+          "title": "Interstellar",
+          "genres": [
+            "Adventure",
+            "Drama",
+            "Science Fiction"
+          ],
+          "overview": "The adventures of a group of explorers who make use of a newly discovered wormhole to surpass the limitations on human space travel and conquer the vast distances involved in an interstellar voyage.",
+          "director": "Christopher Nolan",
+          "runtime_minutes": 169,
+          "cast": [],
+          "imdb_rating": 8.7
+        }
+      ],
+      "category": "fact"
+    }
+  ]
+}

@@ -1,0 +1,31 @@
+F                                                                        [100%]
+=================================== FAILURES ===================================
+_____________ test_hybrid_does_not_promote_nonfinite_branch_scores _____________
+
+monkeypatch = <_pytest.monkeypatch.MonkeyPatch object at 0x7e0951e34180>
+
+    def test_hybrid_does_not_promote_nonfinite_branch_scores(monkeypatch):
+        """RRF must not turn an invalid branch score into a valid fused hit."""
+        client = SimpleNamespace(query_points=lambda **kwargs: SimpleNamespace(points=[
+            _point(1, 1, float('nan')), _point(2, 2, 0.5)]))
+        monkeypatch.setattr(retrieval, 'get_qdrant_client', lambda: client)
+        monkeypatch.setattr(retrieval, 'embed_query', lambda _: {'dense': [1.0] + [0.0] * 1023, 'sparse': {'1': 1.0}})
+        from app.schemas.retrieval import MovieSearchRequest
+        response = retrieval.search_movies(MovieSearchRequest(query='film', mode='hybrid'))
+>       assert [hit.movie_id for hit in response.hits] == [2]
+E       assert [1, 2] == [2]
+E
+E         At index 0 diff: 1 != 2
+E         Left contains one more item: 2
+E         Use -v to get more diff
+
+ai-service/tests/test_retrieval.py:307: AssertionError
+=============================== warnings summary ===============================
+../../miniconda3/envs/WhatToWatch/lib/python3.14/site-packages/starlette/testclient.py:53
+  /home/khanhbui/miniconda3/envs/WhatToWatch/lib/python3.14/site-packages/starlette/testclient.py:53: DeprecationWarning: The anyio.abc.BlockingPortal alias is deprecated, use anyio.from_thread.BlockingPortal instead.
+    _PortalFactoryType = Callable[[], AbstractContextManager[anyio.abc.BlockingPortal]]
+
+-- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html
+=========================== short test summary info ============================
+FAILED ai-service/tests/test_retrieval.py::test_hybrid_does_not_promote_nonfinite_branch_scores
+1 failed, 1 warning in 0.92s
