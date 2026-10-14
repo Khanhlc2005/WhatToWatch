@@ -1,5 +1,13 @@
 # Hướng dẫn tải và làm sạch catalog phim
 
+> Cập nhật 14/10/2026: đây là hướng dẫn checkpoint thu thập cũ. Bản xuất
+> `data/processed/movies_cleaned_full.jsonl` 11.347 phim đã được dọn vì metadata
+> đã có trong catalog mapped 46.923 phim. SQLite/cache vẫn còn; chạy
+> `python data/scripts/run_shared_catalog.py --offline` để xuất lại trước khi
+> làm các bước cần JSONL checkpoint bên dưới. Retrieval/SFT hiện dùng
+> `data/processed/movies_with_mysql_ids.jsonl`.
+
+
 Bản sao **`dữ liệu.jsonl`** bên ngoài ZIP chứa 11.347 phim đã làm sạch.
 Các file **`script.sh` / `script.py`** nằm trong thư mục `catalog_handoff` sau khi giải nén.
 

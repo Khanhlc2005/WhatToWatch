@@ -1,0 +1,101 @@
+{
+  "timestamp_utc": "2026-10-14T10:50:10.938707+00:00",
+  "removed": [
+    {
+      "path": "data/processed/movies_cleaned_full.jsonl",
+      "reason": "Legacy 11,347-movie export: every record matches the current 46,923-movie catalog except movie_id; reproducible from retained SQLite checkpoint.",
+      "bytes": 68652393,
+      "sha256": "f03fa0225dc436563253cb3006bfdbe0a565430bbe0ce2b1b447761c014263a4"
+    },
+    {
+      "path": "data/processed/evaluation_query_set_v0.csv",
+      "reason": "Legacy draft superseded by data/evaluation/query_set_v1.json; TMDB IDs in expected_movie_ids are incompatible with current MySQL-ID evaluation.",
+      "bytes": 431,
+      "sha256": "66971fd436aa97fc74b1527f90a094d6fcb39ab64528640346d3a87b522f568f"
+    },
+    {
+      "path": "data/processed/ai_service_gpu.log",
+      "reason": "Old local diagnostic log; no open file descriptor at preflight.",
+      "bytes": 2206,
+      "sha256": "6c65bf39617cab387ea904d19cfdf0ffa7ba07dac71594eb461f1685ffbc7756"
+    },
+    {
+      "path": "data/processed/index_gpu_full.log",
+      "reason": "Completed historical index log; integration audit retained; no open file descriptor at preflight.",
+      "bytes": 704668,
+      "sha256": "519a73406770e363e7d84e158fc4a8ae378d5eb92aed4f91f0daef8028e35bee"
+    },
+    {
+      "path": "data/processed/index_gpu_resume.log",
+      "reason": "Old resume log; checkpoint/snapshot/audit retained; no open file descriptor at preflight.",
+      "bytes": 537,
+      "sha256": "daff8a19dc032f99b4880f96c9ede97ab1d1cab64754b368d454553b0f450a34"
+    },
+    {
+      "path": "data/processed/index_gpu_smoke.log",
+      "reason": "Old smoke log; canonical integration evidence retained; no open file descriptor at preflight.",
+      "bytes": 1462,
+      "sha256": "f6e8d950ba1b2acef6e6a7b26ae3149ed71cf6c9b187c74c148c34034ccdcc31"
+    },
+    {
+      "path": "data/processed/retrieval_smoke.log",
+      "reason": "Old diagnostic log; docs/evidence/integration/retrieval_smoke.json retained; no open file descriptor at preflight.",
+      "bytes": 4904,
+      "sha256": "b4bf7fb6025f23a9d19a22241c0d4da3f23e04bef2a405b755f752d115d99b32"
+    }
+  ],
+  "total_removed_bytes": 69366601,
+  "subset_verification": {
+    "legacy_rows": 11347,
+    "current_rows": 46923,
+    "equal_except_movie_id": 11347
+  },
+  "preserved_artifacts": {
+    "data/processed/movies_with_mysql_ids.jsonl": {
+      "bytes": 218836784,
+      "sha256": "f6c18688f4ba09b514bdf53cf329961441d3b759fcae769a0170b23525956400"
+    },
+    "data/processed/movies_id_mapping.csv": {
+      "bytes": 1881867,
+      "sha256": "5dd7fa441fe14f2ea57e22287214fb9b8c590a4108bfdbcf33b2de93b828a81e"
+    },
+    "data/processed/catalog.sqlite": {
+      "bytes": 362962944,
+      "sha256": "6c854cc3864a251c409a8456ea5d1c021ac7b64b0214a9f0ab9646e29d4abba2"
+    },
+    "data/processed/movies-46923-2026-10-11.snapshot": {
+      "bytes": 357512192,
+      "sha256": "9f98db41930a8d70f11692afb74e6b5dac5638cefb2d86b9dd6f03d30c3bf975"
+    },
+    "data/processed/hotspot_6gb_usage.json": {
+      "bytes": 153,
+      "sha256": "a7a36b80df08f4ead78e66e5c833daa20100e51ffbd1e4a8e9d943a1420959ad"
+    },
+    "data/processed/hotspot_6gb_usage.dns.json": {
+      "bytes": 191,
+      "sha256": "8de70f1a77d0a8529630fdc6ddf87883c1f8d6b7ac4249ed5932da3f1947e4c4"
+    },
+    "data/processed/network_history/hotspot_500mb_usage.dns.json": {
+      "bytes": 173,
+      "sha256": "5bf0f0a6c079f09953c302231fe3dce328c6a5479f0257070b4a3a871c43e259"
+    },
+    "data/processed/network_history/hotspot_500mb_usage.json": {
+      "bytes": 150,
+      "sha256": "fbb9e919a257cfe59f3f68e2ffb3e73b4b45e033d19c33d68af4327960f30459"
+    }
+  },
+  "preserved_hashes_unchanged": true,
+  "retained_duplicate_cache_reason": "Seven identical empty find responses are keyed by different IMDb IDs; retain negative cache to avoid repeat requests.",
+  "retained_reports_reason": "Checkpoint-specific source/validation/provenance and network budget history; not duplicate current-catalog evidence.",
+  "git_actions": "Cleanup phase involved no Git actions. Khanh Bui subsequently authorized staging and commits on feature/week6-ai-evaluation.",
+  "final_verification": {
+    "all_requested_deletions_absent": true,
+    "existing_protected_hashes_unchanged": true,
+    "unexpected_missing": [
+      "data/processed/network_history/hotspot_500mb_usage.dns.json",
+      "data/processed/network_history/hotspot_500mb_usage.json"
+    ],
+    "unexpected_changed": [],
+    "note": "network_history was present and hash-verified immediately after cleanup, then deleted by Khanh Bui, as he later confirmed; it was not part of this cleanup deletion list."
+  }
+}
