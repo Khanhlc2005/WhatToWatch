@@ -1,0 +1,597 @@
+{
+  "captured_at": "2026-10-14T08:57:37.533594+00:00",
+  "checks": {
+    "backend_http_200": true,
+    "frontend_http_200": true,
+    "backend_ready": true,
+    "frontend_ready": true,
+    "backend_matches_direct_ai_ranking": true,
+    "frontend_matches_backend": true,
+    "backend_preserves_scores_and_reasons": true
+  },
+  "backend": {
+    "http_status": 200,
+    "body": {
+      "code": 1000,
+      "result": {
+        "status": "ready",
+        "hits": [
+          {
+            "movie": {
+              "id": 14894,
+              "title": "The Lord of the Rings: The Return of the King",
+              "posterUrl": "/rCzpDGLbOoPwLjy3OAm5NUPOTrC.jpg",
+              "voteAverage": 9.0,
+              "releaseDate": "2003-12-17"
+            },
+            "score": 0.898181132,
+            "scoreComponents": {
+              "profile_similarity": 0.8977264149999999,
+              "imdb_rating": 0.9,
+              "weights": {
+                "profile_similarity": 0.8,
+                "imdb_rating": 0.2
+              }
+            },
+            "reasons": [
+              {
+                "code": "profile_similarity",
+                "value": 0.8977264149999999
+              },
+              {
+                "code": "imdb_rating",
+                "value": 0.9
+              }
+            ]
+          },
+          {
+            "movie": {
+              "id": 14895,
+              "title": "The Lord of the Rings: The Two Towers",
+              "posterUrl": "/5VTN0pR8gcqV3EPUHHfMGnJYN9L.jpg",
+              "voteAverage": 8.8,
+              "releaseDate": "2002-12-18"
+            },
+            "score": 0.88507144,
+            "scoreComponents": {
+              "profile_similarity": 0.8863392999999999,
+              "imdb_rating": 0.8800000000000001,
+              "weights": {
+                "profile_similarity": 0.8,
+                "imdb_rating": 0.2
+              }
+            },
+            "reasons": [
+              {
+                "code": "profile_similarity",
+                "value": 0.8863392999999999
+              },
+              {
+                "code": "imdb_rating",
+                "value": 0.8800000000000001
+              }
+            ]
+          },
+          {
+            "movie": {
+              "id": 38008,
+              "title": "The Odyssey",
+              "posterUrl": "/5rhTDKUhPYvpdQIijFIs5VoWsON.jpg",
+              "voteAverage": 8.4,
+              "releaseDate": "2026-07-15"
+            },
+            "score": 0.8785033880000002,
+            "scoreComponents": {
+              "profile_similarity": 0.8881292350000001,
+              "imdb_rating": 0.8400000000000001,
+              "weights": {
+                "profile_similarity": 0.8,
+                "imdb_rating": 0.2
+              }
+            },
+            "reasons": [
+              {
+                "code": "profile_similarity",
+                "value": 0.8881292350000001
+              },
+              {
+                "code": "imdb_rating",
+                "value": 0.8400000000000001
+              }
+            ]
+          },
+          {
+            "movie": {
+              "id": 21409,
+              "title": "Star Trek",
+              "posterUrl": "/lV5OpzAss1z06YNagOVap1I35mH.jpg",
+              "voteAverage": 7.9,
+              "releaseDate": "2009-05-06"
+            },
+            "score": 0.8748313600000001,
+            "scoreComponents": {
+              "profile_similarity": 0.8960391999999999,
+              "imdb_rating": 0.79,
+              "weights": {
+                "profile_similarity": 0.8,
+                "imdb_rating": 0.2
+              }
+            },
+            "reasons": [
+              {
+                "code": "profile_similarity",
+                "value": 0.8960391999999999
+              },
+              {
+                "code": "imdb_rating",
+                "value": 0.79
+              }
+            ]
+          },
+          {
+            "movie": {
+              "id": 10035,
+              "title": "Predator",
+              "posterUrl": "/k3mW4qfJo6SKqe6laRyNGnbB9n5.jpg",
+              "voteAverage": 7.8,
+              "releaseDate": "1987-06-12"
+            },
+            "score": 0.87437244,
+            "scoreComponents": {
+              "profile_similarity": 0.89796555,
+              "imdb_rating": 0.78,
+              "weights": {
+                "profile_similarity": 0.8,
+                "imdb_rating": 0.2
+              }
+            },
+            "reasons": [
+              {
+                "code": "profile_similarity",
+                "value": 0.89796555
+              },
+              {
+                "code": "imdb_rating",
+                "value": 0.78
+              }
+            ]
+          },
+          {
+            "movie": {
+              "id": 22077,
+              "title": "The Hobbit: An Unexpected Journey",
+              "posterUrl": "/yHA9Fc37VmpUA5UncTxxo3rTGVA.jpg",
+              "voteAverage": 7.8,
+              "releaseDate": "2012-12-12"
+            },
+            "score": 0.87311364,
+            "scoreComponents": {
+              "profile_similarity": 0.89639205,
+              "imdb_rating": 0.78,
+              "weights": {
+                "profile_similarity": 0.8,
+                "imdb_rating": 0.2
+              }
+            },
+            "reasons": [
+              {
+                "code": "profile_similarity",
+                "value": 0.89639205
+              },
+              {
+                "code": "imdb_rating",
+                "value": 0.78
+              }
+            ]
+          },
+          {
+            "movie": {
+              "id": 21814,
+              "title": "The Avengers",
+              "posterUrl": "/RYMX2wcKCBAr24UyPD7xwmjaTn.jpg",
+              "voteAverage": 8.0,
+              "releaseDate": "2012-04-25"
+            },
+            "score": 0.8729986800000001,
+            "scoreComponents": {
+              "profile_similarity": 0.89124835,
+              "imdb_rating": 0.8,
+              "weights": {
+                "profile_similarity": 0.8,
+                "imdb_rating": 0.2
+              }
+            },
+            "reasons": [
+              {
+                "code": "profile_similarity",
+                "value": 0.89124835
+              },
+              {
+                "code": "imdb_rating",
+                "value": 0.8
+              }
+            ]
+          },
+          {
+            "movie": {
+              "id": 29861,
+              "title": "The Revenant",
+              "posterUrl": "/ji3ecJphATlVgWNY0B0RVXZizdf.jpg",
+              "voteAverage": 8.0,
+              "releaseDate": "2015-12-25"
+            },
+            "score": 0.8709649600000001,
+            "scoreComponents": {
+              "profile_similarity": 0.8887062,
+              "imdb_rating": 0.8,
+              "weights": {
+                "profile_similarity": 0.8,
+                "imdb_rating": 0.2
+              }
+            },
+            "reasons": [
+              {
+                "code": "profile_similarity",
+                "value": 0.8887062
+              },
+              {
+                "code": "imdb_rating",
+                "value": 0.8
+              }
+            ]
+          },
+          {
+            "movie": {
+              "id": 8482,
+              "title": "First Blood",
+              "posterUrl": "/a9sa6ERZCpplbPEO7OMWE763CLD.jpg",
+              "voteAverage": 7.7,
+              "releaseDate": "1982-10-22"
+            },
+            "score": 0.86676284,
+            "scoreComponents": {
+              "profile_similarity": 0.89095355,
+              "imdb_rating": 0.77,
+              "weights": {
+                "profile_similarity": 0.8,
+                "imdb_rating": 0.2
+              }
+            },
+            "reasons": [
+              {
+                "code": "profile_similarity",
+                "value": 0.89095355
+              },
+              {
+                "code": "imdb_rating",
+                "value": 0.77
+              }
+            ]
+          },
+          {
+            "movie": {
+              "id": 808,
+              "title": "Frankenstein",
+              "posterUrl": "/mu6wHwH0IwCCaEYtpqujuPJYat1.jpg",
+              "voteAverage": 7.7,
+              "releaseDate": "1931-11-21"
+            },
+            "score": 0.86581302,
+            "scoreComponents": {
+              "profile_similarity": 0.8897662749999999,
+              "imdb_rating": 0.77,
+              "weights": {
+                "profile_similarity": 0.8,
+                "imdb_rating": 0.2
+              }
+            },
+            "reasons": [
+              {
+                "code": "profile_similarity",
+                "value": 0.8897662749999999
+              },
+              {
+                "code": "imdb_rating",
+                "value": 0.77
+              }
+            ]
+          }
+        ]
+      }
+    }
+  },
+  "frontend": {
+    "http_status": 200,
+    "body": {
+      "status": "ready",
+      "hits": [
+        {
+          "movie": {
+            "id": 14894,
+            "title": "The Lord of the Rings: The Return of the King",
+            "posterUrl": "/rCzpDGLbOoPwLjy3OAm5NUPOTrC.jpg",
+            "voteAverage": 9,
+            "releaseDate": "2003-12-17"
+          },
+          "score": 0.898181132,
+          "scoreComponents": {
+            "profile_similarity": 0.8977264149999999,
+            "imdb_rating": 0.9,
+            "weights": {
+              "profile_similarity": 0.8,
+              "imdb_rating": 0.2
+            }
+          },
+          "reasons": [
+            {
+              "code": "profile_similarity",
+              "value": 0.8977264149999999
+            },
+            {
+              "code": "imdb_rating",
+              "value": 0.9
+            }
+          ]
+        },
+        {
+          "movie": {
+            "id": 14895,
+            "title": "The Lord of the Rings: The Two Towers",
+            "posterUrl": "/5VTN0pR8gcqV3EPUHHfMGnJYN9L.jpg",
+            "voteAverage": 8.8,
+            "releaseDate": "2002-12-18"
+          },
+          "score": 0.88507144,
+          "scoreComponents": {
+            "profile_similarity": 0.8863392999999999,
+            "imdb_rating": 0.8800000000000001,
+            "weights": {
+              "profile_similarity": 0.8,
+              "imdb_rating": 0.2
+            }
+          },
+          "reasons": [
+            {
+              "code": "profile_similarity",
+              "value": 0.8863392999999999
+            },
+            {
+              "code": "imdb_rating",
+              "value": 0.8800000000000001
+            }
+          ]
+        },
+        {
+          "movie": {
+            "id": 38008,
+            "title": "The Odyssey",
+            "posterUrl": "/5rhTDKUhPYvpdQIijFIs5VoWsON.jpg",
+            "voteAverage": 8.4,
+            "releaseDate": "2026-07-15"
+          },
+          "score": 0.8785033880000002,
+          "scoreComponents": {
+            "profile_similarity": 0.8881292350000001,
+            "imdb_rating": 0.8400000000000001,
+            "weights": {
+              "profile_similarity": 0.8,
+              "imdb_rating": 0.2
+            }
+          },
+          "reasons": [
+            {
+              "code": "profile_similarity",
+              "value": 0.8881292350000001
+            },
+            {
+              "code": "imdb_rating",
+              "value": 0.8400000000000001
+            }
+          ]
+        },
+        {
+          "movie": {
+            "id": 21409,
+            "title": "Star Trek",
+            "posterUrl": "/lV5OpzAss1z06YNagOVap1I35mH.jpg",
+            "voteAverage": 7.9,
+            "releaseDate": "2009-05-06"
+          },
+          "score": 0.8748313600000001,
+          "scoreComponents": {
+            "profile_similarity": 0.8960391999999999,
+            "imdb_rating": 0.79,
+            "weights": {
+              "profile_similarity": 0.8,
+              "imdb_rating": 0.2
+            }
+          },
+          "reasons": [
+            {
+              "code": "profile_similarity",
+              "value": 0.8960391999999999
+            },
+            {
+              "code": "imdb_rating",
+              "value": 0.79
+            }
+          ]
+        },
+        {
+          "movie": {
+            "id": 10035,
+            "title": "Predator",
+            "posterUrl": "/k3mW4qfJo6SKqe6laRyNGnbB9n5.jpg",
+            "voteAverage": 7.8,
+            "releaseDate": "1987-06-12"
+          },
+          "score": 0.87437244,
+          "scoreComponents": {
+            "profile_similarity": 0.89796555,
+            "imdb_rating": 0.78,
+            "weights": {
+              "profile_similarity": 0.8,
+              "imdb_rating": 0.2
+            }
+          },
+          "reasons": [
+            {
+              "code": "profile_similarity",
+              "value": 0.89796555
+            },
+            {
+              "code": "imdb_rating",
+              "value": 0.78
+            }
+          ]
+        },
+        {
+          "movie": {
+            "id": 22077,
+            "title": "The Hobbit: An Unexpected Journey",
+            "posterUrl": "/yHA9Fc37VmpUA5UncTxxo3rTGVA.jpg",
+            "voteAverage": 7.8,
+            "releaseDate": "2012-12-12"
+          },
+          "score": 0.87311364,
+          "scoreComponents": {
+            "profile_similarity": 0.89639205,
+            "imdb_rating": 0.78,
+            "weights": {
+              "profile_similarity": 0.8,
+              "imdb_rating": 0.2
+            }
+          },
+          "reasons": [
+            {
+              "code": "profile_similarity",
+              "value": 0.89639205
+            },
+            {
+              "code": "imdb_rating",
+              "value": 0.78
+            }
+          ]
+        },
+        {
+          "movie": {
+            "id": 21814,
+            "title": "The Avengers",
+            "posterUrl": "/RYMX2wcKCBAr24UyPD7xwmjaTn.jpg",
+            "voteAverage": 8,
+            "releaseDate": "2012-04-25"
+          },
+          "score": 0.8729986800000001,
+          "scoreComponents": {
+            "profile_similarity": 0.89124835,
+            "imdb_rating": 0.8,
+            "weights": {
+              "profile_similarity": 0.8,
+              "imdb_rating": 0.2
+            }
+          },
+          "reasons": [
+            {
+              "code": "profile_similarity",
+              "value": 0.89124835
+            },
+            {
+              "code": "imdb_rating",
+              "value": 0.8
+            }
+          ]
+        },
+        {
+          "movie": {
+            "id": 29861,
+            "title": "The Revenant",
+            "posterUrl": "/ji3ecJphATlVgWNY0B0RVXZizdf.jpg",
+            "voteAverage": 8,
+            "releaseDate": "2015-12-25"
+          },
+          "score": 0.8709649600000001,
+          "scoreComponents": {
+            "profile_similarity": 0.8887062,
+            "imdb_rating": 0.8,
+            "weights": {
+              "profile_similarity": 0.8,
+              "imdb_rating": 0.2
+            }
+          },
+          "reasons": [
+            {
+              "code": "profile_similarity",
+              "value": 0.8887062
+            },
+            {
+              "code": "imdb_rating",
+              "value": 0.8
+            }
+          ]
+        },
+        {
+          "movie": {
+            "id": 8482,
+            "title": "First Blood",
+            "posterUrl": "/a9sa6ERZCpplbPEO7OMWE763CLD.jpg",
+            "voteAverage": 7.7,
+            "releaseDate": "1982-10-22"
+          },
+          "score": 0.86676284,
+          "scoreComponents": {
+            "profile_similarity": 0.89095355,
+            "imdb_rating": 0.77,
+            "weights": {
+              "profile_similarity": 0.8,
+              "imdb_rating": 0.2
+            }
+          },
+          "reasons": [
+            {
+              "code": "profile_similarity",
+              "value": 0.89095355
+            },
+            {
+              "code": "imdb_rating",
+              "value": 0.77
+            }
+          ]
+        },
+        {
+          "movie": {
+            "id": 808,
+            "title": "Frankenstein",
+            "posterUrl": "/mu6wHwH0IwCCaEYtpqujuPJYat1.jpg",
+            "voteAverage": 7.7,
+            "releaseDate": "1931-11-21"
+          },
+          "score": 0.86581302,
+          "scoreComponents": {
+            "profile_similarity": 0.8897662749999999,
+            "imdb_rating": 0.77,
+            "weights": {
+              "profile_similarity": 0.8,
+              "imdb_rating": 0.2
+            }
+          },
+          "reasons": [
+            {
+              "code": "profile_similarity",
+              "value": 0.8897662749999999
+            },
+            {
+              "code": "imdb_rating",
+              "value": 0.77
+            }
+          ]
+        }
+      ]
+    }
+  },
+  "limits": [
+    "Read-only existing user session",
+    "No live rating mutation",
+    "No browser UI interaction",
+    "Existing backend image, branch fixes not deployed"
+  ]
+}

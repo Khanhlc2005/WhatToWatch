@@ -1,0 +1,58 @@
+[
+  {
+    "name": "com.project.movie_recommendation.MovieRecommendationApplicationTests",
+    "tests": "1",
+    "failures": "0",
+    "errors": "0",
+    "skipped": "1",
+    "time": "0.001"
+  },
+  {
+    "name": "com.project.movie_recommendation.client.AiServiceClientTest",
+    "tests": "5",
+    "failures": "0",
+    "errors": "0",
+    "skipped": "0",
+    "time": "0.28"
+  },
+  {
+    "name": "com.project.movie_recommendation.service.ConversationServiceTest",
+    "tests": "1",
+    "failures": "0",
+    "errors": "0",
+    "skipped": "0",
+    "time": "0.234"
+  },
+  {
+    "name": "com.project.movie_recommendation.service.MovieSearchIntegrationTest",
+    "tests": "4",
+    "failures": "0",
+    "errors": "0",
+    "skipped": "0",
+    "time": "0.079"
+  },
+  {
+    "name": "com.project.movie_recommendation.service.PreferenceSyncServiceTest",
+    "tests": "6",
+    "failures": "0",
+    "errors": "0",
+    "skipped": "0",
+    "time": "1.024"
+  },
+  {
+    "name": "com.project.movie_recommendation.service.RatingPreferenceTransactionTest",
+    "tests": "4",
+    "failures": "0",
+    "errors": "0",
+    "skipped": "0",
+    "time": "0.178"
+  },
+  {
+    "name": "com.project.movie_recommendation.service.RecommendationServiceTest",
+    "tests": "5",
+    "failures": "0",
+    "errors": "0",
+    "skipped": "0",
+    "time": "0.051"
+  }
+]

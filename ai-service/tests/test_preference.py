@@ -156,3 +156,43 @@ def test_invalid_stored_embedding_is_reported(api):
     assert response['usable_rating_count'] == 2
     assert response['skipped_movies'] == [{'movie_id': 103, 'reason': 'invalid_embedding'}]
     assert profile(client) == []
+
+
+def test_overlapping_old_update_cannot_restore_profile_after_delete(api, monkeypatch):
+    """An old PUT may keep running even after the Backend read timeout."""
+    from concurrent.futures import ThreadPoolExecutor
+    from threading import Event
+
+    from app.schemas.preference import PreferenceSnapshot
+
+    client = api[1]
+    original_upsert = client.upsert
+    first_write_started = Event()
+    release_first_write = Event()
+    delete_attempted = Event()
+    delete_completed = Event()
+
+    def delayed_upsert(*args, **kwargs):
+        first_write_started.set()
+        assert release_first_write.wait(5)
+        return original_upsert(*args, **kwargs)
+
+    def delete_snapshot():
+        delete_attempted.set()
+        result = preference.rebuild_preference(PreferenceSnapshot(user_id=7, ratings=[]))
+        delete_completed.set()
+        return result
+
+    monkeypatch.setattr(client, 'upsert', delayed_upsert)
+    with ThreadPoolExecutor(max_workers=2) as pool:
+        old = pool.submit(preference.rebuild_preference, PreferenceSnapshot.model_validate(body()))
+        try:
+            assert first_write_started.wait(5)
+            new = pool.submit(delete_snapshot)
+            assert delete_attempted.wait(5)
+            assert not delete_completed.wait(.1), 'Delete must wait for the older write'
+        finally:
+            release_first_write.set()
+        assert old.result(timeout=5).status == 'ready'
+        assert new.result(timeout=5).status == 'cold_start'
+    assert profile(client) == []

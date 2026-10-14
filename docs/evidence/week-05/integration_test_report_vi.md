@@ -1,5 +1,13 @@
 # Báo cáo tích hợp AI Service — tuần 5 (2026-10-12)
 
+> Cập nhật 14/10/2026: tài liệu này ghi kết quả lịch sử tuần 5. Hiện MySQL có
+> 1 user/7 ratings, Qdrant có profile user 1 và smoke recommendation read-only
+> trả ready/10 hits. RecommendationService trên main không gửi snapshot mỗi GET;
+> RatingService main gửi async trước commit, đã sửa trên branch tuần 6.
+> Xem [báo cáo tuần 6](../../week06_backlog_fixes_vi.md) cho code, evidence và các phần còn PARTIAL/BLOCKED.
+> Các số PASS và trạng thái dịch vụ bên dưới không phải kết quả chạy lại tuần 6.
+
+
 Branch `audit-week05-integration-review` bắt đầu từ `main` commit `931be55`. Các phép thử live chỉ đọc MySQL/Qdrant; không tạo ratings, interactions hoặc profile. Unit/mock tests được tách khỏi live smoke. Không `git add`, commit, push hoặc PR.
 
 ## Nguyên nhân và thay đổi

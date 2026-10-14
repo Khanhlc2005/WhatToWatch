@@ -1,7 +1,5 @@
 package com.project.movie_recommendation.service;
 
-import com.project.movie_recommendation.client.AiServiceClient;
-import com.project.movie_recommendation.dto.ai.AiRecommendationContracts;
 import com.project.movie_recommendation.dto.request.RatingRequest;
 import com.project.movie_recommendation.dto.response.PageResponse;
 import com.project.movie_recommendation.dto.response.RatingResponse;
@@ -25,7 +23,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
-import java.util.concurrent.CompletableFuture;
 
 @Slf4j
 @Service
@@ -36,7 +33,7 @@ public class RatingService {
     RatingRepository ratingRepository;
     MovieRepository movieRepository;
     UserRepository userRepository;
-    AiServiceClient aiServiceClient;
+    PreferenceSyncService preferenceSyncService;
 
     private User getCurrentUser() {
         var context = SecurityContextHolder.getContext();
@@ -69,7 +66,7 @@ public class RatingService {
 
         rating = ratingRepository.save(rating);
 
-        notifyAiPreferenceUpdate(user.getId());
+        preferenceSyncService.afterCommit(user.getId());
 
         return toResponse(rating);
     }
@@ -92,30 +89,7 @@ public class RatingService {
                     throw new AppException(ErrorCode.RATING_NOT_FOUND);
                 });
 
-        notifyAiPreferenceUpdate(user.getId());
-    }
-
-    private void notifyAiPreferenceUpdate(Long userId) {
-        CompletableFuture.runAsync(() -> {
-            try {
-                User user = userRepository.findById(userId).orElse(null);
-                if (user == null) return;
-
-                List<Rating> ratings = ratingRepository.findByUser(user);
-                List<AiRecommendationContracts.RatingSignal> signals = ratings.stream()
-                        .map(r -> new AiRecommendationContracts.RatingSignal(
-                                r.getMovie().getId(), r.getRating()))
-                        .toList();
-
-                AiRecommendationContracts.PreferenceSnapshot snapshot =
-                        new AiRecommendationContracts.PreferenceSnapshot(userId, signals);
-
-                aiServiceClient.rebuildPreference(snapshot);
-                log.info("Triggered AI preference update for User ID: {}", userId);
-            } catch (Exception e) {
-                log.warn("Failed to sync preference to AI: {}", e.getMessage());
-            }
-        });
+        preferenceSyncService.afterCommit(user.getId());
     }
 
     public PageResponse<RatingResponse> getMyRatings(int page, int size) {
