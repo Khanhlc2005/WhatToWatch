@@ -1,0 +1,37 @@
+Git status trước khi tạo ba commit theo yêu cầu của Khánh Bùi:
+ M README.md
+ M ai-service/app/services/retrieval.py
+ M ai-service/tests/test_recommendation.py
+ M ai-service/tests/test_reranker.py
+ M ai-service/tests/test_retrieval.py
+ M data/scripts/evaluate_retrieval.py
+ M data/tests/test_evaluate_retrieval.py
+ M docs/catalog_handoff_vi.md
+ M docs/mapped_catalog_run_vi.md
+ M docs/week05_ai_ranking_sft_vi.md
+ D finetuning/datasets/v1/manifest.json
+ D finetuning/datasets/v1/test.jsonl
+ D finetuning/datasets/v1/train.jsonl
+ D finetuning/datasets/v1/validation.jsonl
+ M finetuning/scripts/build_sft_v1.py
+?? data/evaluation/README.md
+?? data/evaluation/chatbot_set_v1.json
+?? data/scripts/evaluate_chatbot.py
+?? data/tests/test_evaluate_chatbot.py
+?? docs/evidence/week-06-ai-evaluation/catalog_identity.json
+?? docs/evidence/week-06-ai-evaluation/changed_files.txt
+?? docs/evidence/week-06-ai-evaluation/evaluation_labels.json
+?? docs/evidence/week-06-ai-evaluation/nonfinite_before_fix.txt
+?? docs/evidence/week-06-ai-evaluation/processed_cleanup.json
+?? docs/evidence/week-06-ai-evaluation/python_tests.txt
+?? docs/evidence/week-06-ai-evaluation/resource_preflight.json
+?? docs/evidence/week-06-ai-evaluation/sft_quality.json
+?? docs/evidence/week-06-ai-evaluation/sft_v2_en_quality.json
+?? docs/handoff_sft_week06_vi.md
+?? docs/week06_ai_evaluation_vi.md
+?? finetuning/datasets/v2-en/manifest.json
+?? finetuning/datasets/v2-en/test.jsonl
+?? finetuning/datasets/v2-en/train.jsonl
+?? finetuning/datasets/v2-en/validation.jsonl
+?? finetuning/scripts/validate_sft_v1.py
+?? finetuning/tests/test_validate_sft.py

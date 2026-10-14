@@ -67,7 +67,7 @@ Mở `http://localhost:3000/browse`. Nếu vừa sửa `.env.local`, khởi đ�
 
 Tài liệu frontend: [frontend/README.md](frontend/README.md). Tài liệu retrieval và AI: [docs/retrieval_data_contract_vi.md](docs/retrieval_data_contract_vi.md).
 
-Catalog 46.923 phim và CSV ID từ bảng `movies`: xem [mapping, index GPU và audit sau integration](docs/mapped_catalog_run_vi.md). Dùng JSONL mới trong `data/raw`; snapshot 11.347 phim trong `data/processed` là bản cũ. Mapping không yêu cầu import MySQL local.
+Catalog 46.923 phim và CSV ID từ bảng `movies`: xem [mapping, index GPU và audit sau integration](docs/mapped_catalog_run_vi.md). Dùng JSONL mới trong `data/raw`; bản xuất 11.347 phim cũ trong `data/processed` đã được dọn ngày 14/10/2026 vì toàn bộ metadata đã nằm trong catalog hiện tại. SQLite checkpoint và cache vẫn được giữ để tiếp tục thu thập. Mapping không yêu cầu import MySQL local.
 
 ## Qdrant với catalog 46.923 phim
 

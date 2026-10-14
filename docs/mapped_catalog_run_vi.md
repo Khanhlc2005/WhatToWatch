@@ -20,7 +20,7 @@ Người dùng xác nhận CSV và JSONL do đồng đội gửi, CSV chứa ID 
 - `data/raw/movies_cleaned_full.jsonl`: 46.923 phim.
 - `data/processed/movies_id_mapping.csv`: 46.923 dòng, `id,imdb_id,tmdb_id,title`.
 - `data/processed/movies_with_mysql_ids.jsonl`: đã tạo, chỉ thay `movie_id` theo CSV.
-- File cùng tên `movies_cleaned_full.jsonl` trong `data/processed` là snapshot cũ 11.347 phim.
+- Bản xuất `movies_cleaned_full.jsonl` cũ trong `data/processed` có 11.347 phim; đã xóa ngày 14/10/2026 sau khi xác minh toàn bộ metadata nằm trong catalog mapped hiện tại (chỉ khác `movie_id`). SQLite checkpoint/cache vẫn được giữ; có thể xuất lại bằng `run_shared_catalog.py --offline` nếu cần pipeline thu thập cũ.
 
 Không import MySQL để làm bước mapping. Không dùng `init.sql`/`import_legacy_movies.sql` cho database của đồng đội: chúng dành cho bảng legacy `movie`. Không chuyển nhánh chỉ vì tài liệu cũ yêu cầu.
 

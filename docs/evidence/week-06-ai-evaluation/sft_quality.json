@@ -1,0 +1,36 @@
+{
+  "passed": true,
+  "issues": [],
+  "warnings": [
+    "Synthetic templates only; no human-reviewed conversations or relevance labels.",
+    "Vietnamese targets differ from the runtime SYSTEM_PROMPT requirement to answer in English.",
+    "Only answered/director/genre tasks; no no_match, insufficient_context, multi-turn or recommendation supervision."
+  ],
+  "examples": {
+    "train": 1613,
+    "validation": 185,
+    "test": 198
+  },
+  "movies": {
+    "train": 808,
+    "validation": 93,
+    "test": 99
+  },
+  "source_sha256": "f6c18688f4ba09b514bdf53cf329961441d3b759fcae769a0170b23525956400",
+  "artifact_sha256": {
+    "manifest.json": "4fa72b0f930f6b55f94547b314bb6190fd7fd62092aafbc22f6ea8f474601944",
+    "test.jsonl": "a406e27e46752c4cc92b5067f922d1a5d2ac41981565ccf563c60e5247108aab",
+    "train.jsonl": "c0474187033f149351c7f3b9f620eb20ba8c1d7260c374a5719e87726c459e0d",
+    "validation.jsonl": "e701399e93c15c94c57a676578fcebc7d908077bc4b26a20e43ffc35b0614704"
+  },
+  "retrieval_anchor_overlap": {
+    "train": 0,
+    "validation": 0,
+    "test": 0
+  },
+  "training_ready": false,
+  "training_blockers": [
+    "Language policy requires owner decision; coverage limited to synthetic catalog facts."
+  ],
+  "artifact_status": "Legacy v1 audited before language decision; later deleted at user request. Not the current training handoff."
+}

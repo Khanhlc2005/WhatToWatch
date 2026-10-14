@@ -1,5 +1,5 @@
 {
-  "version": "catalog_fact_templates_v1",
+  "version": "catalog_fact_templates_v2_en",
   "source_sha256": "f6c18688f4ba09b514bdf53cf329961441d3b759fcae769a0170b23525956400",
   "max_movies": 1000,
   "selected_movies": 1000,
@@ -16,5 +16,8 @@
   "origin": "synthetic_template_from_catalog_facts",
   "split_key": "movie_id",
   "duplicate_examples": 0,
-  "cross_split_movie_ids": 0
+  "cross_split_movie_ids": 0,
+  "language": "en",
+  "system_prompt_sha256": "a8a075df5d7710af213c286d4af02b61c278ff4756397fd769aabdefbf4cf6e5",
+  "split_policy": "Stable movie_id hash; same split assignment as legacy v1; test is evaluation-only"
 }

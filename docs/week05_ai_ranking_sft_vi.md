@@ -1,5 +1,10 @@
 # Tuần 5 — reranking, final ranking và SFT v1
 
+> 14/10/2026, cập nhật SFT tuần 6: người dùng chọn giữ runtime tiếng Anh và
+> yêu cầu xóa dataset v1 tiếng Việt. Dataset hiện hành là `finetuning/datasets/v2-en/`;
+> xem [bàn giao SFT tuần 6](handoff_sft_week06_vi.md). Lệnh/path SFT v1 bên dưới
+> là lịch sử; generator hiện mặc định tạo v2-en.
+
 > Cập nhật 14/10/2026: tài liệu này ghi kết quả lịch sử tuần 5. Hiện MySQL có
 > 1 user/7 ratings, Qdrant có profile user 1 và smoke recommendation read-only
 > trả ready/10 hits. RecommendationService trên main không gửi snapshot mỗi GET;

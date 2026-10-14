@@ -80,7 +80,10 @@ def search_movies(request: MovieSearchRequest) -> MovieSearchResponse:
             with_payload=True,
             with_vectors=False,
         )
-        results[mode] = sorted(result.points, key=lambda point: (-point.score, str(point.id)))
+        results[mode] = sorted(
+            (point for point in result.points if math.isfinite(point.score)),
+            key=lambda point: (-point.score, str(point.id)),
+        )
 
     if request.mode == "hybrid":
         ranked = _fuse_rrf(results, candidate_k)

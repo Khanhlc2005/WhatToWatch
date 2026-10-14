@@ -294,3 +294,54 @@ def test_candidate_k_validation(search):
         'query': 'film', 'rerank': True, 'candidate_k': 1, 'limit': 2,
     })
     assert result.status_code == 422
+
+
+def test_hybrid_does_not_promote_nonfinite_branch_scores(monkeypatch):
+    """RRF must not turn an invalid branch score into a valid fused hit."""
+    client = SimpleNamespace(query_points=lambda **kwargs: SimpleNamespace(points=[
+        _point(1, 1, float('nan')), _point(2, 2, 0.5)]))
+    monkeypatch.setattr(retrieval, 'get_qdrant_client', lambda: client)
+    monkeypatch.setattr(retrieval, 'embed_query', lambda _: {'dense': [1.0] + [0.0] * 1023, 'sparse': {'1': 1.0}})
+    from app.schemas.retrieval import MovieSearchRequest
+    response = retrieval.search_movies(MovieSearchRequest(query='film', mode='hybrid'))
+    assert [hit.movie_id for hit in response.hits] == [2]
+
+
+def test_reranking_unscored_candidates_follow_scored_even_with_negative_scores(search, monkeypatch):
+    http, client = search
+    client.set_payload('movies', {'title': None, 'genres': [], 'keywords': []}, points=[3])
+    monkeypatch.setattr(retrieval, 'score_pairs', lambda _, docs: [-2.0] * len(docs))
+    hits = http.post('/internal/qdrant/search', json={'query': 'film', 'mode': 'sparse', 'rerank': True}).json()['hits']
+    assert [h['point_id'] for h in hits] == ['2', '1', '3']
+    assert hits[-1].get('rerank_score') is None
+    assert hits[-1]['score'] == hits[-1]['retrieval_score']
+
+
+def test_candidate_k_is_ignored_without_reranking(search, monkeypatch):
+    client = search[1]
+    original = client.query_points
+    limits = []
+    def record(**kwargs):
+        limits.append(kwargs['limit'])
+        return original(**kwargs)
+    monkeypatch.setattr(client, 'query_points', record)
+    monkeypatch.setattr(retrieval, 'score_pairs', lambda *_: pytest.fail('unexpected model load'))
+    result = search[0].post('/internal/qdrant/search', json={'query': 'film', 'mode': 'hybrid', 'candidate_k': 500, 'limit': 2})
+    assert result.status_code == 200
+    assert limits == [2, 2]
+    assert all('retrieval_score' not in h and 'rerank_score' not in h for h in result.json()['hits'])
+
+
+def test_default_candidate_pool_covers_larger_final_k(search, monkeypatch):
+    client = search[1]
+    original = client.query_points
+    limits = []
+    def record(**kwargs):
+        limits.append(kwargs['limit'])
+        return original(**kwargs)
+    monkeypatch.setattr(client, 'query_points', record)
+    monkeypatch.setattr(retrieval.settings, 'retrieval_candidate_k', 50)
+    monkeypatch.setattr(retrieval, 'score_pairs', lambda _, docs: [0.0] * len(docs))
+    result = search[0].post('/internal/qdrant/search', json={'query':'film','mode':'hybrid','rerank':True,'limit':100})
+    assert result.status_code == 200
+    assert limits == [100,100]

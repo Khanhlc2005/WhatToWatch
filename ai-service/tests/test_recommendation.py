@@ -179,3 +179,33 @@ def test_final_exclusions_and_cold_start(api):
     }).json()['hits']] == [102, 103, 104]
     assert api[0].post(URL, json={'user_id': 8, 'ranking': 'final'}).json() == {
         'user_id': 8, 'status': 'cold_start', 'hits': []}
+
+
+@pytest.mark.parametrize('rating', [None, True, '9', -1, 11, float('nan'), float('inf')])
+def test_reason_codes_never_invent_invalid_imdb_signal(monkeypatch, rating):
+    monkeypatch.setattr(recommendation.settings, 'recommendation_similarity_weight', .8)
+    monkeypatch.setattr(recommendation.settings, 'recommendation_imdb_weight', .2)
+    hit = recommendation._final_hit(1, .5, rating)
+    assert hit.score_components.imdb_rating is None
+    assert hit.score_components.weights == {'profile_similarity': 1, 'imdb_rating': 0}
+    assert [(r.code, r.value) for r in hit.reasons] == [('profile_similarity', .75)]
+
+
+@pytest.mark.parametrize('cosine', [-1, 0, .5, 1])
+def test_reason_values_match_components_and_contributions(monkeypatch, cosine):
+    monkeypatch.setattr(recommendation.settings, 'recommendation_similarity_weight', .8)
+    monkeypatch.setattr(recommendation.settings, 'recommendation_imdb_weight', .2)
+    hit = recommendation._final_hit(1, cosine, 8)
+    components = hit.score_components
+    assert hit.score == pytest.approx(.8 * components.profile_similarity + .2 * components.imdb_rating)
+    assert all(r.value == getattr(components, r.code) for r in hit.reasons)
+    assert ('profile_similarity' in [r.code for r in hit.reasons]) == (cosine > 0)
+
+
+@pytest.mark.parametrize('rating', [0, 2, 8])
+def test_imdb_reason_code_indicates_available_signal_not_high_rating(monkeypatch, rating):
+    monkeypatch.setattr(recommendation.settings, 'recommendation_similarity_weight', .8)
+    monkeypatch.setattr(recommendation.settings, 'recommendation_imdb_weight', .2)
+    hit = recommendation._final_hit(1, .5, rating)
+    reason = next(r for r in hit.reasons if r.code == 'imdb_rating')
+    assert reason.value == rating / 10
