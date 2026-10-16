@@ -18,6 +18,9 @@ public enum ErrorCode {
     WATCHLIST_NOT_FOUND(3001, "Watchlist not found"),
     MOVIE_ALREADY_IN_WATCHLIST(3002, "Movie is already in watchlist"),
     MOVIE_NOT_IN_WATCHLIST(3003, "Movie is not in watchlist"),
+    WATCHLIST_ALREADY_EXISTS(3004, "Watchlist with this name already exists"),
+    WATCHLIST_NAME_REQUIRED(3005, "Watchlist name must not be blank"),
+    WATCHLIST_NAME_INVALID(3006, "Watchlist name must not exceed 255 characters"),
 
     WATCH_HISTORY_NOT_FOUND(4001, "Watch history record not found"),
 
@@ -41,4 +44,3 @@ public enum ErrorCode {
         return message;
     }
 }
-

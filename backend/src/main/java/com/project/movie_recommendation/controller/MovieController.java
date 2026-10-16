@@ -1,20 +1,19 @@
 package com.project.movie_recommendation.controller;
 
+import com.project.movie_recommendation.dto.request.MovieFilterRequest;
 import com.project.movie_recommendation.dto.response.*;
 import com.project.movie_recommendation.exception.AppException;
 import com.project.movie_recommendation.exception.ErrorCode;
 import com.project.movie_recommendation.service.MovieService;
 import com.project.movie_recommendation.service.RecommendationService;
-import com.project.movie_recommendation.dto.response.RecommendationMovieResponse;
-import com.project.movie_recommendation.dto.request.MovieFilterRequest;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.Pageable;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
+import org.springframework.data.domain.Pageable;
+import org.springframework.security.authentication.AnonymousAuthenticationToken;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.http.HttpStatus;
-import org.springframework.web.server.ResponseStatusException;
 
 import java.util.List;
 
@@ -25,6 +24,30 @@ import java.util.List;
 public class MovieController {
     MovieService movieService;
     RecommendationService recommendationService;
+
+    @GetMapping("/home-feed")
+    public ApiResponse<HomeFeedResponse> getHomeFeed(
+            @RequestParam(defaultValue = "10") int limit) {
+        if (limit < 1 || limit > 50) {
+            throw new AppException(ErrorCode.INVALID_SEARCH_PARAMS);
+        }
+        RecommendationMovieResponse recommendation = resolveRecommendationsForHomeFeed(limit);
+        return ApiResponse.<HomeFeedResponse>builder()
+                .result(movieService.getHomeFeed(recommendation, limit))
+                .build();
+    }
+
+    private RecommendationMovieResponse resolveRecommendationsForHomeFeed(int limit) {
+        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+        if (auth == null || !auth.isAuthenticated() || auth instanceof AnonymousAuthenticationToken) {
+            return new RecommendationMovieResponse("guest", List.of());
+        }
+        try {
+            return recommendationService.recommend(limit);
+        } catch (Exception e) {
+            return new RecommendationMovieResponse("unavailable", List.of());
+        }
+    }
 
     @GetMapping("/recommendations")
     public ApiResponse<RecommendationMovieResponse> recommendations(

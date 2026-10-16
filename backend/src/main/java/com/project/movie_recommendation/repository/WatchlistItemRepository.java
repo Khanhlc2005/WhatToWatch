@@ -17,4 +17,8 @@ public interface WatchlistItemRepository extends JpaRepository<WatchlistItem, Lo
     void deleteByWatchlistIdAndMovieId(Long watchlistId, Long movieId);
 
     Page<WatchlistItem> findByWatchlistIdOrderByCreatedAtDesc(Long watchlistId, Pageable pageable);
+
+    long countByWatchlistId(Long watchlistId);
+
+    boolean existsByWatchlistUserIdAndMovieId(Long userId, Long movieId);
 }
