@@ -3,32 +3,35 @@ package com.project.movie_recommendation.service;
 import com.project.movie_recommendation.client.AiServiceClient;
 import com.project.movie_recommendation.dto.ai.AiMovieSearchResponse;
 import com.project.movie_recommendation.dto.request.MovieFilterRequest;
+import com.project.movie_recommendation.dto.response.HomeFeedResponse;
 import com.project.movie_recommendation.dto.response.MovieDetailResponse;
 import com.project.movie_recommendation.dto.response.MovieSummaryResponse;
 import com.project.movie_recommendation.dto.response.PageResponse;
+import com.project.movie_recommendation.dto.response.RecommendationMovieResponse;
 import com.project.movie_recommendation.dto.response.TrailerResponse;
+import com.project.movie_recommendation.entity.Genre;
 import com.project.movie_recommendation.entity.Movie;
 import com.project.movie_recommendation.exception.AppException;
 import com.project.movie_recommendation.exception.ErrorCode;
 import com.project.movie_recommendation.mapper.MovieMapper;
 import com.project.movie_recommendation.repository.MovieRepository;
 import com.project.movie_recommendation.repository.specification.MovieSpecification;
-import org.springframework.cache.annotation.Cacheable;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
-import java.util.List;
 import java.time.LocalDate;
+import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import java.util.stream.Collectors;
-import org.springframework.data.domain.PageRequest;
-import org.springframework.transaction.annotation.Transactional;
 
 @Service
 @RequiredArgsConstructor
@@ -38,15 +41,79 @@ public class MovieService {
     MovieMapper movieMapper;
     AiServiceClient aiServiceClient;
 
+    private static final int HOME_FEED_GENRE_COUNT = 6;
+
+    @Transactional(readOnly = true)
+    public HomeFeedResponse getHomeFeed(RecommendationMovieResponse recommendation, int rowLimit) {
+        String recStatus = recommendation != null && recommendation.status() != null
+                ? recommendation.status()
+                : "guest";
+
+        List<MovieSummaryResponse> recommendedForYou = recommendation != null && recommendation.hits() != null
+                ? recommendation.hits().stream()
+                .map(RecommendationMovieResponse.Hit::movie)
+                .filter(Objects::nonNull)
+                .limit(rowLimit)
+                .toList()
+                : List.of();
+
+        List<MovieSummaryResponse> topRated = getTopRatedMovies().stream()
+                .limit(rowLimit)
+                .toList();
+
+        List<MovieSummaryResponse> newest = getNewestMovies().stream()
+                .limit(rowLimit)
+                .toList();
+
+        List<Genre> popularGenres = movieRepository.findPopularGenres(PageRequest.of(0, HOME_FEED_GENRE_COUNT));
+        List<HomeFeedResponse.GenreRowResponse> genreRows = popularGenres.stream()
+                .map(genre -> {
+                    List<MovieSummaryResponse> movies = movieRepository
+                            .findTopMoviesByGenreId(genre.getId(), PageRequest.of(0, rowLimit))
+                            .stream()
+                            .map(movieMapper::toMovieSummaryResponse)
+                            .toList();
+                    return HomeFeedResponse.GenreRowResponse.builder()
+                            .genreId(genre.getId())
+                            .genreName(genre.getName())
+                            .movies(movies)
+                            .build();
+                })
+                .filter(row -> !row.getMovies().isEmpty())
+                .toList();
+
+        Long heroMovieId = !recommendedForYou.isEmpty() ? recommendedForYou.get(0).getId()
+                : !topRated.isEmpty() ? topRated.get(0).getId()
+                : !newest.isEmpty() ? newest.get(0).getId()
+                : null;
+
+        MovieDetailResponse heroMovie = heroMovieId != null
+                ? movieRepository.findById(heroMovieId).map(this::toDetailWithSimilar).orElse(null)
+                : null;
+
+        return HomeFeedResponse.builder()
+                .heroMovie(heroMovie)
+                .recommendationStatus(recStatus)
+                .recommendedForYou(recommendedForYou)
+                .topRated(topRated)
+                .newest(newest)
+                .genreRows(genreRows)
+                .build();
+    }
+
     @Transactional(readOnly = true)
     public MovieDetailResponse getMovieDetail(Long id) {
         Movie movie = movieRepository.findById(id)
                 .orElseThrow(() -> new AppException(ErrorCode.MOVIE_NOT_FOUND));
+        return toDetailWithSimilar(movie);
+    }
+
+    private MovieDetailResponse toDetailWithSimilar(Movie movie) {
         MovieDetailResponse detail = movieMapper.toMovieDetailResponse(movie);
         if (movie.getReleaseDate() != null && movie.getOriginalLanguage() != null) {
             LocalDate date = movie.getReleaseDate();
             detail.setSimilarMovies(movieRepository.findRelatedByLanguageAndDate(
-                    id, movie.getOriginalLanguage(), date.minusYears(5), date.plusYears(5))
+                            movie.getId(), movie.getOriginalLanguage(), date.minusYears(5), date.plusYears(5))
                     .stream().map(movieMapper::toMovieSummaryResponse).toList());
         }
         return detail;
@@ -145,5 +212,4 @@ public class MovieService {
                 .data(pagedData)
                 .build();
     }
-
 }

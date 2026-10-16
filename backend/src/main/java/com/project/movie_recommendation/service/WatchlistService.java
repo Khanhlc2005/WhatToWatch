@@ -1,7 +1,9 @@
 package com.project.movie_recommendation.service;
 
+import com.project.movie_recommendation.dto.request.WatchlistRequest;
 import com.project.movie_recommendation.dto.response.PageResponse;
 import com.project.movie_recommendation.dto.response.WatchlistItemResponse;
+import com.project.movie_recommendation.dto.response.WatchlistResponse;
 import com.project.movie_recommendation.dto.response.WatchlistStatusResponse;
 import com.project.movie_recommendation.entity.Movie;
 import com.project.movie_recommendation.entity.User;
@@ -47,7 +49,8 @@ public class WatchlistService {
     }
 
     private Watchlist getOrCreateDefaultWatchlist(User user) {
-        return watchlistRepository.findByUserId(user.getId())
+        return watchlistRepository.findByUserIdAndName(user.getId(), DEFAULT_WATCHLIST_NAME)
+                .or(() -> watchlistRepository.findByUserId(user.getId()))
                 .orElseGet(() -> watchlistRepository.save(
                         Watchlist.builder()
                                 .user(user)
@@ -56,11 +59,129 @@ public class WatchlistService {
                 ));
     }
 
+    private Watchlist getOwnedWatchlist(Long watchlistId, Long userId) {
+        return watchlistRepository.findByIdAndUserId(watchlistId, userId)
+                .orElseThrow(() -> new AppException(ErrorCode.WATCHLIST_NOT_FOUND));
+    }
+
+    @Transactional
+    public WatchlistResponse createWatchlist(WatchlistRequest request) {
+        User user = getCurrentUser();
+        String cleanName = request.getName().trim();
+        if (cleanName.isEmpty()) {
+            throw new AppException(ErrorCode.WATCHLIST_NAME_REQUIRED);
+        }
+        if (watchlistRepository.existsByUserIdAndNameIgnoreCase(user.getId(), cleanName)) {
+            throw new AppException(ErrorCode.WATCHLIST_ALREADY_EXISTS);
+        }
+
+        Watchlist watchlist = watchlistRepository.save(
+                Watchlist.builder()
+                        .user(user)
+                        .name(cleanName)
+                        .build()
+        );
+
+        return toWatchlistResponse(watchlist, 0L);
+    }
+
+    @Transactional(readOnly = true)
+    public List<WatchlistResponse> getMyWatchlists() {
+        User user = getCurrentUser();
+        return watchlistRepository.findAllByUserIdOrderByCreatedAtDesc(user.getId())
+                .stream()
+                .map(w -> toWatchlistResponse(w, watchlistItemRepository.countByWatchlistId(w.getId())))
+                .toList();
+    }
+
+    @Transactional
+    public WatchlistResponse updateWatchlist(Long watchlistId, WatchlistRequest request) {
+        User user = getCurrentUser();
+        Watchlist watchlist = getOwnedWatchlist(watchlistId, user.getId());
+
+        String cleanName = request.getName().trim();
+        if (cleanName.isEmpty()) {
+            throw new AppException(ErrorCode.WATCHLIST_NAME_REQUIRED);
+        }
+        if (!watchlist.getName().equalsIgnoreCase(cleanName)
+                && watchlistRepository.existsByUserIdAndNameIgnoreCase(user.getId(), cleanName)) {
+            throw new AppException(ErrorCode.WATCHLIST_ALREADY_EXISTS);
+        }
+
+        watchlist.setName(cleanName);
+        Watchlist saved = watchlistRepository.save(watchlist);
+        long count = watchlistItemRepository.countByWatchlistId(saved.getId());
+        return toWatchlistResponse(saved, count);
+    }
+
+    @Transactional
+    public void deleteWatchlist(Long watchlistId) {
+        User user = getCurrentUser();
+        Watchlist watchlist = getOwnedWatchlist(watchlistId, user.getId());
+        watchlistRepository.delete(watchlist);
+    }
+
+    @Transactional
+    public void addMovieToWatchlist(Long watchlistId, Long movieId) {
+        User user = getCurrentUser();
+        Watchlist watchlist = getOwnedWatchlist(watchlistId, user.getId());
+        addMovieToTargetWatchlist(watchlist, movieId);
+    }
+
+    @Transactional
+    public void removeMovieFromWatchlist(Long watchlistId, Long movieId) {
+        User user = getCurrentUser();
+        Watchlist watchlist = getOwnedWatchlist(watchlistId, user.getId());
+        removeMovieFromTargetWatchlist(watchlist, movieId);
+    }
+
+    @Transactional(readOnly = true)
+    public PageResponse<WatchlistItemResponse> getWatchlistItems(Long watchlistId, int page, int size) {
+        User user = getCurrentUser();
+        Watchlist watchlist = getOwnedWatchlist(watchlistId, user.getId());
+        return getPagedItemsForWatchlist(watchlist, page, size);
+    }
+
     @Transactional
     public void addToWatchlist(Long movieId) {
         User user = getCurrentUser();
         Watchlist watchlist = getOrCreateDefaultWatchlist(user);
+        addMovieToTargetWatchlist(watchlist, movieId);
+    }
 
+    @Transactional
+    public void removeFromWatchlist(Long movieId) {
+        User user = getCurrentUser();
+        Watchlist watchlist = watchlistRepository.findByUserIdAndName(user.getId(), DEFAULT_WATCHLIST_NAME)
+                .or(() -> watchlistRepository.findByUserId(user.getId()))
+                .orElseThrow(() -> new AppException(ErrorCode.WATCHLIST_NOT_FOUND));
+        removeMovieFromTargetWatchlist(watchlist, movieId);
+    }
+
+    @Transactional(readOnly = true)
+    public WatchlistStatusResponse checkStatus(Long movieId) {
+        User user = getCurrentUser();
+        var watchlistOpt = watchlistRepository.findByUserIdAndName(user.getId(), DEFAULT_WATCHLIST_NAME)
+                .or(() -> watchlistRepository.findByUserId(user.getId()));
+
+        boolean inWatchlist = (watchlistOpt.isPresent() &&
+                watchlistItemRepository.existsByWatchlistIdAndMovieId(watchlistOpt.get().getId(), movieId))
+                || watchlistItemRepository.existsByWatchlistUserIdAndMovieId(user.getId(), movieId);
+
+        return WatchlistStatusResponse.builder()
+                .movieId(movieId)
+                .inWatchlist(inWatchlist)
+                .build();
+    }
+
+    @Transactional(readOnly = true)
+    public PageResponse<WatchlistItemResponse> getMyWatchlist(int page, int size) {
+        User user = getCurrentUser();
+        Watchlist watchlist = getOrCreateDefaultWatchlist(user);
+        return getPagedItemsForWatchlist(watchlist, page, size);
+    }
+
+    private void addMovieToTargetWatchlist(Watchlist watchlist, Long movieId) {
         if (watchlistItemRepository.existsByWatchlistIdAndMovieId(watchlist.getId(), movieId)) {
             throw new AppException(ErrorCode.MOVIE_ALREADY_IN_WATCHLIST);
         }
@@ -76,40 +197,19 @@ public class WatchlistService {
         watchlistItemRepository.save(item);
     }
 
-    @Transactional
-    public void removeFromWatchlist(Long movieId) {
-        User user = getCurrentUser();
-        Watchlist watchlist = watchlistRepository.findByUserId(user.getId())
-                .orElseThrow(() -> new AppException(ErrorCode.WATCHLIST_NOT_FOUND));
-
+    private void removeMovieFromTargetWatchlist(Watchlist watchlist, Long movieId) {
         if (!watchlistItemRepository.existsByWatchlistIdAndMovieId(watchlist.getId(), movieId)) {
             throw new AppException(ErrorCode.MOVIE_NOT_IN_WATCHLIST);
         }
-
         watchlistItemRepository.deleteByWatchlistIdAndMovieId(watchlist.getId(), movieId);
     }
 
-    public WatchlistStatusResponse checkStatus(Long movieId) {
-        User user = getCurrentUser();
-        var watchlistOpt = watchlistRepository.findByUserId(user.getId());
-
-        boolean inWatchlist = watchlistOpt.isPresent() &&
-                watchlistItemRepository.existsByWatchlistIdAndMovieId(watchlistOpt.get().getId(), movieId);
-
-        return WatchlistStatusResponse.builder()
-                .movieId(movieId)
-                .inWatchlist(inWatchlist)
-                .build();
-    }
-
-    public PageResponse<WatchlistItemResponse> getMyWatchlist(int page, int size) {
-        User user = getCurrentUser();
-        Watchlist watchlist = getOrCreateDefaultWatchlist(user);
-
+    private PageResponse<WatchlistItemResponse> getPagedItemsForWatchlist(Watchlist watchlist, int page, int size) {
         int queryPage = Math.max(page - 1, 0);
         Pageable pageable = PageRequest.of(queryPage, size);
 
-        Page<WatchlistItem> itemPage = watchlistItemRepository.findByWatchlistIdOrderByCreatedAtDesc(watchlist.getId(), pageable);
+        Page<WatchlistItem> itemPage = watchlistItemRepository
+                .findByWatchlistIdOrderByCreatedAtDesc(watchlist.getId(), pageable);
 
         List<WatchlistItemResponse> data = itemPage.getContent().stream()
                 .map(item -> WatchlistItemResponse.builder()
@@ -125,6 +225,15 @@ public class WatchlistService {
                 .totalPages(itemPage.getTotalPages())
                 .totalElements(itemPage.getTotalElements())
                 .data(data)
+                .build();
+    }
+
+    private WatchlistResponse toWatchlistResponse(Watchlist watchlist, long movieCount) {
+        return WatchlistResponse.builder()
+                .id(watchlist.getId())
+                .name(watchlist.getName())
+                .movieCount(movieCount)
+                .createdAt(watchlist.getCreatedAt())
                 .build();
     }
 }
