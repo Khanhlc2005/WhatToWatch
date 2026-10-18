@@ -7,6 +7,7 @@ import com.project.movie_recommendation.dto.request.ChatMessageRequest;
 import com.project.movie_recommendation.entity.Conversation;
 import com.project.movie_recommendation.entity.ConversationMessage;
 import com.project.movie_recommendation.entity.User;
+import com.project.movie_recommendation.exception.AiServiceUnavailableException;
 import com.project.movie_recommendation.repository.ConversationMessageRepository;
 import com.project.movie_recommendation.repository.ConversationRepository;
 import com.project.movie_recommendation.repository.UserRepository;
@@ -70,5 +71,29 @@ class ConversationServiceTest {
         assertTrue(summary.getValue().contains("Tin nhắn 2"));
         assertFalse(summary.getValue().contains("Câu hỏi mới"));
         assertEquals(2L, conversation.getSummaryThroughMessageId());
+    }
+
+    @Test
+    void unavailableAiDoesNotSaveAnAssistantMessage() {
+        ConversationRepository conversations = mock(ConversationRepository.class);
+        ConversationMessageRepository messages = mock(ConversationMessageRepository.class);
+        UserRepository users = mock(UserRepository.class);
+        AiServiceClient ai = mock(AiServiceClient.class);
+        ConversationService service = new ConversationService(conversations, messages, users, ai);
+        User user = User.builder().id(7L).email("user@example.com").build();
+        SecurityContextHolder.getContext().setAuthentication(
+                new UsernamePasswordAuthenticationToken("user@example.com", null));
+        when(users.findByEmail("user@example.com")).thenReturn(Optional.of(user));
+        when(conversations.save(any(Conversation.class))).thenAnswer(invocation -> {
+            Conversation conversation = invocation.getArgument(0);
+            conversation.setId(3L);
+            return conversation;
+        });
+        when(ai.sendChatMessage(anyString(), anyList(), nullable(String.class)))
+                .thenReturn(AiChatResponse.builder().reply("Malformed AI response").build());
+
+        assertThrows(AiServiceUnavailableException.class, () -> service.sendMessage(
+                ChatMessageRequest.builder().message("Recommend a movie").build()));
+        verify(messages, times(1)).save(any(ConversationMessage.class));
     }
 }
