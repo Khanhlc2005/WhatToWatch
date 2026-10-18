@@ -6,6 +6,7 @@ import com.project.movie_recommendation.dto.ai.AiChatResponse;
 import com.project.movie_recommendation.dto.ai.AiMovieSearchRequest;
 import com.project.movie_recommendation.dto.ai.AiMovieSearchResponse;
 import com.project.movie_recommendation.dto.ai.AiRecommendationContracts;
+import com.project.movie_recommendation.exception.AiServiceUnavailableException;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.MediaType;
@@ -49,18 +50,22 @@ public class AiServiceClient {
 
     public AiChatResponse sendChatMessage(String message, List<AiChatHistoryMessage> history, String summary) {
         try {
-            return chatClient.post()
+            AiChatResponse response = chatClient.post()
                     .uri("/internal/chat")
                     .contentType(MediaType.APPLICATION_JSON)
                     .body(AiChatRequest.builder().message(message).history(history).summary(summary).build())
                     .retrieve()
                     .body(AiChatResponse.class);
+            if (response == null || !List.of("answered", "no_match", "insufficient_context").contains(response.getStatus())
+                    || response.getReply() == null || response.getReply().isBlank()) {
+                throw new AiServiceUnavailableException("The AI service returned an unusable chat response");
+            }
+            return response;
+        } catch (AiServiceUnavailableException e) {
+            throw e;
         } catch (Exception e) {
             log.error("Failed to connect to AI Service: {}", e.getMessage());
-            return AiChatResponse.builder()
-                    .status("error")
-                    .reply("Sorry, the AI service is currently unavailable. Please try again later.")
-                    .build();
+            throw new AiServiceUnavailableException("The AI service is unavailable", e);
         }
     }
 

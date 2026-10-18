@@ -15,6 +15,7 @@ import com.project.movie_recommendation.entity.Conversation;
 import com.project.movie_recommendation.entity.ConversationMessage;
 import com.project.movie_recommendation.entity.User;
 import com.project.movie_recommendation.exception.AppException;
+import com.project.movie_recommendation.exception.AiServiceUnavailableException;
 import com.project.movie_recommendation.exception.ErrorCode;
 import com.project.movie_recommendation.repository.ConversationMessageRepository;
 import com.project.movie_recommendation.repository.ConversationRepository;
@@ -89,6 +90,10 @@ public class ConversationService {
 
         AiChatResponse aiResult = aiServiceClient.sendChatMessage(
                 request.getMessage(), history, conversation.getSummary());
+        if (aiResult == null || !List.of("answered", "no_match", "insufficient_context").contains(aiResult.getStatus())
+                || aiResult.getReply() == null || aiResult.getReply().isBlank()) {
+            throw new AiServiceUnavailableException("The AI service returned an unusable chat response");
+        }
 
         String payloadJson = null;
         if (aiResult.getMovies() != null && !aiResult.getMovies().isEmpty()) {
