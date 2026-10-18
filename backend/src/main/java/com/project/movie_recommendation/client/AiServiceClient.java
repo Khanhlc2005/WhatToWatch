@@ -56,7 +56,8 @@ public class AiServiceClient {
                     .body(AiChatRequest.builder().message(message).history(history).summary(summary).build())
                     .retrieve()
                     .body(AiChatResponse.class);
-            if (response == null || !List.of("answered", "no_match", "insufficient_context").contains(response.getStatus())
+            if (response == null || response.getStatus() == null
+                    || !List.of("answered", "no_match", "insufficient_context").contains(response.getStatus())
                     || response.getReply() == null || response.getReply().isBlank()) {
                 throw new AiServiceUnavailableException("The AI service returned an unusable chat response");
             }

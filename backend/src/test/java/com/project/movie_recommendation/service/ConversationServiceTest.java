@@ -90,7 +90,7 @@ class ConversationServiceTest {
             return conversation;
         });
         when(ai.sendChatMessage(anyString(), anyList(), nullable(String.class)))
-                .thenReturn(AiChatResponse.builder().status("error").reply("AI unavailable").build());
+                .thenReturn(AiChatResponse.builder().reply("Malformed AI response").build());
 
         assertThrows(AiServiceUnavailableException.class, () -> service.sendMessage(
                 ChatMessageRequest.builder().message("Recommend a movie").build()));

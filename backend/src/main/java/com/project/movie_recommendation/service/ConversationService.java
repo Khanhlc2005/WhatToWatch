@@ -90,7 +90,8 @@ public class ConversationService {
 
         AiChatResponse aiResult = aiServiceClient.sendChatMessage(
                 request.getMessage(), history, conversation.getSummary());
-        if (aiResult == null || !List.of("answered", "no_match", "insufficient_context").contains(aiResult.getStatus())
+        if (aiResult == null || aiResult.getStatus() == null
+                || !List.of("answered", "no_match", "insufficient_context").contains(aiResult.getStatus())
                 || aiResult.getReply() == null || aiResult.getReply().isBlank()) {
             throw new AiServiceUnavailableException("The AI service returned an unusable chat response");
         }
