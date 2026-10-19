@@ -68,6 +68,10 @@ data/model_cache/
 # Isolated local CUDA runtime
 ai-service/.venv-gpu/
 
+# Local fine-tuning and merged inference weights
+/w2w_english_v1_artifacts/
+/wtw-qwen25-english-v1-merged/
+
 # Machine-specific runtime overrides and diagnostics (keep local)
 /docker-compose.ai-local.yml
 /ai-service/requirements-gpu-overlay.txt
