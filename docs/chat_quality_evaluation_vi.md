@@ -66,6 +66,15 @@ Chạy `capture` và `compare` trên `data/evaluation/chatbot_set_v1.json` theo
 [hướng dẫn evaluation](../data/evaluation/README.md), dùng tên file riêng với
 bộ memory. Sau đó xuất biểu mẫu A/B để người review chấm raw và guarded riêng:
 
+Ngày 19/10/2026 đã capture **base** `qwen2.5:3b` trên đủ 22 ca context cố định:
+22/22 ca không có exception; JSON contract và source identity đạt 22/22 ở output
+thô lẫn sau guard; hai ca cấu trúc C20/C21 có status mong đợi. Digest model là
+`357c53fb659c5076de1d65ccb0b397446227b71a42be9d1603d46168015c9e4b`.
+[Capture gốc](evidence/chat-quality-evaluation/base_chatbot_22_capture.json)
+(SHA-256 `6e1f047b52fd134943c808547b14180a3a1bc3535b90adab071062fcbca870de`)
+giữ từng output và thời gian. Các phép kiểm này **không** đo faithfulness,
+relevance hay retrieval; chưa có capture fine-tuned để so sánh paired.
+
 ```bash
 PYTHONPATH=ai-service python data/scripts/evaluate_chat_quality.py review-template \
   --evaluation data/evaluation/chatbot_set_v1.json \

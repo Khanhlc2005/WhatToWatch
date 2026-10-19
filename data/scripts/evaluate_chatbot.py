@@ -120,6 +120,9 @@ def capture(dataset, model, url):
             run['error'] = type(exc).__name__ + ': ' + str(exc)
         run['elapsed_seconds'] = time.perf_counter() - start
         runs.append(run)
+        print(f"{model}: {len(runs)}/{len(dataset['cases'])} {case['id']} "
+              f"{'error: ' + run['error'] if 'error' in run else 'captured'}",
+              flush=True)
     return dict(model=model, model_digest=match.get('digest'), evaluation_sha256=sha(dataset),
         system_prompt_sha256=sha(SYSTEM_PROMPT), generation_options={'temperature': 0, 'seed': 42, 'num_predict': 512}, runs=runs)
 

@@ -1,0 +1,701 @@
+{
+  "model": "qwen2.5:3b",
+  "model_digest": "357c53fb659c5076de1d65ccb0b397446227b71a42be9d1603d46168015c9e4b",
+  "evaluation_sha256": "8f54fe8ddf66de4a823765721a5d041b57d01c08c5341ca83f0db6a28b24361c",
+  "system_prompt_sha256": "4b67eb9917e003afccbd75f7218f77eabb9e0eddb4d688e30132f189d5054244",
+  "generation_options": {
+    "temperature": 0,
+    "seed": 42,
+    "num_predict": 512
+  },
+  "runs": [
+    {
+      "id": "Q01",
+      "input_sha256": "61961b987db699d182f8db9c4a9b90fa5a1b73a992e43dc677a509cf7c8372fc",
+      "generations": [
+        {
+          "raw": "{\n  \"status\": \"answered\",\n  \"answer\": \"21597 Interstellar\",\n  \"movies\": [\n    {\n      \"movie_id\": \"21597\",\n      \"title\": \"Interstellar\",\n      \"reason\": \"The overview describes a group of explorers using a wormhole to explore distant worlds, matching the crew traveling through a wormhole to explore distant worlds\"\n    }\n  ]\n}",
+          "prompt_sha256": "6a56c77bcb03e11fd297c465bf0f31202d48fe48c5a4d4426957e55a5245e2d3",
+          "checks": {
+            "json_contract": true,
+            "source_identity": true,
+            "reason_fact_support": false
+          }
+        }
+      ],
+      "guarded_response": {
+        "status": "answered",
+        "answer": "I found a matching movie in the provided context.",
+        "movies": [
+          {
+            "movie_id": "21597",
+            "title": "Interstellar",
+            "reason": "Genres: Adventure, Drama, Science Fiction"
+          }
+        ]
+      },
+      "guarded_checks": {
+        "json_contract": true,
+        "source_identity": true,
+        "reason_fact_support": true
+      },
+      "elapsed_seconds": 15.878039250000256
+    },
+    {
+      "id": "Q02",
+      "input_sha256": "d56a2282e45641286075d5d0dbe79d1b85d7696d7d03599d734604d17f8230f0",
+      "generations": [
+        {
+          "raw": "{\n  \"status\": \"answered\",\n  \"answer\": \"21597 Interstellar\",\n  \"movies\": [\n    {\n      \"movie_id\": \"21597\",\n      \"title\": \"Interstellar\",\n      \"reason\": \"The movie is about a group of explorers who make use of a newly discovered wormhole to surpass the limitations on human space travel and conquer the vast distances involved in an interstellar voyage, matching the description of a group going through a deep hole to explore space.\"\n    }\n  ]\n}",
+          "prompt_sha256": "0786d89ea0154ff1f6300379e64d5d09951e0244f4b8767780855b0d6311ef18",
+          "checks": {
+            "json_contract": true,
+            "source_identity": true,
+            "reason_fact_support": false
+          }
+        }
+      ],
+      "guarded_response": {
+        "status": "answered",
+        "answer": "I found a matching movie in the provided context.",
+        "movies": [
+          {
+            "movie_id": "21597",
+            "title": "Interstellar",
+            "reason": "Genres: Adventure, Drama, Science Fiction"
+          }
+        ]
+      },
+      "guarded_checks": {
+        "json_contract": true,
+        "source_identity": true,
+        "reason_fact_support": true
+      },
+      "elapsed_seconds": 8.536185293999552
+    },
+    {
+      "id": "Q03",
+      "input_sha256": "cfc5019f21b182765287723ae5c96740a4de227a51c9ae29ff013f73b61a6c6d",
+      "generations": [
+        {
+          "raw": "{\n  \"status\": \"answered\",\n  \"answer\": \"{} is not mentioned in the provided context\",\n  \"movies\": [\n    {\n      \"movie_id\": \"27034\",\n      \"title\": \"Inception\",\n      \"reason\": \"Cobb, a skilled thief who commits corporate espionage by infiltrating the subconscious of his targets is offered a chance to regain his old life as payment for a task considered to be impossible: \\\"inception\\\", the implantation of another person's idea into a target's subconscious.\"\n    }\n  ]\n}",
+          "prompt_sha256": "ffeb7a211de1512f0174bc7f9237735910e0ea736ad6dd841d9c99c86a62cc78",
+          "checks": {
+            "json_contract": true,
+            "source_identity": true,
+            "reason_fact_support": true
+          }
+        }
+      ],
+      "guarded_response": {
+        "status": "answered",
+        "answer": "I found a matching movie in the provided context.",
+        "movies": [
+          {
+            "movie_id": "27034",
+            "title": "Inception",
+            "reason": "Genres: Action, Adventure, Science Fiction"
+          }
+        ]
+      },
+      "guarded_checks": {
+        "json_contract": true,
+        "source_identity": true,
+        "reason_fact_support": true
+      },
+      "elapsed_seconds": 11.771273362000102
+    },
+    {
+      "id": "Q04",
+      "input_sha256": "6cd303895706f2bae22e22c3a9a60df71277d363fe7a84d51b5586a51f54d906",
+      "generations": [
+        {
+          "raw": "{\n  \"status\": \"answered\",\n  \"answer\": \"Spirited Away\",\n  \"movies\": [\n    {\n      \"movie_id\": \"16053\",\n      \"title\": \"Spirited Away\",\n      \"reason\": \"A young girl, Chihiro, becomes trapped in a strange new world of spirits. When her parents undergo a mysterious transformation, she must call upon the courage she never knew she had to free her family.\"\n    }\n  ]\n}",
+          "prompt_sha256": "fe8239df5d6eb6de42c9de8bfd40be249801c2b917bd05ce6b2fc1206da33826",
+          "checks": {
+            "json_contract": true,
+            "source_identity": true,
+            "reason_fact_support": true
+          }
+        }
+      ],
+      "guarded_response": {
+        "status": "answered",
+        "answer": "I found a matching movie in the provided context.",
+        "movies": [
+          {
+            "movie_id": "16053",
+            "title": "Spirited Away",
+            "reason": "Genres: Animation, Family, Fantasy"
+          }
+        ]
+      },
+      "guarded_checks": {
+        "json_contract": true,
+        "source_identity": true,
+        "reason_fact_support": true
+      },
+      "elapsed_seconds": 12.337788360999184
+    },
+    {
+      "id": "Q05",
+      "input_sha256": "ce841eeb081a36ea5384bed0da6f7e72ed44162d071f42d1738a3c6a8828f5ef",
+      "generations": [
+        {
+          "raw": "{\n  \"status\": \"answered\",\n  \"answer\": \"{}, [\\\"Toy Story\\\"]\",\n  \"movies\": [\n    {\n      \"movie_id\": \"12956\",\n      \"title\": \"Toy Story\",\n      \"reason\": \"The movie's synopsis matches the description of toys coming to life and two rivals learning to work together.\"\n    }\n  ]\n}",
+          "prompt_sha256": "e560d31edc12a888810efc08d89fce2f889972d9e98557e72bee38c21b156e35",
+          "checks": {
+            "json_contract": true,
+            "source_identity": true,
+            "reason_fact_support": false
+          }
+        }
+      ],
+      "guarded_response": {
+        "status": "answered",
+        "answer": "I found a matching movie in the provided context.",
+        "movies": [
+          {
+            "movie_id": "12956",
+            "title": "Toy Story",
+            "reason": "Genres: Adventure, Animation, Comedy, Family"
+          }
+        ]
+      },
+      "guarded_checks": {
+        "json_contract": true,
+        "source_identity": true,
+        "reason_fact_support": true
+      },
+      "elapsed_seconds": 9.747392973999922
+    },
+    {
+      "id": "Q06",
+      "input_sha256": "625c76aa116d34619aa492e0245dc1bf5b8135d608bf77e8a75a9e417c3876f0",
+      "generations": [
+        {
+          "raw": "{\n  \"status\": \"answered\",\n  \"answer\": \"43791 Parasite\",\n  \"movies\": [\n    {\n      \"movie_id\": \"43791\",\n      \"title\": \"Parasite\",\n      \"reason\": \"The movie's overview describes a poor family becoming entangled with a wealthy household for their livelihood.\"\n    }\n  ]\n}",
+          "prompt_sha256": "79f91f5f1854d1e6a94975a2215900cff5304f35b703207ef1166118029bbe38",
+          "checks": {
+            "json_contract": true,
+            "source_identity": true,
+            "reason_fact_support": false
+          }
+        }
+      ],
+      "guarded_response": {
+        "status": "answered",
+        "answer": "I found a matching movie in the provided context.",
+        "movies": [
+          {
+            "movie_id": "43791",
+            "title": "Parasite",
+            "reason": "Genres: Comedy, Drama, Thriller"
+          }
+        ]
+      },
+      "guarded_checks": {
+        "json_contract": true,
+        "source_identity": true,
+        "reason_fact_support": true
+      },
+      "elapsed_seconds": 9.155619048000517
+    },
+    {
+      "id": "Q07",
+      "input_sha256": "19dfc1c6efac358fe3b16670ad902d9b8cbca7b410285b68e9dde66a6bd6c755",
+      "generations": [
+        {
+          "raw": "{\n  \"status\": \"answered\",\n  \"answer\": \"Interstellar\",\n  \"movies\": [\n    {\n      \"movie_id\": \"21597\",\n      \"title\": \"Interstellar\",\n      \"reason\": \"This movie matches the query 'Interstellar' and is described as an adventure, drama, and science fiction film directed by Christopher Nolan.\"\n    }\n  ]\n}",
+          "prompt_sha256": "7203d7b1f778c023c2f6bf990fe3c6746f4ca9dd02f4d19cdc61cf27abf044fb",
+          "checks": {
+            "json_contract": true,
+            "source_identity": true,
+            "reason_fact_support": true
+          }
+        }
+      ],
+      "guarded_response": {
+        "status": "answered",
+        "answer": "I found a matching movie in the provided context.",
+        "movies": [
+          {
+            "movie_id": "21597",
+            "title": "Interstellar",
+            "reason": "Genres: Adventure, Drama, Science Fiction"
+          }
+        ]
+      },
+      "guarded_checks": {
+        "json_contract": true,
+        "source_identity": true,
+        "reason_fact_support": true
+      },
+      "elapsed_seconds": 9.288113720000183
+    },
+    {
+      "id": "Q08",
+      "input_sha256": "9434c39768d06019ed3d61678685f6b397a44fdc6098aa2bb6ff04c2c3d0b1d3",
+      "generations": [
+        {
+          "raw": "{\n  \"status\": \"answered\",\n  \"answer\": \"The Matrix (movie_id: 14317)\",\n  \"movies\": [\n    {\n      \"movie_id\": \"14317\",\n      \"title\": \"The Matrix\",\n      \"reason\": \"This movie is about a computer hacker who joins a group of underground insurgents fighting against computers that rule the earth, set in the 22nd century, and falls under the genres of Action and Science Fiction.\"\n    }\n  ]\n}",
+          "prompt_sha256": "f2b8cfb0dc6ca71674102d8c019bffddf10669266d8fa3b30cbcb3929c7439da",
+          "checks": {
+            "json_contract": true,
+            "source_identity": true,
+            "reason_fact_support": true
+          }
+        }
+      ],
+      "guarded_response": {
+        "status": "answered",
+        "answer": "I found a matching movie in the provided context.",
+        "movies": [
+          {
+            "movie_id": "14317",
+            "title": "The Matrix",
+            "reason": "Genres: Action, Science Fiction"
+          }
+        ]
+      },
+      "guarded_checks": {
+        "json_contract": true,
+        "source_identity": true,
+        "reason_fact_support": true
+      },
+      "elapsed_seconds": 11.708477002999643
+    },
+    {
+      "id": "Q09",
+      "input_sha256": "48e26b6d08f4bf7d0020fcde126fa99a5c410d050d10a28a2e0a9ee0dae194ec",
+      "generations": [
+        {
+          "raw": "{\n  \"status\": \"answered\",\n  \"answer\": \"{\\\"movie_id\\\": \\\"6203\\\", \\\"title\\\": \\\"The Godfather\\\", \\\"reason\\\": \\\"The overview mentions Vito Corleone, Michael Corleone, and the Corleone crime family.\\\"}\",\n  \"movies\": [\n    {\n      \"movie_id\": \"6203\",\n      \"title\": \"The Godfather\",\n      \"reason\": \"The overview mentions Vito Corleone, Michael Corleone, and the Corleone crime family.\"\n    }\n  ]\n}",
+          "prompt_sha256": "9760fccd90fcd4bb5a5b3a98226287bda60d025a2756ddde252801a739c9a14f",
+          "checks": {
+            "json_contract": true,
+            "source_identity": true,
+            "reason_fact_support": true
+          }
+        }
+      ],
+      "guarded_response": {
+        "status": "answered",
+        "answer": "I found a matching movie in the provided context.",
+        "movies": [
+          {
+            "movie_id": "6203",
+            "title": "The Godfather",
+            "reason": "Genres: Crime, Drama"
+          }
+        ]
+      },
+      "guarded_checks": {
+        "json_contract": true,
+        "source_identity": true,
+        "reason_fact_support": true
+      },
+      "elapsed_seconds": 12.743454191999263
+    },
+    {
+      "id": "Q10",
+      "input_sha256": "cc6cfd45d0d0e51591064a32f112e6c4d0587d92bee99b7e8524687c35af4135",
+      "generations": [
+        {
+          "raw": "{\n  \"status\": \"answered\",\n  \"answer\": \"7646, Alien, The overview of this movie mentions a creature inside one of the eggs that attacks an explorer and is birthed by a host, which aligns with the Nostromo alien parasite.\",\n  \"movies\": [\n    {\n      \"movie_id\": \"7646\",\n      \"title\": \"Alien\",\n      \"reason\": \"The overview of this movie mentions a creature inside one of the eggs that attacks an explorer and is birthed by a host, which aligns with the Nostromo alien parasite.\"\n    }\n  ]\n}",
+          "prompt_sha256": "90e4f349bc4ab042850fee52affd867744add28c7803d6cb6664e30a70f6af10",
+          "checks": {
+            "json_contract": true,
+            "source_identity": true,
+            "reason_fact_support": false
+          }
+        }
+      ],
+      "guarded_response": {
+        "status": "answered",
+        "answer": "I found a matching movie in the provided context.",
+        "movies": [
+          {
+            "movie_id": "7646",
+            "title": "Alien",
+            "reason": "Genres: Horror, Science Fiction"
+          }
+        ]
+      },
+      "guarded_checks": {
+        "json_contract": true,
+        "source_identity": true,
+        "reason_fact_support": true
+      },
+      "elapsed_seconds": 13.61168955499943
+    },
+    {
+      "id": "Q11",
+      "input_sha256": "7052e0678c94b54511d29b3f5a5454d9aee7887a2d95a6abe43f28a45669504d",
+      "generations": [
+        {
+          "raw": "{\n  \"status\": \"answered\",\n  \"answer\": \"{}13876{} Titanic (Drama, Romance) is a 194-minute film directed by James Cameron. It tells the story of Rose DeWitt Bukater's life aboard the Titanic, from its departure to its final voyage on April 15, 1912. The movie has an IMDb rating of 8.0.\",\n  \"movies\": [\n    {\n      \"movie_id\": \"13876\",\n      \"title\": \"Titanic\",\n      \"reason\": \"The movie is about Rose DeWitt Bukater's life aboard the Titanic, from its departure to its final voyage on April 15, 1912. It is a Drama and Romance film directed by James Cameron.\"\n    }\n  ]\n}",
+          "prompt_sha256": "aeb4b91622f74d8f17a7301ea372e345014548cb3e3d1136fcb0cc8a05d630c4",
+          "checks": {
+            "json_contract": true,
+            "source_identity": true,
+            "reason_fact_support": true
+          }
+        }
+      ],
+      "guarded_response": {
+        "status": "answered",
+        "answer": "I found a matching movie in the provided context.",
+        "movies": [
+          {
+            "movie_id": "13876",
+            "title": "Titanic",
+            "reason": "Genres: Drama, Romance"
+          }
+        ]
+      },
+      "guarded_checks": {
+        "json_contract": true,
+        "source_identity": true,
+        "reason_fact_support": true
+      },
+      "elapsed_seconds": 25.322456551999494
+    },
+    {
+      "id": "Q12",
+      "input_sha256": "cba846c9150192d915ffaca2671bc362b0ea6af4509728d0d1d7803c6fbddd71",
+      "generations": [
+        {
+          "raw": "{\n  \"status\": \"answered\",\n  \"answer\": \"Parasite is a Drama and Thriller movie directed by Bong Joon Ho with an IMDb rating of 8.5. The movie has a runtime of 133 minutes and is about an unemployed family's interest in a wealthy family until they get entangled in an unexpected incident.\",\n  \"movies\": [\n    {\n      \"movie_id\": \"43791\",\n      \"title\": \"Parasite\",\n      \"reason\": \"The movie is a Drama and Thriller with a runtime of 133 minutes and an overview about an unemployed family's interest in a wealthy family until they get entangled in an unexpected incident.\"\n    }\n  ]\n}",
+          "prompt_sha256": "85069927db008e89a725d9487e9e52993f9f95262e6ee4a620080a1293c7ab21",
+          "checks": {
+            "json_contract": true,
+            "source_identity": true,
+            "reason_fact_support": true
+          }
+        }
+      ],
+      "guarded_response": {
+        "status": "answered",
+        "answer": "I found a matching movie in the provided context.",
+        "movies": [
+          {
+            "movie_id": "43791",
+            "title": "Parasite",
+            "reason": "Genres: Comedy, Drama, Thriller"
+          }
+        ]
+      },
+      "guarded_checks": {
+        "json_contract": true,
+        "source_identity": true,
+        "reason_fact_support": true
+      },
+      "elapsed_seconds": 19.95120685799975
+    },
+    {
+      "id": "Q13",
+      "input_sha256": "5d0a1794dd691e72d93888a6271eeebb14a8cb572a215f5c677f500ff3950f19",
+      "generations": [
+        {
+          "raw": "{\n  \"status\": \"answered\",\n  \"answer\": \"Interstellar\",\n  \"movies\": [\n    {\n      \"movie_id\": \"21597\",\n      \"title\": \"Interstellar\",\n      \"reason\": \"The movie involves a group of explorers making use of a wormhole for an interstellar voyage, which directly relates to the user's query about space exploration.\"\n    }\n  ]\n}",
+          "prompt_sha256": "ae4ec6800de8e92b6a5a5258c147c8b63701fe8ee33800f74a53ae7f25bf6225",
+          "checks": {
+            "json_contract": true,
+            "source_identity": true,
+            "reason_fact_support": false
+          }
+        }
+      ],
+      "guarded_response": {
+        "status": "answered",
+        "answer": "I found a matching movie in the provided context.",
+        "movies": [
+          {
+            "movie_id": "21597",
+            "title": "Interstellar",
+            "reason": "Genres: Adventure, Drama, Science Fiction"
+          }
+        ]
+      },
+      "guarded_checks": {
+        "json_contract": true,
+        "source_identity": true,
+        "reason_fact_support": true
+      },
+      "elapsed_seconds": 10.456102676000228
+    },
+    {
+      "id": "Q14",
+      "input_sha256": "ed4a488367ab1b37b11ff6cb29f9cc0b4f1eab9ebc5450cfcf69feaf12817806",
+      "generations": [
+        {
+          "raw": "{\n  \"status\": \"answered\",\n  \"answer\": \"Spirited Away\",\n  \"movies\": [\n    {\n      \"movie_id\": \"16053\",\n      \"title\": \"Spirited Away\",\n      \"reason\": \"The movie's overview mentions spirits and magic, aligning with the user's query.\"\n    }\n  ]\n}",
+          "prompt_sha256": "902c6f296a4353c90574e6369fd9828551b3259a35cca0958473cef349ee1b7f",
+          "checks": {
+            "json_contract": true,
+            "source_identity": true,
+            "reason_fact_support": false
+          }
+        }
+      ],
+      "guarded_response": {
+        "status": "answered",
+        "answer": "I found a matching movie in the provided context.",
+        "movies": [
+          {
+            "movie_id": "16053",
+            "title": "Spirited Away",
+            "reason": "Genres: Animation, Family, Fantasy"
+          }
+        ]
+      },
+      "guarded_checks": {
+        "json_contract": true,
+        "source_identity": true,
+        "reason_fact_support": true
+      },
+      "elapsed_seconds": 9.714269996999974
+    },
+    {
+      "id": "Q15",
+      "input_sha256": "6f5149a68a219fd4e07c33d4a4f2861e729988e66f70de9e1af4bca7fd77c4cf",
+      "generations": [
+        {
+          "raw": "{\n  \"status\": \"answered\",\n  \"answer\": \"{} is a non-empty list of movies.\",\n  \"movies\": [\n    {\n      \"movie_id\": \"6203\",\n      \"title\": \"The Godfather\",\n      \"reason\": \"The Godfather is a Crime and Drama movie, and it features a crime family in its overview.\"\n    }\n  ]\n}",
+          "prompt_sha256": "f7b0d2eda57c5bd5e06ba99991605b5650d841fc9f41eb45ede25cb2cf7a98b6",
+          "checks": {
+            "json_contract": true,
+            "source_identity": true,
+            "reason_fact_support": true
+          }
+        }
+      ],
+      "guarded_response": {
+        "status": "answered",
+        "answer": "I found a matching movie in the provided context.",
+        "movies": [
+          {
+            "movie_id": "6203",
+            "title": "The Godfather",
+            "reason": "Genres: Crime, Drama"
+          }
+        ]
+      },
+      "guarded_checks": {
+        "json_contract": true,
+        "source_identity": true,
+        "reason_fact_support": true
+      },
+      "elapsed_seconds": 9.8687099079998
+    },
+    {
+      "id": "Q16",
+      "input_sha256": "296a56b76ee6f629bd9af5345a824c3af782fd1b1e1aea1f80c9d76fd4f69092",
+      "generations": [
+        {
+          "raw": "{\n  \"status\": \"answered\",\n  \"answer\": \"{} is not a movie title in the provided context, but Toy Story is a movie that focuses on toys and their friendship.\",\n  \"movies\": [\n    {\n      \"movie_id\": \"12956\",\n      \"title\": \"Toy Story\",\n      \"reason\": \"Focuses on toys and their friendship, as stated in the overview.\"\n    }\n  ]\n}",
+          "prompt_sha256": "2e3a47ac5846653def9de23bd267957a492dd1feed50df4498ea22cef91235e1",
+          "checks": {
+            "json_contract": true,
+            "source_identity": true,
+            "reason_fact_support": false
+          }
+        }
+      ],
+      "guarded_response": {
+        "status": "answered",
+        "answer": "I found a matching movie in the provided context.",
+        "movies": [
+          {
+            "movie_id": "12956",
+            "title": "Toy Story",
+            "reason": "Genres: Adventure, Animation, Comedy, Family"
+          }
+        ]
+      },
+      "guarded_checks": {
+        "json_contract": true,
+        "source_identity": true,
+        "reason_fact_support": true
+      },
+      "elapsed_seconds": 10.967229600000792
+    },
+    {
+      "id": "Q17",
+      "input_sha256": "40a9cb6a40bd310644542c1ad0574d91f3ada8a4ba402a6466dcd804f3ca3e80",
+      "generations": [
+        {
+          "raw": "{\n  \"status\": \"answered\",\n  \"answer\": \"Parasite is a Drama and Thriller movie directed by Bong Joon Ho with an IMDb rating of 8.5. The movie has a runtime of 133 minutes and is about an unemployed family's interest in a wealthy family until they get entangled in an unexpected incident.\",\n  \"movies\": [\n    {\n      \"movie_id\": \"43791\",\n      \"title\": \"Parasite\",\n      \"reason\": \"The movie is a Drama and Thriller with a runtime of 133 minutes and an overview about an unemployed family's interest in a wealthy family until they get entangled in an unexpected incident.\"\n    }\n  ]\n}",
+          "prompt_sha256": "85069927db008e89a725d9487e9e52993f9f95262e6ee4a620080a1293c7ab21",
+          "checks": {
+            "json_contract": true,
+            "source_identity": true,
+            "reason_fact_support": true
+          }
+        }
+      ],
+      "guarded_response": {
+        "status": "answered",
+        "answer": "I found a matching movie in the provided context.",
+        "movies": [
+          {
+            "movie_id": "43791",
+            "title": "Parasite",
+            "reason": "Genres: Comedy, Drama, Thriller"
+          }
+        ]
+      },
+      "guarded_checks": {
+        "json_contract": true,
+        "source_identity": true,
+        "reason_fact_support": true
+      },
+      "elapsed_seconds": 15.984813582999777
+    },
+    {
+      "id": "Q18",
+      "input_sha256": "9e3ec24dcbb3e3de0c130e71f4e41fe0f6e088aa5076ed31a7b4bbebf9d951a4",
+      "generations": [
+        {
+          "raw": "{\n  \"status\": \"insufficient_context\",\n  \"answer\": \"insufficient_context\",\n  \"movies\": []\n}",
+          "prompt_sha256": "26cc9099a1c6b145039d02a40d3aee66e0d02a3b1ccdf5d47aa650327fb2dd23",
+          "checks": {
+            "json_contract": true,
+            "source_identity": true,
+            "reason_fact_support": null
+          }
+        }
+      ],
+      "guarded_response": {
+        "status": "insufficient_context",
+        "answer": "There is no movie context available to answer this question.",
+        "movies": []
+      },
+      "guarded_checks": {
+        "json_contract": true,
+        "source_identity": true,
+        "reason_fact_support": null
+      },
+      "elapsed_seconds": 3.646987134000483
+    },
+    {
+      "id": "C19",
+      "input_sha256": "d7ade3f383a6bdb27198e4ef8db2809be32f5dad24539803c86ceac4b1c13678",
+      "generations": [
+        {
+          "raw": "{\n  \"status\": \"answered\",\n  \"answer\": \"Christopher Nolan\",\n  \"movies\": [\n    {\n      \"movie_id\": \"21597\",\n      \"title\": \"Interstellar\",\n      \"reason\": \"The overview states 'The adventures of a group of explorers who make use of a newly discovered wormhole to surpass the limitations on human space travel and conquer the vast distances involved in an interstellar voyage.' and the director is explicitly stated as Christopher Nolan.\"\n    }\n  ]\n}",
+          "prompt_sha256": "4babe14e51f7a64bdac7316645cadc784393513b72e0f44d40a93a2b945c2186",
+          "checks": {
+            "json_contract": true,
+            "source_identity": true,
+            "reason_fact_support": true
+          }
+        }
+      ],
+      "guarded_response": {
+        "status": "answered",
+        "answer": "Christopher Nolan",
+        "movies": [
+          {
+            "movie_id": "21597",
+            "title": "Interstellar",
+            "reason": "Director: Christopher Nolan"
+          }
+        ]
+      },
+      "guarded_checks": {
+        "json_contract": true,
+        "source_identity": true,
+        "reason_fact_support": true
+      },
+      "elapsed_seconds": 14.671641042000374
+    },
+    {
+      "id": "C20",
+      "input_sha256": "e8c3f65349aa0fa73bc31b9e20176a6dd643c29d941fc73c76103b1f5fc8f14f",
+      "generations": [
+        {
+          "raw": "{\n  \"status\": \"insufficient_context\",\n  \"answer\": \"No movies found in the provided context.\",\n  \"movies\": []\n}",
+          "prompt_sha256": "351dc6640e5be24352cc3b96145f3a59f0c46d5c3caf88d784034415f83a8afa",
+          "checks": {
+            "json_contract": true,
+            "source_identity": true,
+            "reason_fact_support": null
+          }
+        }
+      ],
+      "guarded_response": {
+        "status": "insufficient_context",
+        "answer": "There is no movie context available to answer this question.",
+        "movies": []
+      },
+      "guarded_checks": {
+        "json_contract": true,
+        "source_identity": true,
+        "reason_fact_support": null
+      },
+      "structural_status_match": true,
+      "elapsed_seconds": 4.0426079539993225
+    },
+    {
+      "id": "C21",
+      "input_sha256": "14ac18c77513071eabca50d756f390ada60422c4e7fa4a9d4c3dadc61825b2c9",
+      "generations": [
+        {
+          "raw": "{\n  \"status\": \"insufficient_context\",\n  \"answer\": \"Insufficient context provided to determine the director of the movie.\",\n  \"movies\": []\n}",
+          "prompt_sha256": "5196de03c544885cd9a30dd875d3edb3bb2ebd57b401bfb5b89b7b72d7db25dc",
+          "checks": {
+            "json_contract": true,
+            "source_identity": true,
+            "reason_fact_support": null
+          }
+        }
+      ],
+      "guarded_response": {
+        "status": "insufficient_context",
+        "answer": "The provided movie context does not have enough information to answer this question.",
+        "movies": []
+      },
+      "guarded_checks": {
+        "json_contract": true,
+        "source_identity": true,
+        "reason_fact_support": null
+      },
+      "structural_status_match": true,
+      "elapsed_seconds": 5.039772149999408
+    },
+    {
+      "id": "C22",
+      "input_sha256": "3b71a6f2a8dbc1a880d024c7e3c24dfb6b92e0929a26d366b059a80b206838d2",
+      "generations": [
+        {
+          "raw": "{\n  \"status\": \"answered\",\n  \"answer\": \"Adventure, Drama, Science Fiction\",\n  \"movies\": [\n    {\n      \"movie_id\": \"21597\",\n      \"title\": \"Interstellar\",\n      \"reason\": \"The overview field states the movie is an Adventure, Drama, and Science Fiction film.\"\n    }\n  ]\n}",
+          "prompt_sha256": "efce749860b204cff2e4cf613dc1ef724ca95216a859faa03804a045732deda1",
+          "checks": {
+            "json_contract": true,
+            "source_identity": true,
+            "reason_fact_support": true
+          }
+        }
+      ],
+      "guarded_response": {
+        "status": "answered",
+        "answer": "I found a matching movie in the provided context.",
+        "movies": [
+          {
+            "movie_id": "21597",
+            "title": "Interstellar",
+            "reason": "Genres: Adventure, Drama, Science Fiction"
+          }
+        ]
+      },
+      "guarded_checks": {
+        "json_contract": true,
+        "source_identity": true,
+        "reason_fact_support": true
+      },
+      "elapsed_seconds": 10.244685049000509
+    }
+  ]
+}
