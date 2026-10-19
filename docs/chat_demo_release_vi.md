@@ -65,6 +65,10 @@ python tools/chat_demo_preflight.py \
 Nếu chưa có model đã merge, bỏ `--merged-model-dir` để nhận báo cáo cụ thể về
 phần còn thiếu. `ready=true` chỉ xác nhận đầu vào và service đang chạy; vẫn phải
 chạy smoke E2E và đánh giá chất lượng ở các phần sau.
+[Preflight local ngày 19/10/2026](evidence/chat-demo-release/preflight-local-2026-10-19.json)
+trả `ready=false`: adapter và SQL có mặt, còn thiếu model đã merge, snapshot,
+Docker, tag fine-tuned và các service. Đây là bằng chứng môi trường hiện tại,
+không phải kết quả chạy thử từ môi trường sạch.
 
 ## Chọn và kiểm tra model
 
