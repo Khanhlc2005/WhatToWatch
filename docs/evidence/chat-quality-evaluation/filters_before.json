@@ -1,0 +1,300 @@
+{
+  "scope": "Curated synthetic English/Vietnamese filter utterances; diagnostic, not a production traffic sample.",
+  "dataset_sha256": "4e70b7622eea5911603dab881dfb6329d9d526d8c3a5045e9b07b80b88cf98c3",
+  "cases": 12,
+  "exact_match_rate": 0.75,
+  "micro": {
+    "tp": 21,
+    "fp": 1,
+    "fn": 4,
+    "precision": 0.9545454545454546,
+    "recall": 0.84,
+    "f1": 0.8936170212765957
+  },
+  "by_field": {
+    "actor": {
+      "tp": 1,
+      "fp": 0,
+      "fn": 0,
+      "precision": 1.0,
+      "recall": 1.0,
+      "f1": 1.0
+    },
+    "countries": {
+      "tp": 2,
+      "fp": 0,
+      "fn": 0,
+      "precision": 1.0,
+      "recall": 1.0,
+      "f1": 1.0
+    },
+    "director": {
+      "tp": 1,
+      "fp": 0,
+      "fn": 0,
+      "precision": 1.0,
+      "recall": 1.0,
+      "f1": 1.0
+    },
+    "exclude_genres": {
+      "tp": 1,
+      "fp": 0,
+      "fn": 1,
+      "precision": 1.0,
+      "recall": 0.5,
+      "f1": 0.6666666666666666
+    },
+    "genres": {
+      "tp": 7,
+      "fp": 1,
+      "fn": 1,
+      "precision": 0.875,
+      "recall": 0.875,
+      "f1": 0.875
+    },
+    "languages": {
+      "tp": 2,
+      "fp": 0,
+      "fn": 0,
+      "precision": 1.0,
+      "recall": 1.0,
+      "f1": 1.0
+    },
+    "rating_min": {
+      "tp": 1,
+      "fp": 0,
+      "fn": 1,
+      "precision": 1.0,
+      "recall": 0.5,
+      "f1": 0.6666666666666666
+    },
+    "runtime_max": {
+      "tp": 2,
+      "fp": 0,
+      "fn": 0,
+      "precision": 1.0,
+      "recall": 1.0,
+      "f1": 1.0
+    },
+    "year_max": {
+      "tp": 2,
+      "fp": 0,
+      "fn": 0,
+      "precision": 1.0,
+      "recall": 1.0,
+      "f1": 1.0
+    },
+    "year_min": {
+      "tp": 2,
+      "fp": 0,
+      "fn": 1,
+      "precision": 1.0,
+      "recall": 0.6666666666666666,
+      "f1": 0.8
+    }
+  },
+  "details": [
+    {
+      "id": "F01",
+      "exact": true,
+      "tp": [
+        [
+          "genres",
+          "action"
+        ]
+      ],
+      "fp": [],
+      "fn": []
+    },
+    {
+      "id": "F02",
+      "exact": true,
+      "tp": [
+        [
+          "genres",
+          "science fiction"
+        ],
+        [
+          "rating_min",
+          7.5
+        ],
+        [
+          "runtime_max",
+          150
+        ],
+        [
+          "year_max",
+          2020
+        ],
+        [
+          "year_min",
+          2010
+        ]
+      ],
+      "fp": [],
+      "fn": []
+    },
+    {
+      "id": "F03",
+      "exact": true,
+      "tp": [
+        [
+          "countries",
+          "kr"
+        ],
+        [
+          "director",
+          "bong joon-ho"
+        ],
+        [
+          "languages",
+          "ko"
+        ]
+      ],
+      "fp": [],
+      "fn": []
+    },
+    {
+      "id": "F04",
+      "exact": false,
+      "tp": [
+        [
+          "genres",
+          "comedy"
+        ]
+      ],
+      "fp": [
+        [
+          "genres",
+          "horror"
+        ]
+      ],
+      "fn": [
+        [
+          "exclude_genres",
+          "horror"
+        ]
+      ]
+    },
+    {
+      "id": "F05",
+      "exact": false,
+      "tp": [],
+      "fp": [],
+      "fn": [
+        [
+          "genres",
+          "science fiction"
+        ],
+        [
+          "year_min",
+          2016
+        ]
+      ]
+    },
+    {
+      "id": "F06",
+      "exact": true,
+      "tp": [
+        [
+          "genres",
+          "family"
+        ],
+        [
+          "runtime_max",
+          120
+        ]
+      ],
+      "fp": [],
+      "fn": []
+    },
+    {
+      "id": "F07",
+      "exact": false,
+      "tp": [
+        [
+          "genres",
+          "drama"
+        ]
+      ],
+      "fp": [],
+      "fn": [
+        [
+          "rating_min",
+          7.5
+        ]
+      ]
+    },
+    {
+      "id": "F08",
+      "exact": true,
+      "tp": [
+        [
+          "genres",
+          "animation"
+        ],
+        [
+          "year_max",
+          2019
+        ],
+        [
+          "year_min",
+          2019
+        ]
+      ],
+      "fp": [],
+      "fn": []
+    },
+    {
+      "id": "F09",
+      "exact": true,
+      "tp": [],
+      "fp": [],
+      "fn": []
+    },
+    {
+      "id": "F10",
+      "exact": true,
+      "tp": [
+        [
+          "countries",
+          "us"
+        ],
+        [
+          "languages",
+          "en"
+        ]
+      ],
+      "fp": [],
+      "fn": []
+    },
+    {
+      "id": "F11",
+      "exact": true,
+      "tp": [
+        [
+          "exclude_genres",
+          "horror"
+        ],
+        [
+          "genres",
+          "action"
+        ]
+      ],
+      "fp": [],
+      "fn": []
+    },
+    {
+      "id": "F12",
+      "exact": true,
+      "tp": [
+        [
+          "actor",
+          "tom hanks"
+        ]
+      ],
+      "fp": [],
+      "fn": []
+    }
+  ]
+}

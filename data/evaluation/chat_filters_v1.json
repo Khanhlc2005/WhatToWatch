@@ -1,0 +1,18 @@
+{
+  "version": "chat_filters_v1",
+  "scope": "Curated synthetic English/Vietnamese filter utterances; diagnostic, not a production traffic sample.",
+  "cases": [
+    {"id": "F01", "message": "Recommend an action movie", "expected": {"retrieval": {"genres": ["Action"]}}},
+    {"id": "F02", "message": "Gợi ý phim khoa học viễn tưởng từ năm 2010 đến 2020 điểm IMDb trên 7.5 dưới 150 phút", "expected": {"retrieval": {"genres": ["Science Fiction"], "year_min": 2010, "year_max": 2020, "rating_min": 7.5, "runtime_max": 150}}},
+    {"id": "F03", "message": "Phim Hàn Quốc tiếng Hàn do đạo diễn Bong Joon-ho", "expected": {"retrieval": {"countries": ["KR"], "languages": ["ko"]}, "director": "Bong Joon-ho"}},
+    {"id": "F04", "message": "Avoid horror and recommend comedy", "expected": {"retrieval": {"exclude_genres": ["Horror"], "genres": ["Comedy"]}}},
+    {"id": "F05", "message": "Show me science fiction after 2015", "expected": {"retrieval": {"genres": ["Science Fiction"], "year_min": 2016}}},
+    {"id": "F06", "message": "A family movie under 120 minutes", "expected": {"retrieval": {"genres": ["Family"], "runtime_max": 120}}},
+    {"id": "F07", "message": "Drama with IMDb above 7.5", "expected": {"retrieval": {"genres": ["Drama"], "rating_min": 7.5}}},
+    {"id": "F08", "message": "Phim hoạt hình năm 2019", "expected": {"retrieval": {"genres": ["Animation"], "year_min": 2019, "year_max": 2019}}},
+    {"id": "F09", "message": "Who directed this movie?", "expected": {}},
+    {"id": "F10", "message": "English movies from the USA", "expected": {"retrieval": {"languages": ["en"], "countries": ["US"]}}},
+    {"id": "F11", "message": "Gợi ý phim hành động nhưng tránh phim kinh dị", "expected": {"retrieval": {"genres": ["Action"], "exclude_genres": ["Horror"]}}},
+    {"id": "F12", "message": "A movie starring Tom Hanks", "expected": {"actor": "Tom Hanks"}}
+  ]
+}
