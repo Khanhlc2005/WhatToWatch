@@ -1,0 +1,293 @@
+{
+  "scope": "Curated synthetic English/Vietnamese filter utterances; diagnostic, not a production traffic sample.",
+  "dataset_sha256": "4e70b7622eea5911603dab881dfb6329d9d526d8c3a5045e9b07b80b88cf98c3",
+  "cases": 12,
+  "exact_match_rate": 1.0,
+  "micro": {
+    "tp": 25,
+    "fp": 0,
+    "fn": 0,
+    "precision": 1.0,
+    "recall": 1.0,
+    "f1": 1.0
+  },
+  "by_field": {
+    "actor": {
+      "tp": 1,
+      "fp": 0,
+      "fn": 0,
+      "precision": 1.0,
+      "recall": 1.0,
+      "f1": 1.0
+    },
+    "countries": {
+      "tp": 2,
+      "fp": 0,
+      "fn": 0,
+      "precision": 1.0,
+      "recall": 1.0,
+      "f1": 1.0
+    },
+    "director": {
+      "tp": 1,
+      "fp": 0,
+      "fn": 0,
+      "precision": 1.0,
+      "recall": 1.0,
+      "f1": 1.0
+    },
+    "exclude_genres": {
+      "tp": 2,
+      "fp": 0,
+      "fn": 0,
+      "precision": 1.0,
+      "recall": 1.0,
+      "f1": 1.0
+    },
+    "genres": {
+      "tp": 8,
+      "fp": 0,
+      "fn": 0,
+      "precision": 1.0,
+      "recall": 1.0,
+      "f1": 1.0
+    },
+    "languages": {
+      "tp": 2,
+      "fp": 0,
+      "fn": 0,
+      "precision": 1.0,
+      "recall": 1.0,
+      "f1": 1.0
+    },
+    "rating_min": {
+      "tp": 2,
+      "fp": 0,
+      "fn": 0,
+      "precision": 1.0,
+      "recall": 1.0,
+      "f1": 1.0
+    },
+    "runtime_max": {
+      "tp": 2,
+      "fp": 0,
+      "fn": 0,
+      "precision": 1.0,
+      "recall": 1.0,
+      "f1": 1.0
+    },
+    "year_max": {
+      "tp": 2,
+      "fp": 0,
+      "fn": 0,
+      "precision": 1.0,
+      "recall": 1.0,
+      "f1": 1.0
+    },
+    "year_min": {
+      "tp": 3,
+      "fp": 0,
+      "fn": 0,
+      "precision": 1.0,
+      "recall": 1.0,
+      "f1": 1.0
+    }
+  },
+  "details": [
+    {
+      "id": "F01",
+      "exact": true,
+      "tp": [
+        [
+          "genres",
+          "action"
+        ]
+      ],
+      "fp": [],
+      "fn": []
+    },
+    {
+      "id": "F02",
+      "exact": true,
+      "tp": [
+        [
+          "genres",
+          "science fiction"
+        ],
+        [
+          "rating_min",
+          7.5
+        ],
+        [
+          "runtime_max",
+          150
+        ],
+        [
+          "year_max",
+          2020
+        ],
+        [
+          "year_min",
+          2010
+        ]
+      ],
+      "fp": [],
+      "fn": []
+    },
+    {
+      "id": "F03",
+      "exact": true,
+      "tp": [
+        [
+          "countries",
+          "kr"
+        ],
+        [
+          "director",
+          "bong joon-ho"
+        ],
+        [
+          "languages",
+          "ko"
+        ]
+      ],
+      "fp": [],
+      "fn": []
+    },
+    {
+      "id": "F04",
+      "exact": true,
+      "tp": [
+        [
+          "exclude_genres",
+          "horror"
+        ],
+        [
+          "genres",
+          "comedy"
+        ]
+      ],
+      "fp": [],
+      "fn": []
+    },
+    {
+      "id": "F05",
+      "exact": true,
+      "tp": [
+        [
+          "genres",
+          "science fiction"
+        ],
+        [
+          "year_min",
+          2016
+        ]
+      ],
+      "fp": [],
+      "fn": []
+    },
+    {
+      "id": "F06",
+      "exact": true,
+      "tp": [
+        [
+          "genres",
+          "family"
+        ],
+        [
+          "runtime_max",
+          120
+        ]
+      ],
+      "fp": [],
+      "fn": []
+    },
+    {
+      "id": "F07",
+      "exact": true,
+      "tp": [
+        [
+          "genres",
+          "drama"
+        ],
+        [
+          "rating_min",
+          7.5
+        ]
+      ],
+      "fp": [],
+      "fn": []
+    },
+    {
+      "id": "F08",
+      "exact": true,
+      "tp": [
+        [
+          "genres",
+          "animation"
+        ],
+        [
+          "year_max",
+          2019
+        ],
+        [
+          "year_min",
+          2019
+        ]
+      ],
+      "fp": [],
+      "fn": []
+    },
+    {
+      "id": "F09",
+      "exact": true,
+      "tp": [],
+      "fp": [],
+      "fn": []
+    },
+    {
+      "id": "F10",
+      "exact": true,
+      "tp": [
+        [
+          "countries",
+          "us"
+        ],
+        [
+          "languages",
+          "en"
+        ]
+      ],
+      "fp": [],
+      "fn": []
+    },
+    {
+      "id": "F11",
+      "exact": true,
+      "tp": [
+        [
+          "exclude_genres",
+          "horror"
+        ],
+        [
+          "genres",
+          "action"
+        ]
+      ],
+      "fp": [],
+      "fn": []
+    },
+    {
+      "id": "F12",
+      "exact": true,
+      "tp": [
+        [
+          "actor",
+          "tom hanks"
+        ]
+      ],
+      "fp": [],
+      "fn": []
+    }
+  ]
+}

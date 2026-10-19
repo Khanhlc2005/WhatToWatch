@@ -16,7 +16,7 @@ class ExtractedChatFilters(BaseModel):
 
 
 GENRES = {
-    "khoa học viễn tưởng": "Science Fiction", "sci-fi": "Science Fiction",
+    "khoa học viễn tưởng": "Science Fiction", "science fiction": "Science Fiction", "sci-fi": "Science Fiction",
     "hành động": "Action", "action": "Action", "hài": "Comedy", "comedy": "Comedy",
     "kinh dị": "Horror", "horror": "Horror", "tâm lý": "Drama", "drama": "Drama",
     "tình cảm": "Romance", "romance": "Romance", "hoạt hình": "Animation",
@@ -60,8 +60,9 @@ def extract_chat_filters(question: str, explicit: MovieFilters | None = None) ->
     for phrase, value in GENRES.items():
         for match in re.finditer(r"(?<!\w)" + re.escape(phrase) + r"(?!\w)", text):
             prefix = text[max(0, match.start() - 35):match.start()]
+            prefix = re.split(r"\b(?:recommend|gợi ý)\b", prefix)[-1]
             target = excluded if re.search(
-                r"(?:không|tránh|loại trừ|without|exclude)(?:\s+\w+){0,3}\s*$", prefix
+                r"(?:không|tránh|loại trừ|without|exclude|avoid)(?:\s+\w+){0,3}\s*$", prefix
             ) else genres
             if value not in target:
                 target.append(value)
@@ -77,8 +78,8 @@ def extract_chat_filters(question: str, explicit: MovieFilters | None = None) ->
         values["countries"] = countries
 
     between = re.search(r"(?:từ|between)\s*(?:năm\s*)?(\d{4})\s*(?:đến|tới|và|and|to|-)\s*(?:năm\s*)?(\d{4})", text)
-    after = re.search(r"(?:sau|after|từ)\s*năm\s*(\d{4})", text)
-    before = re.search(r"(?:trước|before|đến)\s*năm\s*(\d{4})", text)
+    after = re.search(r"(?:sau|after|từ)\s*(?:(?:năm|year)\s*)?(\d{4})", text)
+    before = re.search(r"(?:trước|before|đến)\s*(?:(?:năm|year)\s*)?(\d{4})", text)
     exact = re.search(r"\bnăm\s*(\d{4})\b", text)
     if between:
         values["year_min"], values["year_max"] = int(between[1]), int(between[2])
@@ -89,7 +90,7 @@ def extract_chat_filters(question: str, explicit: MovieFilters | None = None) ->
     elif exact:
         values["year_min"] = values["year_max"] = int(exact[1])
 
-    rating = re.search(r"(?:imdb|rating|điểm|đánh giá)\s*(?:từ|trên|ít nhất|>=|≥|:)?\s*(\d{1,2}(?:[.,]\d)?)", text)
+    rating = re.search(r"(?:imdb|rating|điểm|đánh giá)\s*(?:từ|trên|ít nhất|above|over|at least|>=|≥|:)?\s*(\d{1,2}(?:[.,]\d)?)", text)
     if rating:
         values["rating_min"] = float(rating[1].replace(",", "."))
     runtime = re.search(r"(?:dưới|không quá|under|at most)\s*(\d{2,3})\s*(?:phút|minutes?|min)\b", text)

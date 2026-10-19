@@ -1,0 +1,115 @@
+{
+  "model": "qwen2.5:3b",
+  "model_digest": "357c53fb659c5076de1d65ccb0b397446227b71a42be9d1603d46168015c9e4b",
+  "evaluation_sha256": "411af1e66c659a7c189f59c326540c9c1d469ec361519d938529f5e876354096",
+  "system_prompt_sha256": "4b67eb9917e003afccbd75f7218f77eabb9e0eddb4d688e30132f189d5054244",
+  "generation_options": {
+    "temperature": 0,
+    "seed": 42,
+    "num_predict": 512
+  },
+  "runs": [
+    {
+      "id": "M01",
+      "input_sha256": "7c522c16376c264a7502f8fbd3270d87bdae619be4f464a553ab8396700f51eb",
+      "generations": [
+        {
+          "raw": "{\n  \"status\": \"answered\",\n  \"answer\": \"Christopher Nolan\",\n  \"movies\": [\n    {\n      \"movie_id\": \"21597\",\n      \"title\": \"Interstellar\",\n      \"reason\": \"Directed by Christopher Nolan\"\n    }\n  ]\n}",
+          "prompt_sha256": "16a088a00e15c9b0ef7ce7c391db844ac8962110c7b9430fb4299831e24cf9f3",
+          "checks": {
+            "json_contract": true,
+            "source_identity": true,
+            "reason_fact_support": true
+          }
+        }
+      ],
+      "guarded_response": {
+        "status": "answered",
+        "answer": "Christopher Nolan",
+        "movies": [
+          {
+            "movie_id": "21597",
+            "title": "Interstellar",
+            "reason": "Director: Christopher Nolan"
+          }
+        ]
+      },
+      "guarded_checks": {
+        "json_contract": true,
+        "source_identity": true,
+        "reason_fact_support": true
+      },
+      "structural_status_match": true,
+      "memory_movie_ids_match": true,
+      "elapsed_seconds": 17.729038928000136
+    },
+    {
+      "id": "M02",
+      "input_sha256": "16f966f755e678aeff579e2f1d4356c5747d9977a17fe7bcdeb4e43d3a4e8da3",
+      "generations": [
+        {
+          "raw": "{\n  \"status\": \"answered\",\n  \"answer\": \"Spirited Away was directed by Hayao Miyazaki.\",\n  \"movies\": [\n    {\n      \"movie_id\": \"16053\",\n      \"title\": \"Spirited Away\",\n      \"reason\": \"The overview states 'A young girl, Chihiro, becomes trapped in a strange new world of spirits. When her parents undergo a mysterious transformation, she must call upon the courage she never knew she had to free her family.' and the director is listed as Hayao Miyazaki.\"\n    }\n  ]\n}",
+          "prompt_sha256": "dde8cebeb6120d3e0ae377b2414846e8901f86fbaaec3d54251f1d1bea989f44",
+          "checks": {
+            "json_contract": true,
+            "source_identity": true,
+            "reason_fact_support": true
+          }
+        }
+      ],
+      "guarded_response": {
+        "status": "answered",
+        "answer": "Hayao Miyazaki",
+        "movies": [
+          {
+            "movie_id": "16053",
+            "title": "Spirited Away",
+            "reason": "Director: Hayao Miyazaki"
+          }
+        ]
+      },
+      "guarded_checks": {
+        "json_contract": true,
+        "source_identity": true,
+        "reason_fact_support": true
+      },
+      "structural_status_match": true,
+      "memory_movie_ids_match": true,
+      "elapsed_seconds": 10.130848401000094
+    },
+    {
+      "id": "M03",
+      "input_sha256": "16c033cd0b2aeb5ae95f02620536d6e3e552929f7a5e9a037649f940dfe5a045",
+      "generations": [
+        {
+          "raw": "{\n  \"status\": \"answered\",\n  \"answer\": \"Christopher Nolan directed the movie we discussed earlier, Interstellar.\",\n  \"movies\": [\n    {\n      \"movie_id\": \"21597\",\n      \"title\": \"Interstellar\",\n      \"reason\": \"Directed by Christopher Nolan\"\n    }\n  ]\n}",
+          "prompt_sha256": "dfa241de801753be41c3735952d5c83ae18c4b92696c9283f5cf129ea85c990e",
+          "checks": {
+            "json_contract": true,
+            "source_identity": true,
+            "reason_fact_support": true
+          }
+        }
+      ],
+      "guarded_response": {
+        "status": "answered",
+        "answer": "Christopher Nolan",
+        "movies": [
+          {
+            "movie_id": "21597",
+            "title": "Interstellar",
+            "reason": "Director: Christopher Nolan"
+          }
+        ]
+      },
+      "guarded_checks": {
+        "json_contract": true,
+        "source_identity": true,
+        "reason_fact_support": true
+      },
+      "structural_status_match": true,
+      "memory_movie_ids_match": true,
+      "elapsed_seconds": 5.507999585999642
+    }
+  ]
+}

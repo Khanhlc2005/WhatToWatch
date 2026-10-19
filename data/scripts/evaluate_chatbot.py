@@ -11,6 +11,7 @@ import time
 import urllib.request
 from pathlib import Path
 
+from app.schemas.chat import ChatRequest
 from app.schemas.rag import MovieContext, RAGAnswer
 from app.services.rag import SYSTEM_PROMPT, build_user_prompt, parse_answer, answer_question
 
@@ -78,7 +79,13 @@ def capture(dataset, model, url):
     if not match: raise ValueError('Model must already be installed; this runner never pulls models')
     runs = []
     for case in dataset['cases']:
-        context = [MovieContext.model_validate(m) for m in case['context']]
+        chat_request = ChatRequest.model_validate({
+            'message': case['question'], 'movie_context': case['context'],
+            'history': case.get('history', []), 'summary': case.get('summary'),
+        })
+        context = chat_request.movie_context or []
+        history = chat_request.history
+        summary = chat_request.summary
         generations = []
         def generate(prompt, system):
             response = request('/api/generate', dict(model=model, prompt=prompt, system=system,
@@ -90,7 +97,7 @@ def capture(dataset, model, url):
         start = time.perf_counter()
         try:
             # Capture a first raw output for all cases, including those short-circuited by the guard.
-            first_prompt = build_user_prompt(case['question'], context)
+            first_prompt = build_user_prompt(case['question'], context, history, summary)
             generate(first_prompt, SYSTEM_PROMPT)
             first_raw = generations[0]['raw']
             consumed = False
@@ -100,11 +107,15 @@ def capture(dataset, model, url):
                     consumed = True
                     return first_raw
                 return generate(prompt, system)
-            result = answer_question(case['question'], context, replay_then_generate)
+            result = answer_question(case['question'], context, replay_then_generate,
+                                     history=history, summary=summary)
             run['guarded_response'] = result.model_dump()
             run['guarded_checks'] = checks(result.model_dump_json(), context)
             if 'expected_status' in case:
                 run['structural_status_match'] = result.status == case['expected_status']
+            if 'expected_movie_ids' in case:
+                run['memory_movie_ids_match'] = (
+                    [movie.movie_id for movie in result.movies] == case['expected_movie_ids'])
         except Exception as exc:
             run['error'] = type(exc).__name__ + ': ' + str(exc)
         run['elapsed_seconds'] = time.perf_counter() - start
@@ -133,7 +144,9 @@ def compare(dataset, base, tuned):
         paired.append(dict(id=case['id'], base=a, finetuned=b))
     return dict(scope='Structural checks only; reason substring checks are not semantic explainability judgments.',
         quality_metrics=None, reason='No human-reviewed relevance/answer/explanation labels supplied.',
-        evaluation_sha256=sha(dataset), base_model=base['model'], finetuned_model=tuned['model'], paired=paired)
+        evaluation_sha256=sha(dataset), base_model=base['model'], finetuned_model=tuned['model'],
+        base_model_digest=base.get('model_digest'), finetuned_model_digest=tuned.get('model_digest'),
+        paired=paired)
 
 
 def write_new(path, value):

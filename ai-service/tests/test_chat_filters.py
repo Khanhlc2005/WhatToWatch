@@ -43,3 +43,11 @@ def test_negative_genre_becomes_exclusion() -> None:
     result = extract_chat_filters("Gợi ý phim hành động nhưng tránh phim kinh dị")
     assert result.retrieval.genres == ["Action"]
     assert result.retrieval.exclude_genres == ["Horror"]
+
+
+def test_common_english_filter_phrases() -> None:
+    result = extract_chat_filters("Avoid horror; recommend science fiction after 2015 with IMDb above 7.5")
+    assert result.retrieval.exclude_genres == ["Horror"]
+    assert result.retrieval.genres == ["Science Fiction"]
+    assert result.retrieval.year_min == 2016
+    assert result.retrieval.rating_min == 7.5

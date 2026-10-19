@@ -1,5 +1,8 @@
 # Evaluation tuần 6
 
+Phần đánh giá chất lượng chatbot tiếp theo (filter F1, memory và review
+faithfulness/relevance) nằm trong [hướng dẫn chat quality](../../docs/chat_quality_evaluation_vi.md).
+
 `query_set_v1.json` giữ 18 queries semantic/keyword/filter Anh-Việt, final-K=10.
 Anchors chỉ xác minh identity catalog; không phải relevance labels. Q18 là kiểm
 tra cấu trúc empty do filters mâu thuẫn. Không gán relevance tự động từ anchors,
