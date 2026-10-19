@@ -51,6 +51,21 @@ Nếu dùng catalog/snapshot khác, ghi rõ phiên bản và kiểm tra ID MySQL
 trước demo; các con số kỳ vọng bên dưới chỉ áp dụng cho catalog 46.923 phim.
 Không chạy `docker compose down -v` với volume dữ liệu cần giữ.
 
+Chạy preflight read-only để lưu hash/phiên bản, catalog count và danh sách điều
+kiện thiếu. Cung cấp **thư mục model đã merge**, không phải thư mục adapter.
+Script trả exit code `2` khi chưa đủ điều kiện; nó không phục hồi snapshot, khởi
+động Docker hoặc thay đổi model.
+
+```bash
+python tools/chat_demo_preflight.py \
+  --merged-model-dir /path/to/wtw-qwen25-english-v1-merged \
+  --output /tmp/chat-demo-preflight.json
+```
+
+Nếu chưa có model đã merge, bỏ `--merged-model-dir` để nhận báo cáo cụ thể về
+phần còn thiếu. `ready=true` chỉ xác nhận đầu vào và service đang chạy; vẫn phải
+chạy smoke E2E và đánh giá chất lượng ở các phần sau.
+
 ## Chọn và kiểm tra model
 
 `qwen2.5:3b` là tag base, giữ nguyên để đối chứng và quay lại. Adapter
