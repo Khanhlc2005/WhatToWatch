@@ -7,24 +7,27 @@ sánh và có đường chạy riêng cho Qwen2.5-3B English-v1 đã fine-tune b
 
 ## Trạng thái và điều kiện ghép nhánh
 
-`main` tại `8ba536a` chưa chứa ba nhánh sau. Tài liệu này không coi demo tích hợp
-là đã nghiệm thu chỉ vì từng nhánh có test riêng.
+`main` tại `c9c8554` đã gộp hai nhánh đầu; nhánh đánh giá chất lượng và nhánh
+tài liệu này chưa được gộp. Demo tích hợp chưa được nghiệm thu chỉ vì từng nhánh
+có test riêng.
 
-| Nhánh cần ghép | Phần đã có trên nhánh | Điều kiện còn lại |
-|---|---|---|
-| [`feature/chat-ollama-adapter`](https://github.com/Khanhlc2005/WhatToWatch/blob/feature/chat-ollama-adapter/docs/ollama_adapter_integration_vi.md) (`9c36021`) | Export adapter đã train, nhập model đã merge vào Ollama, smoke với context cố định | Xuất bản model hoàn chỉnh, cài tag fine-tuned trên máy demo và kiểm tra tag |
-| [`feature/chat-e2e-flow`](https://github.com/Khanhlc2005/WhatToWatch/blob/feature/chat-e2e-flow/docs/chat_e2e_flow_vi.md) (`e5db567`) | Xử lý lỗi AI thành HTTP 503, smoke UI → backend → AI | Chạy smoke trên stack thật có catalog |
-| [`feature/chat-quality-evaluation`](https://github.com/Khanhlc2005/WhatToWatch/blob/feature/chat-quality-evaluation/docs/chat_quality_evaluation_vi.md) (`0c91bf9`) | Filter F1, memory set, capture A/B, biểu mẫu chấm faithfulness/relevance | Capture hai tag trên cùng set; review chất lượng câu trả lời |
+| Nhánh | Trong `main`? | Phần đã có | Điều kiện còn lại |
+|---|---|---|---|
+| [`feature/chat-ollama-adapter`](https://github.com/Khanhlc2005/WhatToWatch/blob/feature/chat-ollama-adapter/docs/ollama_adapter_integration_vi.md) (`9c36021`) | Có, qua `a213b40` | Export adapter đã train, nhập model đã merge vào Ollama, smoke với context cố định | Xuất bản model hoàn chỉnh, cài tag fine-tuned trên máy demo và kiểm tra tag |
+| [`feature/chat-e2e-flow`](https://github.com/Khanhlc2005/WhatToWatch/blob/feature/chat-e2e-flow/docs/chat_e2e_flow_vi.md) (`e5db567`) | Có, qua `c9c8554` | Xử lý lỗi AI thành HTTP 503, smoke UI → backend → AI | Chạy smoke trên stack thật có catalog |
+| [`feature/chat-quality-evaluation`](https://github.com/Khanhlc2005/WhatToWatch/blob/feature/chat-quality-evaluation/docs/chat_quality_evaluation_vi.md) (`0c91bf9`) | Chưa | Filter F1, memory set, capture A/B, biểu mẫu chấm faithfulness/relevance | Ghép nhánh, capture hai tag trên cùng set; review chất lượng câu trả lời |
 
 **Chưa đạt điều kiện phát hành demo fine-tuned:** máy kiểm tra chưa có tag Ollama
 fine-tuned được xác minh; Docker daemon không hoạt động nên chưa chạy được E2E
 trên stack và catalog thật. Tag `qwen-chat:latest` có trên máy không được xác nhận
-là English-v1. Khi ghép nhánh, rà xung đột và chạy lại các test của ba nhánh trên
-commit tích hợp; không dùng kết quả test nhánh riêng làm bằng chứng cho commit mới.
+là English-v1. Khi ghép các nhánh còn lại, rà xung đột và chạy lại các test liên
+quan trên commit tích hợp; không dùng kết quả test nhánh riêng làm bằng chứng
+cho commit mới.
 
 ## Chuẩn bị môi trường
 
-Chạy các lệnh từ thư mục gốc repo **sau khi ghép các nhánh chức năng**. Cần có:
+Chạy các lệnh từ thư mục gốc repo. Phần demo chức năng dùng `main` đã ghép hai
+nhánh đầu; runner đánh giá cần ghép nhánh quality. Cần có:
 
 - Docker Engine/Compose hoạt động; Ollama truy cập được từ container AI; đủ RAM và
   ổ đĩa để nạp BGE-M3, Qwen và các service. Lần hỏi đầu có thể tải/nạp model lâu.
@@ -71,8 +74,8 @@ PYTHONPATH=ai-service python tools/smoke_qwen25_ollama.py \
 
 Lưu tên tag **và digest** từ `ollama list` hoặc `/api/tags`. Chỉ sau smoke mới
 đặt `OLLAMA_MODEL_NAME=whattowatch-qwen25-3b-sft:english-v1` trong `.env` và tạo
-lại `ai-service`. Biến Compose này được hỗ trợ trên nhánh adapter; `main` hiện
-hardcode `qwen2.5:3b`. Ollama lượng tử hóa `int4` khi import, khác NF4 khi train
+lại `ai-service`. Biến Compose này đã có trong `main`, mặc định `qwen2.5:3b`.
+Ollama lượng tử hóa `int4` khi import, khác NF4 khi train
 và benchmark; không chuyển thẳng điểm benchmark notebook thành điểm bản demo.
 
 ## Khởi động và kiểm tra stack
