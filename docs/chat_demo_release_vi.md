@@ -144,6 +144,7 @@ timeout Ollama như README. Khi cần quay lại base, đặt
 | SFT QLoRA English-v1 | Test synthetic 198 ca: base schema hợp lệ 131/198, adapter 198/198; `all_checks` 0/198 → 198/198 | Khớp template nghiêm ngặt cho facts đạo diễn/thể loại với NF4 trong notebook; không đo RAG/Ollama int4 hay semantic faithfulness. Nguồn: artifact local `w2w_english_v1_artifacts/reports/summary.json`, không có trong Git. |
 | Filter extraction | Micro-F1 0,894 → 1,0; exact-match 9/12 → 12/12 | 12 câu curated đã dùng để sửa lỗi, là regression in-sample; [chi tiết](https://github.com/Khanhlc2005/WhatToWatch/blob/feature/chat-quality-evaluation/docs/chat_quality_evaluation_vi.md). |
 | Memory base | Guarded đúng movie ID/status 3/3 | Ba ca synthetic có context cố định, chưa chứng minh MySQL persistence; chưa có paired fine-tuned. |
+| Chatbot base trên bộ 22 ca | 22/22 không có lỗi chạy; raw/guarded JSON contract và source identity 22/22 | Context cố định, chỉ kiểm tra cấu trúc/ID. Capture nằm trên nhánh quality tại commit `d75d044`; chưa có nhãn faithfulness/relevance. |
 | Live E2E, base vs fine-tuned, faithfulness/relevance | Chưa có kết quả đủ điều kiện báo cáo | Cần chạy smoke stack thật; capture hai tag cùng set 22 ca, review raw và guarded; cần holdout filter và kiểm tra retrieval nếu muốn báo cáo chất lượng tổng quát. |
 
 Không gộp các tỷ lệ trên thành một điểm chất lượng. Sau khi model fine-tuned
