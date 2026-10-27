@@ -1,3 +1,10 @@
-.footer { display: flex; flex-direction: column; align-items: center; gap: .6rem; padding: 3.5rem 1rem 2.8rem; border-top: 1px solid rgba(255,255,255,.1); background: #081017; text-align: center; }
-.footer p { margin: .35rem 0 1rem; color: #aeb9bf; font-size: .9rem; }
-.footer > span { color: #71818a; font-size: .76rem; }
+@import './tokens';
+
+.footer { width: 100%; max-width: 1440px; margin: 0 auto; padding: $space-8 $space-12 $space-12; background: $surface-000; }
+.row { display: flex; align-items: center; gap: $space-8; margin-top: $space-6; p { margin: 0; color: $ink-muted; @include body-s; } }
+.copyright { margin-left: auto; @include meta; color: $ink-faint; }
+@include below($bp-md) {
+  .footer { padding: $space-6 $space-4 $space-8; }
+  .row { flex-direction: column; align-items: flex-start; gap: $space-3; }
+  .copyright { margin-left: 0; }
+}

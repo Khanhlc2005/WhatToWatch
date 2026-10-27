@@ -1,4 +1,6 @@
-.container { min-height: 100vh; display: flex; flex-direction: column; background: #0b141b; color: #fff9ee; }
+@import "./tokens";
+
+.container { min-height: 100vh; display: flex; flex-direction: column; background: $surface-000; color: $ink; }
 .contentContainer { position: relative; z-index: 2; padding: 0 clamp(1.25rem, 5vw, 5.5rem) 6rem; margin-top: -1rem; }
 .intro { display: flex; flex-direction: column; gap: .5rem; padding: 0 0 3.2rem; border-bottom: 1px solid rgba(255,255,255,.12); }
 .eyebrow { color: #ffba72; font-size: .7rem; font-weight: 800; letter-spacing: .23em; }

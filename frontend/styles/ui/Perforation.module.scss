@@ -1,0 +1,9 @@
+@import '../tokens';
+
+// Notches take the colour of the surface behind the block via --perf-bg (page background by default).
+.perforation { display: flex; align-items: center; height: 24px; }
+.line { flex: 1; margin: 0 $space-3; border-top: 2px dashed $line; }
+.notch { width: 12px; height: 24px; background: var(--perf-bg, #{$surface-000}); }
+.left { border-radius: 0 12px 12px 0; }
+.right { border-radius: 12px 0 0 12px; }
+.inset { margin: 0 calc(-1 * var(--perf-pad, 0px)); }
