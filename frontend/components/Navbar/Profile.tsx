@@ -8,10 +8,11 @@ import Icon, { IconName } from '../ui/Icon';
 
 type Session = { authenticated: boolean; email?: string | null };
 
-const accountLinks: { href: string; label: string; icon: IconName }[] = [
-  { href: '/me/ratings', label: 'My ratings', icon: 'star' },
-  { href: '/me/history', label: 'Watch history', icon: 'clock' },
-  { href: '/library/lists', label: 'My lists', icon: 'list' }
+// `ready` is flipped as each page ships (My ratings and Watch history in Phase 4, My lists in Phase 5).
+const accountLinks: { href: string; label: string; icon: IconName; ready: boolean }[] = [
+  { href: '/me/ratings', label: 'My ratings', icon: 'star', ready: false },
+  { href: '/me/history', label: 'Watch history', icon: 'clock', ready: false },
+  { href: '/library/lists', label: 'My lists', icon: 'list', ready: false }
 ];
 
 export default function Profile(): React.ReactElement {
@@ -69,10 +70,10 @@ export default function Profile(): React.ReactElement {
       <Icon name='chevron-down' size={16} />
     </button>
     {open && <div className={styles.menu} role='menu'>
-      {accountLinks.map(item => <Link key={item.href} href={item.href}>
+      {accountLinks.filter(item => item.ready).map(item => <Link key={item.href} href={item.href}>
         <a role='menuitem'><Icon name={item.icon} />{item.label}</a>
       </Link>)}
-      <div className={styles.menuRule} />
+      {accountLinks.some(item => item.ready) && <div className={styles.menuRule} />}
       <button type='button' role='menuitem' onClick={signOut}><Icon name='log-out' />Sign out</button>
     </div>}
   </div>;
