@@ -1,6 +1,5 @@
 services:
   ai-service:
-    profiles: ["ai"]
     build:
       context: .
       dockerfile: ai-service/Dockerfile
@@ -30,6 +29,12 @@ services:
     volumes:
       - whattowatch_model_cache:/home/app/.cache/huggingface
       - ./data/model_cache:/model-cache:ro
+    healthcheck:
+      test: ["CMD", "python", "-c", "import urllib.request; urllib.request.urlopen('http://127.0.0.1:8010/internal/health', timeout=5)"]
+      interval: 15s
+      timeout: 10s
+      retries: 10
+      start_period: 60s
     depends_on:
       - qdrant
     networks:
@@ -83,6 +88,8 @@ services:
     depends_on:
       mysql:
         condition: service_healthy
+      ai-service:
+        condition: service_started
     ports:
       - "8080:8080"
     environment:

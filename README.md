@@ -52,7 +52,7 @@ Mở `http://localhost:3000/browse`. Nếu vừa sửa `.env.local`, khởi đ�
 
 Ở những lần chạy sau, chỉ cần `docker compose up -d` nếu dùng frontend trong Compose; dữ liệu trên volume MySQL được giữ lại.
 
-`ai-service` nằm trong profile `ai` nên `docker compose up -d` **không** khởi động nó. Khi AI tắt, hàng "For you" ở trang Home báo "Recommendations are temporarily unavailable" và chatbot báo "the AI service is currently unavailable". Chạy thêm `docker compose --profile ai up -d --build ai-service` (xem mục AI Search bên dưới) rồi tải lại trang. Nếu dùng image cục bộ `whattowatch-ai:local` thì chạy `docker compose -f docker-compose.yml -f docker-compose.ai-local.yml --profile ai up -d --no-build --force-recreate ai-service`; image cũ thiếu trường `ranking` sẽ trả 422 và "For you" vẫn báo unavailable.
+`docker compose up -d` giờ cũng khởi động `ai-service` (không còn profile `ai`; `--profile ai` vẫn chạy được nhưng không bắt buộc). Lần đầu sẽ build image AI và tải BGE-M3 nên lâu. Nếu AI tắt, hàng "For you" ở trang Home báo "Recommendations are temporarily unavailable" và chatbot báo "the AI service is currently unavailable". Sau khi `git pull` code AI mới, chạy `docker compose up -d --build ai-service` để tránh dùng image cũ (image cũ thiếu trường `ranking` sẽ trả 422). Nếu dùng image cục bộ `whattowatch-ai:local`: `docker compose -f docker-compose.yml -f docker-compose.ai-local.yml up -d --no-build --force-recreate ai-service`.
 
 ## Khi gặp lỗi
 
