@@ -30,6 +30,14 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
     }
     params.set(key, value);
   }
+  for (const [low, high] of [['yearFrom', 'yearTo'], ['minRuntime', 'maxRuntime'], ['minRating', 'maxRating']]) {
+    const from = params.get(low);
+    const to = params.get(high);
+    if (from !== null && to !== null && Number(from) > Number(to)) {
+      res.status(400).json({ message: `${low} must not be greater than ${high}` });
+      return;
+    }
+  }
   const language = req.query.language;
   if (typeof language === 'string' && language) {
     if (!/^[a-z]{2,3}$/.test(language)) {

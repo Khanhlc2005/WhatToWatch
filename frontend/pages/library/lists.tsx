@@ -33,7 +33,10 @@ export default function MyLists() {
   const [busy, setBusy] = useState(false);
   const queryId = Number(router.query.list);
   const selected = lists ? lists.find(list => list.id === queryId) || lists[0] || null : null;
-  const { page: current, result, loading, error } = usePagedList<MovieSummary>(selected ? `/api/watchlists/${selected.id}/movies` : null, ['wtw-library-change']);
+  // A `?page=` left over from another list must not be applied to the list shown instead.
+  const staleUrl = Boolean(selected && selected.id !== queryId && router.query.page);
+  const { page: current, result, loading, error } = usePagedList<MovieSummary>(
+    selected && !staleUrl ? `/api/watchlists/${selected.id}/movies` : null, ['wtw-library-change']);
 
   const loadLists = useCallback(async () => {
     const response = await send('/api/watchlists', 'GET');
@@ -62,6 +65,10 @@ export default function MyLists() {
       setBusy(false);
     }
   }
+
+  useEffect(() => {
+    if (staleUrl && selected) void router.replace({ pathname: '/library/lists', query: { list: selected.id } }, undefined, { scroll: false });
+  }, [staleUrl, selected, router]);
 
   const select = (id: number) => void router.replace({ pathname: '/library/lists', query: { list: id } }, undefined, { scroll: false });
 

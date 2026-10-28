@@ -53,6 +53,13 @@ export default function Discover() {
     return () => { active = false; };
   }, [router.isReady, applied, current]);
 
+  // A shared link can point past the last page once the result set shrinks.
+  useEffect(() => {
+    const last = results ? Math.max(results.totalPages, 1) : 0;
+    if (results && !loading && current > last)
+      void router.replace({ pathname: '/discover', query: queryFromFilters(applied, last) }, undefined, { scroll: false });
+  }, [results, loading, current, applied, router]);
+
   const apply = (filters: DiscoverFilters, target = 1) =>
     void router.push({ pathname: '/discover', query: queryFromFilters(filters, target) }, undefined, { scroll: false });
   const genreName = (id: number) => movieGenres.find(genre => genre.id === id)?.name || String(id);
@@ -90,14 +97,14 @@ export default function Discover() {
           </div>
           {loading && <StatusNote tone='loading'>Finding movies…</StatusNote>}
           {error && <StatusNote tone='error'>{error}</StatusNote>}
-          {!loading && !error && results && results.data.length === 0 && <StatusNote tone='empty' block title='No movies match these filters'
+          {!loading && !error && results && results.data.length === 0 && current <= Math.max(results.totalPages, 1) && <StatusNote tone='empty' block title='No movies match these filters'
             action={<Button size='sm' onClick={() => apply(emptyFilters)}>Reset all</Button>}>
             Try a wider year or runtime range, or fewer genres.
           </StatusNote>}
           {!loading && results && results.data.length > 0 && <div className={page.grid}>
             {results.data.map(movie => <MovieCard key={movie.id} item={toMovie(movie)} fluid />)}
           </div>}
-          {results && results.totalPages > 1 && <Pagination page={current} totalPages={results.totalPages} onChange={target => apply(applied, target)} />}
+          {results && !loading && results.totalPages > 1 && <Pagination page={current} totalPages={results.totalPages} onChange={target => apply(applied, target)} />}
         </section>
       </div>
     </main></Layout>
