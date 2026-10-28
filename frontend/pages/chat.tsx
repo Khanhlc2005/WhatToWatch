@@ -3,7 +3,7 @@ import { FormEvent, useCallback, useEffect, useRef, useState } from 'react';
 import { useRouter } from 'next/router';
 import Layout from '../components/Layout';
 import { ChatMessage, ChatReply, Conversation, ConversationDetail } from '../lib/chat';
-import { formatClock } from '../lib/chatTime';
+import { formatClock } from '../lib/apiTime';
 import ChatComposer from '../components/chat/ChatComposer';
 import ChatMessageView from '../components/chat/ChatMessage';
 import ConversationList from '../components/chat/ConversationList';

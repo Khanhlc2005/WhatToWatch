@@ -1,5 +1,5 @@
 import { Conversation } from '../../lib/chat';
-import { formatWhen } from '../../lib/chatTime';
+import { formatWhen } from '../../lib/apiTime';
 import Button from '../ui/Button';
 import IconButton from '../ui/IconButton';
 import styles from '../../styles/ConversationList.module.scss';
