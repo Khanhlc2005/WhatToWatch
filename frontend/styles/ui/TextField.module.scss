@@ -1,0 +1,19 @@
+@import '../tokens';
+
+.field { display: flex; flex-direction: column; gap: 6px; label { @include label; color: $ink; } }
+.wrap { position: relative; display: flex; }
+.input {
+  width: 100%;
+  height: 44px;
+  padding: 0 $space-4;
+  border: 1px solid $line-strong;
+  border-radius: $radius-sm;
+  background: $surface-100;
+  color: $ink;
+  font-size: 16px;
+  &:hover { border-color: $ink-muted; }
+  &:focus-visible { @include focus-ring(1px); }
+}
+.invalid .input { border-color: $danger; }
+.error { color: $danger; @include body-s; }
+.hint { color: $ink-muted; @include body-s; }

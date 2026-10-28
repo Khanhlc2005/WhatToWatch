@@ -1,0 +1,31 @@
+@import './tokens';
+
+.landing { display: flex; flex-direction: column; min-height: 100vh; overflow: hidden; background: $surface-000; color: $ink; }
+.header { display: flex; align-items: center; justify-content: space-between; padding: 28px $space-12; }
+.main { display: flex; flex: 1; align-items: center; padding: 0 $space-12; }
+.withPosters { display: grid; grid-template-columns: 1fr 560px; gap: $space-16; }
+.copy { display: flex; flex-direction: column; gap: $space-6; h1 { margin: 0; font-family: $font-display; font-size: 88px; line-height: .95; font-weight: 500; letter-spacing: -.02em; } em { color: $marquee-text; } p { max-width: 44ch; margin: 0; color: $ink-muted; @include body-l; } }
+.eyebrow { color: $ink-muted; @include eyebrow; }
+.actions { display: flex; flex-wrap: wrap; gap: $space-3; }
+.collage { display: grid; grid-template-columns: repeat(3, 1fr); gap: $space-4; transform: rotate(-4deg); }
+.tile:nth-child(3n + 2) { margin-top: 40px; }
+.strip { padding: 0 $space-12 $space-8; }
+.stripText { margin-top: $space-4; @include meta; color: $ink-faint; letter-spacing: .2em; }
+
+@include below($bp-xl) {
+  .copy h1 { font-size: 72px; }
+  .withPosters { grid-template-columns: 1fr 420px; gap: $space-8; }
+}
+@include below($bp-lg) {
+  .withPosters { grid-template-columns: 1fr; }
+  .collage { display: none; }
+  .main { padding: $space-8; }
+  .header { padding: $space-6 $space-8; }
+  .strip { padding: 0 $space-8 $space-6; }
+}
+@include below($bp-sm) {
+  .copy h1 { font-size: 52px; }
+  .main { padding: $space-6 $space-4; }
+  .header { padding: $space-4; }
+  .strip { padding: 0 $space-4 $space-6; }
+}

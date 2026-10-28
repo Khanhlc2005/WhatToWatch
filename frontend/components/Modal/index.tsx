@@ -1,14 +1,20 @@
-/* eslint-disable @next/next/no-img-element */
-import React, { useContext, useEffect, useState } from 'react';
+import React, { useContext, useEffect, useRef, useState } from 'react';
 import { useRouter } from 'next/router';
 import styles from '../../styles/Modal.module.scss';
 import { ModalContext } from '../../context/ModalContext';
-import { Genre } from '../../types';
 import { Trailer, youtubeTrailerSearchUrl } from '../../lib/movies';
 import LibraryActions from '../LibraryActions';
 import MovieRow from '../List/MovieRow';
 import MovieRating from '../MovieRating';
+import Chip from '../ui/Chip';
+import IconButton from '../ui/IconButton';
+import Perforation from '../ui/Perforation';
+import SectionHeading from '../ui/SectionHeading';
+import StatusNote from '../ui/StatusNote';
+import TicketMeta from '../ui/TicketMeta';
 import { readApiJson } from '../../lib/readApiJson';
+
+const PLACEHOLDER = '/assets/poster-placeholder.svg';
 
 export default function Modal() {
   const router = useRouter();
@@ -18,6 +24,7 @@ export default function Modal() {
   const [trailerError, setTrailerError] = useState('');
   const [trailerUnavailable, setTrailerUnavailable] = useState(false);
   const [videoReady, setVideoReady] = useState(false);
+  const closeRef = useRef<HTMLButtonElement>(null);
 
   function close() {
     setIsModal(false);
@@ -27,6 +34,18 @@ export default function Modal() {
       void router.replace(destination, undefined, { scroll: false });
     }
   }
+
+  useEffect(() => {
+    if (!isModal) return;
+    const onKey = (event: KeyboardEvent) => { if (event.key === 'Escape') close(); };
+    const overflow = document.body.style.overflow;
+    document.body.style.overflow = 'hidden';
+    document.addEventListener('keydown', onKey);
+    closeRef.current?.focus();
+    return () => { document.body.style.overflow = overflow; document.removeEventListener('keydown', onKey); };
+    // close() only reads router state at call time.
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [isModal]);
 
   useEffect(() => {
     setTrailerKey('');
@@ -68,69 +87,59 @@ export default function Modal() {
   const trailerUrl = trailerKey
     ? `https://www.youtube-nocookie.com/embed/${trailerKey}?autoplay=1&mute=1&playsinline=1&controls=1&rel=0`
     : '';
+  const year = releaseDate?.slice(0, 4);
+  const genres = genre || [];
 
   return (
-    <div className={styles.container} style={{ display: isModal ? 'flex' : 'none' }}>
-      <div className={styles.overlay} onClick={close}></div>
-      <div className={styles.modal}>
-        <div className={styles.spotlight}>
-          <img src={banner} alt='' className={`${styles.spotlight__image} ${videoReady ? styles.imageHidden : ''}`} />
-          {trailerKey && <div className={styles.trailerFrame}>
-            <iframe key={trailerKey} title={'Trailer ' + title} src={trailerUrl} loading='eager'
-              allow='autoplay; encrypted-media; picture-in-picture' allowFullScreen
-              onLoad={() => setVideoReady(true)} />
-          </div>}
+    <div className={styles.wrap} style={{ display: isModal ? 'flex' : 'none' }}>
+      <div className={styles.scrim} onClick={close}></div>
+      <div className={styles.modal} role='dialog' aria-modal='true' aria-label={title}>
+        <IconButton ref={closeRef} icon='x' label='Close movie details' variant='float' className={styles.close} onClick={close} />
+        <div className={styles.media}>
+          {/* eslint-disable-next-line @next/next/no-img-element */}
+          <img src={banner} alt='' className={[videoReady && styles.hidden, banner?.endsWith(PLACEHOLDER) && styles.placeholder].filter(Boolean).join(' ')}
+            onError={event => { event.currentTarget.src = PLACEHOLDER; event.currentTarget.classList.add(styles.placeholder); }} />
+          {trailerKey && <iframe key={trailerKey} title={'Trailer ' + title} src={trailerUrl} loading='eager'
+            allow='autoplay; encrypted-media; picture-in-picture' allowFullScreen
+            onLoad={() => setVideoReady(true)} />}
         </div>
-        <div className={styles.cross} onClick={close} role='button' aria-label='Close movie details'>
-          &#10005;
-        </div>
-        <div className={styles.details}>
-          <div className={styles.title}>{title}</div>
-          <LibraryActions movieId={id} />
-          {id && <MovieRating movieId={id} />}
-          {trailerKey && <p className={styles.trailerHint}>The trailer starts muted. You can turn on sound in the video player.</p>}
-          {(trailerUnavailable || trailerError) &&
-            <p role={trailerError ? 'alert' : 'status'} className={styles.trailerError}>
-              {trailerError || 'No trailer is available for this movie.'}{' '}
-              <a href={youtubeTrailerSearchUrl(title, releaseDate)} target='_blank' rel='noopener noreferrer'>
-                Search for a trailer on YouTube
-              </a>
-            </p>}
-        </div>
-        <div className={styles.bottomContainer}>
-          <div className={styles.column}><h3>Overview</h3><p>{overview || 'No overview is available for this movie.'}</p></div>
-          <div className={styles.column}>
-            <div className={styles.metadataRow}>
-              <span className={styles.greenText}>{rating == null ? 'Not rated' : `IMDb ${rating.toFixed(1)}/10`}</span>
-              {releaseDate && <span>Year: {releaseDate.slice(0, 4)}</span>}
-            </div>
-            {genre.length > 0 && <div className={styles.genre}>Genres: {renderGenre(genre)} </div>}
-            {runtime && <div>Runtime: {runtime} minutes</div>}
-            <div><strong>Cast:</strong> {cast || 'No cast information available.'}</div>
+        <div className={styles.head}>
+          <h2 className={styles.title}>{title}</h2>
+          <TicketMeta rating={rating} year={year} runtime={runtime} highlight />
+          <div className={styles.actions}>
+            <LibraryActions movieId={id} />
           </div>
+          {trailerKey && <p className={styles.hint}>The trailer starts muted. You can turn on sound in the video player.</p>}
+          {(trailerUnavailable || trailerError) && <StatusNote tone={trailerError ? 'error' : 'info'}
+            action={<a className={styles.link} href={youtubeTrailerSearchUrl(title, releaseDate)} target='_blank' rel='noopener noreferrer'>
+              Search for a trailer on YouTube
+            </a>}>
+            {trailerError || 'No trailer is available for this movie.'}
+          </StatusNote>}
+        </div>
+        <Perforation inset />
+        <div className={styles.body}>
+          <div className={styles.column}>
+            <h3 className={styles.eyebrow}>OVERVIEW</h3>
+            <p>{overview || 'No overview is available for this movie.'}</p>
+            {id && <MovieRating movieId={id} />}
+          </div>
+          <dl className={styles.facts}>
+            <dt>IMDb</dt><dd className={styles.mono}>{rating == null ? 'NOT RATED' : `${rating.toFixed(1)} / 10`}</dd>
+            {year && <><dt>Year</dt><dd className={styles.mono}>{year}</dd></>}
+            {runtime ? <><dt>Runtime</dt><dd className={styles.mono}>{runtime} minutes</dd></> : null}
+            {genres.length > 0 && <><dt>Genres</dt><dd className={styles.chips}>{genres.map(item => <Chip key={item.id}>{item.name}</Chip>)}</dd></>}
+            <dt>Cast</dt><dd>{cast || 'No cast information available.'}</dd>
+          </dl>
         </div>
         <section className={styles.related}>
-          <h3>Similar language and era</h3>
-          <p>Movies from around the same time with the same original language.</p>
-          {modalData.similarMovies?.length ? <MovieRow movies={modalData.similarMovies} /> : <p>No similar movies found.</p>}
+          <SectionHeading title='Similar language and era' />
+          {modalData.similarMovies?.length ? <>
+            <p className={styles.muted}>Movies from around the same time with the same original language.</p>
+            <MovieRow movies={modalData.similarMovies} />
+          </> : <StatusNote tone='empty'>No similar movies found.</StatusNote>}
         </section>
       </div>
-    </div>
-  );
-}
-
-function renderGenre(genre: Genre[]) {
-  return (
-    <div className={styles.row}>
-      {genre.map((item, index) => {
-        const isLast = index === genre.length - 1;
-        return (
-          <div key={index} className={styles.row}>
-            <span>&nbsp;{item.name}</span>
-            {!isLast && <div>,</div>}
-          </div>
-        );
-      })}
     </div>
   );
 }

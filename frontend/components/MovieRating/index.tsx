@@ -1,12 +1,15 @@
 import { useEffect, useState } from 'react';
 import Link from 'next/link';
 import { useRouter } from 'next/router';
-import styles from '../../styles/Modal.module.scss';
+import styles from '../../styles/Rating.module.scss';
 import { readApiJson } from '../../lib/readApiJson';
+import Icon from '../ui/Icon';
+import StatusNote from '../ui/StatusNote';
 
 export default function MovieRating({ movieId }: { movieId: string }) {
   const router = useRouter();
   const [rating, setRating] = useState<number | null>(null);
+  const [hover, setHover] = useState(0);
   const [loading, setLoading] = useState(true);
   const [signedOut, setSignedOut] = useState(false);
   const [busy, setBusy] = useState(false);
@@ -50,17 +53,24 @@ export default function MovieRating({ movieId }: { movieId: string }) {
     } finally { setBusy(false); }
   }
 
-  return <div className={styles.userRating}>
-    <strong>Your rating</strong>
-    {loading && <span>Loading…</span>}
-    {!loading && signedOut && <Link href={'/login?next=' + encodeURIComponent(router.asPath)}><a>Sign in to rate this movie</a></Link>}
+  const shown = hover || rating || 0;
+  return <div className={styles.rate}>
+    <strong className={styles.label}>Your rating</strong>
+    {loading && <StatusNote tone='loading'>Loading your rating…</StatusNote>}
+    {!loading && signedOut && <Link href={'/login?next=' + encodeURIComponent(router.asPath)}>
+      <a className={styles.link}>Sign in to rate this movie</a>
+    </Link>}
     {!loading && !signedOut && <>
-      <div className={styles.ratingChoices} aria-label='Rate this movie from 1 to 5 stars'>
+      <div className={styles.stars} role='group' aria-label='Rate this movie from 1 to 5 stars' onMouseLeave={() => setHover(0)}>
         {[1, 2, 3, 4, 5].map(value => <button key={value} type='button' disabled={busy}
-          aria-label={`${value} stars`} aria-pressed={rating === value} onClick={() => void save(value)}>{value} ★</button>)}
+          className={value <= shown ? styles.on : undefined}
+          aria-label={`${value} stars`} aria-pressed={rating === value}
+          onMouseEnter={() => setHover(value)} onClick={() => void save(value)}>
+          <Icon name='star' size={20} filled={value <= shown} />
+        </button>)}
       </div>
-      <span>{rating === null ? 'You have not rated this movie.' : `You rated this movie ${rating}/5 stars.`}</span>
+      <span className={styles.status}>{rating === null ? 'You have not rated this movie.' : `You rated this movie ${rating}/5 stars.`}</span>
     </>}
-    {error && <span role='alert' className={styles.ratingError}>{error}</span>}
+    {error && <span role='alert' className={styles.error}>{error}</span>}
   </div>;
 }

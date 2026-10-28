@@ -10,10 +10,14 @@ export interface IconButtonProps extends React.ButtonHTMLAttributes<HTMLButtonEl
   filled?: boolean;
 }
 
-export default function IconButton({ icon, label, variant, size = 'md', filled, className, ...rest }: IconButtonProps): React.ReactElement {
+const IconButton = React.forwardRef<HTMLButtonElement, IconButtonProps>(function IconButton(
+  { icon, label, variant, size = 'md', filled, className, ...rest }, ref
+) {
   const classes = [styles.iconButton, variant && styles[variant], size === 'lg' && styles.large, className]
     .filter(Boolean).join(' ');
-  return <button type='button' {...rest} className={classes} aria-label={label} title={label}>
+  return <button ref={ref} type='button' {...rest} className={classes} aria-label={label} title={label}>
     <Icon name={icon} filled={filled} size={size === 'lg' ? 22 : 18} />
   </button>;
-}
+});
+
+export default IconButton;

@@ -1,14 +1,16 @@
 import { useEffect, useRef, useState } from 'react';
 import { Movie } from '../../types';
 import MovieCard from './MovieCard';
+import IconButton from '../ui/IconButton';
 import styles from '../../styles/Cards.module.scss';
 
 export interface MovieRowProps {
   movies: Movie[];
   reasons?: string[];
+  ranked?: boolean;
 }
 
-export default function MovieRow({ movies, reasons }: MovieRowProps) {
+export default function MovieRow({ movies, reasons, ranked = false }: MovieRowProps) {
   const rowRef = useRef<HTMLDivElement>(null);
   const [canGoLeft, setCanGoLeft] = useState(false);
   const [canGoRight, setCanGoRight] = useState(false);
@@ -33,12 +35,10 @@ export default function MovieRow({ movies, reasons }: MovieRowProps) {
   }
 
   return <div className={styles.rowViewport}>
-    {canGoLeft && <button type='button' className={`${styles.rowArrow} ${styles.rowArrowLeft}`}
-      aria-label='Previous movies' onClick={() => move(-1)}>‹</button>}
-    <div ref={rowRef} className={styles.cardRow} onScroll={updateArrows}>
-      {movies.map((movie, index) => <MovieCard key={movie.id} item={movie} reason={reasons?.[index]} />)}
+    {canGoLeft && <IconButton icon='chevron-left' label='Previous movies' variant='float' className={styles.prev} onClick={() => move(-1)} />}
+    <div ref={rowRef} className={styles.row} onScroll={updateArrows}>
+      {movies.map((movie, index) => <MovieCard key={movie.id} item={movie} reason={reasons?.[index]} rank={ranked ? index + 1 : undefined} />)}
     </div>
-    {canGoRight && <button type='button' className={`${styles.rowArrow} ${styles.rowArrowRight}`}
-      aria-label='Next movies' onClick={() => move(1)}>›</button>}
+    {canGoRight && <IconButton icon='chevron-right' label='Next movies' variant='float' className={styles.next} onClick={() => move(1)} />}
   </div>;
 }

@@ -1,33 +1,40 @@
-.listContainer { padding-top: 3rem; scroll-margin-top: 6rem; }
-.sectionHeading { display: flex; align-items: center; gap: 1.2rem; margin-bottom: 1.4rem; }
-.category { margin: 0; font-size: clamp(1.35rem, 2.2vw, 2rem); letter-spacing: -.035em; white-space: nowrap; }
-.sectionLine { height: 1px; flex: 1; background: rgba(255,255,255,.13); }
-.sectionCount { color: #ffba72; font-size: .68rem; font-weight: 800; letter-spacing: .15em; white-space: nowrap; }
+@import './tokens';
+
+// Movie card
+.card { position: relative; display: flex; flex: none; flex-direction: column; width: 176px; min-width: 0; }
+.fluid { width: auto; }
+.posterButton { position: relative; display: block; padding: 0; border: 0; border-radius: $radius-sm; background: none; cursor: pointer; }
+.veil {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: $space-1;
+  border-radius: $radius-sm;
+  background: $image-veil;
+  color: $ink;
+  @include label;
+  opacity: 0;
+  transition: opacity $duration-fast $ease;
+}
+.posterButton:hover .veil, .posterButton:focus-visible .veil { opacity: 1; }
+.info { display: flex; flex-direction: column; gap: 2px; padding: $space-3 2px 0; min-width: 0; }
+.title { overflow: hidden; @include label; font-size: 15px; white-space: nowrap; text-overflow: ellipsis; }
+.reason { margin: $space-1 0 0; color: $ink-muted; font-size: 13px; line-height: 18px; }
+
+// Top 10: two-digit rank numeral beside the poster
+.ranked { width: 224px; flex-direction: row; flex-wrap: wrap; align-items: flex-end; .posterButton { width: 160px; } .info { width: 100%; padding-left: 64px; } }
+.rank { width: 64px; padding-bottom: 4px; @include rank; color: $marquee-text; }
+
+// Rows
 .rowViewport { position: relative; }
-.cardRow { display: flex; gap: 1.1rem; overflow-x: auto; padding: .25rem .25rem 1.5rem; scroll-snap-type: x mandatory; scroll-padding-inline: .25rem; scrollbar-width: none; -ms-overflow-style: none; }
-.cardRow::-webkit-scrollbar { display: none; }
-.rowArrow { position: absolute; top: clamp(90px, 11vw, 150px); z-index: 5; display: grid; place-items: center; width: 2.6rem; height: 4.5rem; border: 1px solid rgba(255,255,255,.35); border-radius: .3rem; background: rgba(8,15,20,.84); color: #fff9ee; font: inherit; font-size: 2.5rem; line-height: 1; cursor: pointer; box-shadow: 0 8px 24px rgba(0,0,0,.35); }
-.rowArrow:hover, .rowArrow:focus-visible { border-color: #ffba72; background: #20313c; }
-.rowArrowLeft { left: 0; }
-.rowArrowRight { right: 0; }
-.card { flex: 0 0 clamp(160px, 17vw, 225px); width: clamp(160px, 17vw, 225px); min-width: clamp(160px, 17vw, 225px); scroll-snap-align: start; align-self: stretch; }
-.cardPosterButton { display: block; width: 100%; height: clamp(240px, 25.5vw, 337.5px); padding: 0; border: 0; border-radius: .8rem; background: #1c2a33; overflow: hidden; cursor: pointer; position: relative; }
-.cardPoster { position: absolute; inset: 0; display: block; width: 100%; height: 100%; object-fit: cover; object-position: center; transition: transform .35s ease, opacity .35s ease; }
-.cardPosterButton:hover .cardPoster { transform: scale(1.055); opacity: .75; }
-.cardPosterButton:focus-visible { outline: 2px solid #ffba72; outline-offset: 3px; }
-.cardOverlay { position: absolute; inset: auto .75rem .75rem; padding: .6rem; border-radius: .45rem; background: rgba(8,15,20,.88); color: #fff9ee; font-size: .76rem; font-weight: 700; opacity: 0; transform: translateY(5px); transition: opacity .2s, transform .2s; }
-.cardPosterButton:hover .cardOverlay, .cardPosterButton:focus-visible .cardOverlay { opacity: 1; transform: none; }
-.cardInfo { padding: .9rem .15rem 0; }
-.cardTitle { display: -webkit-box; min-height: 2.7em; overflow: hidden; -webkit-box-orient: vertical; -webkit-line-clamp: 2; color: #fff9ee; font-size: .94rem; font-weight: 700; line-height: 1.35; }
-.cardMeta { display: flex; align-items: center; justify-content: space-between; gap: .5rem; margin-top: .55rem; color: #aeb9bf; font-size: .78rem; }
-.cardMeta > span:last-child { white-space: nowrap; }
-.cardRating { color: #ffba72; font-weight: 800; white-space: nowrap; }
-.listError { color: #ffabab; }
-.listNote { margin: 0 0 1.2rem; color: #b9c4c8; line-height: 1.5; }
-.listNote a { color: #ffba72; text-decoration: underline; }
-.cardReason { margin: .55rem 0 0; min-height: 2.4em; color: #ffca90; font-size: .76rem; line-height: 1.3; }
-.skeletonRow { display: flex; gap: 1.1rem; overflow: hidden; }
-.skeletonRow span { flex: 0 0 clamp(160px, 17vw, 225px); width: clamp(160px, 17vw, 225px); height: clamp(240px, 25.5vw, 337.5px); border-radius: .8rem; background: linear-gradient(100deg, #19252e 20%, #293742 48%, #19252e 70%); background-size: 200% 100%; animation: shimmer 1.5s linear infinite; }
-@keyframes shimmer { to { background-position-x: -200%; } }
-@media (max-width: 760px) { .listContainer { padding-top: 2.2rem; } .cardRow { gap: .8rem; margin-right: -1.25rem; padding-right: 1.25rem; scroll-padding-right: 1.25rem; } .card { flex-basis: 150px; width: 150px; min-width: 150px; } .cardPosterButton { height: 225px; } .skeletonRow span { flex-basis: 150px; width: 150px; height: 225px; } .sectionCount { display: none; } .rowArrow { top: 80px; height: 4rem; width: 2.1rem; } .rowArrowRight { right: -1.25rem; } }
-@media (prefers-reduced-motion: reduce) { .cardPoster, .cardOverlay, .skeletonRow span { transition: none; animation: none; } }
+.row { display: flex; gap: $space-4; margin: -4px; padding: 4px 4px $space-2; overflow-x: auto; scroll-behavior: smooth; scrollbar-width: none; &::-webkit-scrollbar { display: none; } @include reduced-motion { scroll-behavior: auto; } }
+.prev, .next { position: absolute; top: 110px; z-index: 2; }
+.prev { left: -14px; }
+.next { right: -14px; }
+
+// Section
+.section { display: flex; flex-direction: column; gap: $space-4; scroll-margin-top: 88px; }
+.note { margin-top: -$space-2; }
+.noteLink { color: $marquee-text; font-weight: 600; text-decoration: underline; text-decoration-thickness: 1px; text-underline-offset: 3px; &:hover { text-decoration-thickness: 2px; } }

@@ -4,9 +4,20 @@ import { FormEvent, useState } from 'react';
 import { useRouter } from 'next/router';
 import Brand from '../Brand';
 import { invalidateLibrarySession } from '../LibraryActions';
+import Button from '../ui/Button';
+import Icon, { IconName } from '../ui/Icon';
+import Perforation from '../ui/Perforation';
+import StatusNote from '../ui/StatusNote';
+import TextField from '../ui/TextField';
 import styles from '../../styles/Login.module.scss';
 
 type Props = { mode: 'login' | 'register' };
+
+const perks: { icon: IconName; text: string }[] = [
+  { icon: 'heart', text: 'Keep favourites and a watch-later queue' },
+  { icon: 'star', text: 'Rate 3 movies to unlock picks made for you' },
+  { icon: 'message', text: 'Ask Chatbot W2W what to watch tonight' }
+];
 
 export default function AuthForm({ mode }: Props) {
   const router = useRouter();
@@ -14,14 +25,16 @@ export default function AuthForm({ mode }: Props) {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [confirm, setConfirm] = useState('');
+  const [mismatch, setMismatch] = useState(false);
   const [error, setError] = useState('');
   const [busy, setBusy] = useState(false);
 
   async function submit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
     setError('');
+    setMismatch(false);
     if (isRegister && password !== confirm) {
-      setError('The passwords do not match.');
+      setMismatch(true);
       return;
     }
     setBusy(true);
@@ -52,25 +65,41 @@ export default function AuthForm({ mode }: Props) {
         <span className={styles.eyebrow}>WELCOME TO WHAT TO WATCH</span>
         <h1>A new story<br /><em>every night.</em></h1>
         <p>Save movies you want to watch and discover more stories worth seeing.</p>
+        <ul className={styles.perks}>
+          {perks.map(perk => <li key={perk.icon}><Icon name={perk.icon} />{perk.text}</li>)}
+        </ul>
       </div>
       <form onSubmit={submit} className={styles.authCard}>
-        <h2>{isRegister ? 'Create an account' : 'Sign in'}</h2>
-        <p>{isRegister ? 'Start discovering movies you will love.' : 'Welcome back.'}</p>
-        {!isRegister && router.query.registered === '1' && <p className={styles.success}>Account created. Please sign in.</p>}
-        <label htmlFor='email'>Email</label>
-        <input id='email' type='email' required autoComplete='email' value={email} onChange={event => setEmail(event.target.value)} placeholder='you@example.com' />
-        <label htmlFor='password'>Password</label>
-        <input id='password' type='password' required minLength={8} autoComplete={isRegister ? 'new-password' : 'current-password'} value={password} onChange={event => setPassword(event.target.value)} placeholder='At least 8 characters' />
-        {isRegister && <>
-          <label htmlFor='confirm'>Confirm password</label>
-          <input id='confirm' type='password' required minLength={8} autoComplete='new-password' value={confirm} onChange={event => setConfirm(event.target.value)} />
-        </>}
-        {error && <p role='alert' className={styles.error}>{error}</p>}
-        <button disabled={busy} className={styles.submit} type='submit'>{busy ? 'Please wait…' : isRegister ? 'Create account' : 'Sign in'} <span aria-hidden='true'>↗</span></button>
-        <p className={styles.switchLink}>{isRegister ? 'Already have an account?' : 'New here?'}{' '}
-          <Link href={(isRegister ? '/login' : '/register') + (typeof router.query.next === 'string' ? '?next=' + encodeURIComponent(router.query.next) : '')}><a>{isRegister ? 'Sign in' : 'Sign up'}</a></Link>
-        </p>
+        <div className={styles.stub}>
+          <span className={styles.admit}>{isRegister ? 'ADMIT ONE · NEW MEMBER' : 'ADMIT ONE · MEMBER'}</span>
+          <h2>{isRegister ? 'Create an account' : 'Sign in'}</h2>
+          <p>{isRegister ? 'Start discovering movies you will love.' : 'Welcome back.'}</p>
+        </div>
+        <Perforation inset />
+        <div className={styles.authBody}>
+          {!isRegister && router.query.registered === '1' && <StatusNote tone='success'>Account created. Please sign in.</StatusNote>}
+          <TextField id='email' label='Email' type='email' required autoComplete='email' value={email}
+            onChange={event => setEmail(event.target.value)} placeholder='you@example.com' />
+          <TextField id='password' label='Password' type='password' required minLength={8}
+            autoComplete={isRegister ? 'new-password' : 'current-password'} value={password}
+            onChange={event => setPassword(event.target.value)} placeholder='At least 8 characters' />
+          {isRegister && <TextField id='confirm' label='Confirm password' type='password' required minLength={8}
+            autoComplete='new-password' value={confirm} onChange={event => setConfirm(event.target.value)}
+            error={mismatch ? 'The passwords do not match.' : undefined} />}
+          {error && <StatusNote tone='error'>{error}</StatusNote>}
+          <Button variant='primary' type='submit' block busy={busy} busyLabel='Please wait…'
+            iconRight={busy ? undefined : 'arrow-up-right'}>{isRegister ? 'Create account' : 'Sign in'}</Button>
+          <p className={styles.switchLink}>{isRegister ? 'Already have an account?' : 'New here?'}{' '}
+            <Link href={(isRegister ? '/login' : '/register') + (typeof router.query.next === 'string' ? '?next=' + encodeURIComponent(router.query.next) : '')}>
+              <a>{isRegister ? 'Sign in' : 'Sign up'}</a>
+            </Link>
+          </p>
+        </div>
       </form>
     </main>
+    <footer className={styles.strip}>
+      <Perforation />
+      <div className={styles.stripText}>ADMIT ONE · WHAT TO WATCH</div>
+    </footer>
   </div>;
 }

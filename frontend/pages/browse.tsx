@@ -1,10 +1,10 @@
-/* eslint-disable @next/next/no-img-element */
 import dynamic from 'next/dynamic';
 import React, { useContext } from 'react';
 
 import { ModalContext } from '../context/ModalContext';
-import styles from '../styles/Browse.module.scss';
+import styles from '../styles/Page.module.scss';
 import { Section } from '../types';
+import Chip from '../components/ui/Chip';
 
 const List = dynamic(import('../components/List'));
 const Modal = dynamic(import('../components/Modal'));
@@ -18,18 +18,20 @@ export default function Browse(): React.ReactElement {
     <>
       {isModal && <Modal />}
       <Layout>
-        <Banner />
-        <div className={styles.contentContainer}>
-          <div className={styles.intro}>
-            <span className={styles.eyebrow}>DISCOVER MOVIES</span>
-            <h1>Find a great movie for tonight.</h1>
-            <p>Explore picks for you, top rated movies, and the latest releases.</p>
+        <main className={styles.page}>
+          <Banner />
+          <div className={styles.headRow}>
+            <div className={styles.head}>
+              <span className={styles.eyebrow}>DISCOVER MOVIES</span>
+              <h2>Find a great movie for tonight.</h2>
+              <p>Explore picks for you, top rated movies, and the latest releases.</p>
+            </div>
+            <nav className={styles.quick} aria-label='Movie sections'>
+              <Chip href='#for-you'>For you</Chip>
+              <Chip href='#top-rated'>Top rated</Chip>
+              <Chip href='#newest'>New releases</Chip>
+            </nav>
           </div>
-          <nav className={styles.quickLinks} aria-label='Movie sections'>
-            <a href='#for-you'>For you</a>
-            <a href='#top-rated'>Top rated</a>
-            <a href='#newest'>New releases</a>
-          </nav>
           <Recommendations />
           {sections.map((item) => {
             return (
@@ -38,20 +40,22 @@ export default function Browse(): React.ReactElement {
                 id={item.id}
                 heading={item.heading}
                 endpoint={item.endpoint}
+                ranked={item.ranked}
               />
             );
           })}
-        </div>
+        </main>
       </Layout>
     </>
   );
 }
 
-const sections: (Section & { id: string })[] = [
+const sections: (Section & { id: string; ranked?: boolean })[] = [
   {
     id: 'top-rated',
     heading: 'Top rated',
-    endpoint: '/api/movies/top-rated'
+    endpoint: '/api/movies/top-rated',
+    ranked: true
   },
   {
     id: 'newest',

@@ -2,10 +2,9 @@ import Link from 'next/link';
 import { useEffect, useState } from 'react';
 import { useRouter } from 'next/router';
 import Brand from '../Brand';
+import { DISCOVER_ENABLED } from '../../config/features';
 import styles from '../../styles/Navbar.module.scss';
 
-// Discover needs a backend fix before it can ship (docs/backend-requests.md); flip this once /discover is live.
-const DISCOVER_ENABLED = false;
 
 export default function Menu() {
   const router = useRouter();
