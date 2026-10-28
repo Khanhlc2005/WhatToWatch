@@ -3,6 +3,7 @@ package com.project.movie_recommendation.repository.specification;
 import com.project.movie_recommendation.dto.request.MovieFilterRequest;
 import com.project.movie_recommendation.entity.Genre;
 import com.project.movie_recommendation.entity.Movie;
+import jakarta.persistence.criteria.Expression;
 import jakarta.persistence.criteria.Join;
 import jakarta.persistence.criteria.Predicate;
 import org.springframework.data.jpa.domain.Specification;
@@ -35,11 +36,15 @@ public class MovieSpecification {
                 predicates.add(criteriaBuilder.lessThanOrEqualTo(root.get("releaseDate"), endOfYear));
             }
 
+            // Same score the cards show (MovieMapper): IMDb when positive, otherwise TMDB.
+            Expression<Double> displayedRating = criteriaBuilder.<Double>selectCase()
+                    .when(criteriaBuilder.greaterThan(root.<Double>get("imdbRating"), 0.0), root.<Double>get("imdbRating"))
+                    .otherwise(root.<Double>get("tmdbVoteAverage"));
             if (request.getMinRating() != null) {
-                predicates.add(criteriaBuilder.greaterThanOrEqualTo(root.get("tmdbVoteAverage"), request.getMinRating()));
+                predicates.add(criteriaBuilder.greaterThanOrEqualTo(displayedRating, request.getMinRating()));
             }
             if (request.getMaxRating() != null) {
-                predicates.add(criteriaBuilder.lessThanOrEqualTo(root.get("tmdbVoteAverage"), request.getMaxRating()));
+                predicates.add(criteriaBuilder.lessThanOrEqualTo(displayedRating, request.getMaxRating()));
             }
 
             if (request.getLanguage() != null && !request.getLanguage().isBlank()) {

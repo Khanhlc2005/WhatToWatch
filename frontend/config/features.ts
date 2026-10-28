@@ -1,9 +1,9 @@
 // Features that wait for a backend fix (docs/backend-requests.md). Flip each one once its fix is live.
 
-// /discover: the link stays out of the navbar and the Search page until the rating filter works.
-export const DISCOVER_ENABLED = false;
-// GET /movies/filter compares tmdbVoteAverage while every card shows imdbRating, so "IMDb ≥ 7.5" returns the wrong movies.
-export const RATING_FILTER_ENABLED = false;
+// /discover: the link in the navbar and on the Search page.
+export const DISCOVER_ENABLED = true;
+// GET /movies/filter filters on the score the cards show (IMDb, TMDB fallback).
+export const RATING_FILTER_ENABLED = true;
 // The seed data (data/mysql/movies_data.sql) fills only `movies`; `genres` and `movie_genres` stay empty,
 // so any genre filter returns no movies.
 export const GENRE_FILTER_ENABLED = false;
