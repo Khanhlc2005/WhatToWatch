@@ -52,6 +52,8 @@ Mở `http://localhost:3000/browse`. Nếu vừa sửa `.env.local`, khởi đ�
 
 Ở những lần chạy sau, chỉ cần `docker compose up -d` nếu dùng frontend trong Compose; dữ liệu trên volume MySQL được giữ lại.
 
+`docker compose up -d` giờ cũng khởi động `ai-service` (không còn profile `ai`; `--profile ai` vẫn chạy được nhưng không bắt buộc). Lần đầu sẽ build image AI và tải BGE-M3 nên lâu. Nếu AI tắt, hàng "For you" ở trang Home báo "Recommendations are temporarily unavailable" và chatbot báo "the AI service is currently unavailable". Sau khi `git pull` code AI mới, chạy `docker compose up -d --build ai-service` để tránh dùng image cũ (image cũ thiếu trường `ranking` sẽ trả 422). Nếu dùng image cục bộ `whattowatch-ai:local`: `docker compose -f docker-compose.yml -f docker-compose.ai-local.yml up -d --no-build --force-recreate ai-service`.
+
 ## Khi gặp lỗi
 
 - **“Không tải được danh sách phim”**: kiểm tra `http://localhost:3000/api/movies/top-rated`. API phải trả mảng phim có `id` là **số**. Nếu ID là UUID, cổng `8080` đang được backend của workspace khác phục vụ. Dùng `docker ps -a` và `docker inspect <container> --format '{{index .Config.Labels "com.docker.compose.project.working_dir"}}'` để kiểm tra nguồn container. Dừng **và đổi tên** container cũ nếu chúng trùng tên `whattowatch-backend` hoặc `whattowatch-mysql`; container đã dừng vẫn giữ tên. Không xóa volume dữ liệu cũ.

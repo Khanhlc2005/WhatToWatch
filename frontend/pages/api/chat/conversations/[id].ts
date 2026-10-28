@@ -15,5 +15,8 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
   const result = await chatRequest<ConversationDetail | string>(
     req, res, `/chat/conversations/${id}`, req.method
   );
-  if (result) res.status(200).json(result);
+  if (!result) return;
+  // Next 11 sends a bare string as plain text, so the delete confirmation is wrapped to stay valid JSON.
+  if (typeof result === 'string') res.status(200).json({ message: result });
+  else res.status(200).json(result);
 }

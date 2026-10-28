@@ -33,7 +33,7 @@ class RAGAnswer(BaseModel):
 
     status: Literal["answered", "no_match", "insufficient_context"]
     answer: str = Field(min_length=12)
-    movies: list[AnswerMovie] = Field(max_length=5)
+    movies: list[AnswerMovie] = Field(max_length=8)
 
     @model_validator(mode="after")
     def status_matches_movies(self) -> "RAGAnswer":

@@ -177,3 +177,23 @@ def test_no_matching_film_returns_empty_list() -> None:
     )
     assert result.status == "no_match"
     assert result.movies == []
+
+
+def test_final_attempt_keeps_only_grounded_movies_from_a_list() -> None:
+    context = load_sample_context()
+    good, other = context[0], context[1]
+    payload = {"status": "answered", "answer": "These movies fit your request.", "movies": [
+        {"movie_id": good.movie_id, "title": good.title, "reason": "genre"},
+        {"movie_id": other.movie_id, "title": "Invented film", "reason": "genre"},
+    ]}
+    result = answer_question("recommend something", context, lambda prompt, system: json.dumps(payload))
+    assert [movie.movie_id for movie in result.movies] == [good.movie_id]
+
+
+def test_final_attempt_still_fails_when_no_movie_is_grounded() -> None:
+    context = load_sample_context()
+    payload = {"status": "answered", "answer": "These movies fit your request.", "movies": [
+        {"movie_id": context[0].movie_id, "title": "Invented film", "reason": "genre"},
+    ]}
+    with pytest.raises(RAGGroundingError):
+        answer_question("recommend something", context, lambda prompt, system: json.dumps(payload))
