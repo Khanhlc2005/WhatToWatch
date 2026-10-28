@@ -8,10 +8,10 @@ import Icon, { IconName } from '../ui/Icon';
 
 type Session = { authenticated: boolean; email?: string | null };
 
-// `ready` is flipped as each page ships (My ratings and Watch history in Phase 4, My lists in Phase 5).
+// `ready` is flipped as each page ships (My lists in Phase 5).
 const accountLinks: { href: string; label: string; icon: IconName; ready: boolean }[] = [
-  { href: '/me/ratings', label: 'My ratings', icon: 'star', ready: false },
-  { href: '/me/history', label: 'Watch history', icon: 'clock', ready: false },
+  { href: '/me/ratings', label: 'My ratings', icon: 'star', ready: true },
+  { href: '/me/history', label: 'Watch history', icon: 'clock', ready: true },
   { href: '/library/lists', label: 'My lists', icon: 'list', ready: false }
 ];
 

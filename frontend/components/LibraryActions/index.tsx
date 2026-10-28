@@ -8,7 +8,7 @@ type Status = { favorites: boolean; watchlist: boolean };
 
 let sessionPromise: Promise<boolean> | null = null;
 export function invalidateLibrarySession() { sessionPromise = null; }
-function signedIn() {
+export function signedIn() {
   if (!sessionPromise) sessionPromise = fetch('/api/auth/session')
     .then(response => response.json()).then(body => Boolean(body.authenticated))
     .catch(() => false);

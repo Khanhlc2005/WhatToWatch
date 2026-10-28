@@ -3,7 +3,7 @@ import { useRouter } from 'next/router';
 import styles from '../../styles/Modal.module.scss';
 import { ModalContext } from '../../context/ModalContext';
 import { Trailer, youtubeTrailerSearchUrl } from '../../lib/movies';
-import LibraryActions from '../LibraryActions';
+import LibraryActions, { signedIn } from '../LibraryActions';
 import MovieRow from '../List/MovieRow';
 import MovieRating from '../MovieRating';
 import Chip from '../ui/Chip';
@@ -46,6 +46,19 @@ export default function Modal() {
     // close() only reads router state at call time.
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [isModal]);
+
+  // Opening a movie records it in the watch history (the backend keeps one entry per movie).
+  useEffect(() => {
+    if (!isModal || !id) return;
+    let active = true;
+    void signedIn().then(loggedIn => {
+      if (!loggedIn || !active) return;
+      return fetch('/api/watch-history', {
+        method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ movieId: Number(id) })
+      });
+    }).catch(() => undefined);
+    return () => { active = false; };
+  }, [isModal, id]);
 
   useEffect(() => {
     setTrailerKey('');

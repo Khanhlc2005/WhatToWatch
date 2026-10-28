@@ -1,0 +1,18 @@
+@import './tokens';
+
+.ledger { display: flex; flex-direction: column; margin: 0; padding: 0; list-style: none; }
+.row { display: flex; align-items: center; gap: $space-4; padding: $space-3 0; border-bottom: 1px solid $line; }
+.poster { flex: none; width: 48px; }
+.main { display: flex; flex: 1; flex-direction: column; gap: 2px; min-width: 0; }
+.title { overflow: hidden; @include body; font-weight: 600; white-space: nowrap; text-overflow: ellipsis; &:hover { color: $marquee-text; } }
+.stars { display: flex; gap: 2px; }
+.starOn { color: $marquee; }
+.starOff { color: $line-strong; }
+.date { @include meta; color: $ink-faint; }
+.actions { display: flex; gap: 2px; }
+@include below($bp-sm) {
+  .row { flex-wrap: wrap; row-gap: $space-2; }
+  .main { flex-basis: calc(100% - 48px - #{$space-4}); }
+  .stars, .date { margin-left: calc(48px + #{$space-4}); }
+  .actions { margin-left: auto; }
+}

@@ -26,3 +26,19 @@ export function formatWhen(iso: string, now: Date = new Date()): string | undefi
   if (date.toDateString() === yesterday.toDateString()) return 'YESTERDAY';
   return date.toLocaleDateString('en-US', { month: 'short', day: 'numeric' }).toUpperCase();
 }
+
+// "OCT 22"
+export function formatMonthDay(iso?: string): string | undefined {
+  const date = parseApiDate(iso);
+  return date ? date.toLocaleDateString('en-US', { month: 'short', day: 'numeric' }).toUpperCase() : undefined;
+}
+
+// Day heading for grouped lists: "TODAY", "YESTERDAY", then "OCT 21".
+export function formatDayLabel(iso: string, now: Date = new Date()): string {
+  const date = parseApiDate(iso);
+  if (!date) return 'EARLIER';
+  if (date.toDateString() === now.toDateString()) return 'TODAY';
+  const yesterday = new Date(now);
+  yesterday.setDate(now.getDate() - 1);
+  return date.toDateString() === yesterday.toDateString() ? 'YESTERDAY' : formatMonthDay(iso) || 'EARLIER';
+}
