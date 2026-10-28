@@ -17,5 +17,5 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
     return;
   }
   const result = await accountRequest<string>(req, res, '/watchlists/' + id, 'DELETE', undefined, signIn);
-  if (result) res.status(200).json({ message: result });
+  if (result !== null) res.status(200).json({ message: result });
 }

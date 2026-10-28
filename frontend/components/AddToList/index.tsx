@@ -20,9 +20,11 @@ export default function AddToList({ movieId }: { movieId: string }): React.React
   const [creating, setCreating] = useState(false);
   const [name, setName] = useState('');
   const [error, setError] = useState('');
+  const shown = useRef(movieId);
+  shown.current = movieId;
 
   useEffect(() => { void signedIn().then(setAuthenticated); }, [movieId]);
-  useEffect(() => { setOpen(false); setLists([]); setCreating(false); setError(''); }, [movieId]);
+  useEffect(() => { setOpen(false); setLists([]); setCreating(false); setError(''); setLoading(false); setBusy(false); }, [movieId]);
 
   const requireSignIn = useCallback(() => void router.push('/login?next=' + encodeURIComponent(router.asPath)), [router]);
 
@@ -33,12 +35,13 @@ export default function AddToList({ movieId }: { movieId: string }): React.React
       const response = await fetch('/api/watchlists/membership?movieId=' + encodeURIComponent(movieId));
       if (response.status === 401) { requireSignIn(); return; }
       const body = await response.json();
+      if (shown.current !== movieId) return;
       if (!response.ok) throw new Error(body.message || 'Could not load your lists.');
       setLists(body as ListMembership[]);
     } catch (reason) {
-      setError(reason instanceof Error ? reason.message : 'Could not load your lists.');
+      if (shown.current === movieId) setError(reason instanceof Error ? reason.message : 'Could not load your lists.');
     } finally {
-      setLoading(false);
+      if (shown.current === movieId) setLoading(false);
     }
   }, [movieId, requireSignIn]);
 
@@ -68,6 +71,11 @@ export default function AddToList({ movieId }: { movieId: string }): React.React
     setBusy(true);
     setError('');
     const message = await request(list.id, list.checked ? 'DELETE' : 'POST');
+    if (shown.current !== movieId) {
+      if (!message) window.dispatchEvent(new CustomEvent('wtw-library-change', { detail: movieId }));
+      setBusy(false);
+      return;
+    }
     if (message) setError(message);
     else {
       setLists(current => current.map(item => item.id === list.id
@@ -88,8 +96,10 @@ export default function AddToList({ movieId }: { movieId: string }): React.React
         method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ name })
       });
       const body = await response.json().catch(() => ({}));
+      if (shown.current !== movieId) return;
       if (!response.ok) { setError(body.message || 'Could not create the list.'); return; }
       const message = await request(body.id, 'POST');
+      if (shown.current !== movieId) return;
       if (message) { setError(message); void load(); return; }
       setLists(current => [{ id: body.id, name: body.name, count: 1, checked: true }, ...current]);
       setName('');

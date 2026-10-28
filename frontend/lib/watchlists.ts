@@ -12,8 +12,9 @@ export type ListMembership = { id: number; name: string; count: number; checked:
 export const DEFAULT_LIST_NAME = 'Default Watchlist';
 export const LIST_NAME_MAX = 60;
 
+// The backend looks the list up by its exact name, so a list that only differs in case or spacing is the user's own.
 export function isDefaultList(list: Pick<WatchlistSummary, 'name'>): boolean {
-  return list.name.trim().toLowerCase() === DEFAULT_LIST_NAME.toLowerCase();
+  return list.name === DEFAULT_LIST_NAME;
 }
 
 // Returns the cleaned name, or null after answering 400.

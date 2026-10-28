@@ -11,5 +11,5 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
   }
   const result = await accountRequest<string>(req, res, '/watch-history/' + id, 'DELETE', undefined,
     'Please sign in to use your watch history');
-  if (result) res.status(200).json({ message: result });
+  if (result !== null) res.status(200).json({ message: result });
 }

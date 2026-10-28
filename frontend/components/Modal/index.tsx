@@ -49,18 +49,19 @@ export default function Modal() {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [isModal]);
 
-  // Opening a movie records it in the watch history (the backend keeps one entry per movie).
+  // Playing the trailer records the movie in the watch history (the backend keeps one entry per movie).
+  // Only opening the details does not count as watching.
   useEffect(() => {
-    if (!isModal || !id) return;
+    if (!isModal || !id || !videoReady) return;
     let active = true;
     void signedIn().then(loggedIn => {
       if (!loggedIn || !active) return;
       return fetch('/api/watch-history', {
         method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ movieId: Number(id) })
-      });
+      }).then(response => { if (response.ok && active) window.dispatchEvent(new Event('wtw-history-change')); });
     }).catch(() => undefined);
     return () => { active = false; };
-  }, [isModal, id]);
+  }, [isModal, id, videoReady]);
 
   useEffect(() => {
     setTrailerKey('');

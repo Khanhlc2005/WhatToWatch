@@ -9,7 +9,7 @@ import { HistoryItem } from '../../lib/activity';
 
 export default function WatchHistoryPage() {
   const router = useRouter();
-  const { page: current, result, loading, error, setError, reload } = usePagedList<HistoryItem>('/api/watch-history');
+  const { page: current, result, loading, error, setError, reload } = usePagedList<HistoryItem>('/api/watch-history', ['wtw-history-change']);
   const [busy, setBusy] = useState(false);
 
   async function send(path: string, failure: string) {

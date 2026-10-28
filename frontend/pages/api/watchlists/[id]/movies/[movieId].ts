@@ -16,5 +16,5 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
   const id = await visibleListId(req, res);
   if (!id) return;
   const result = await accountRequest<string>(req, res, `/watchlists/${id}/movies/${movieId}`, req.method, undefined, signIn);
-  if (result) res.status(200).json({ message: result });
+  if (result !== null) res.status(200).json({ message: result });
 }

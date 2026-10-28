@@ -10,7 +10,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
     if (!page) return;
     const result = await accountRequest<PageResult<HistoryItem>>(req, res, '/watch-history?page=' + page + '&size=20',
       'GET', undefined, message);
-    if (result) res.status(200).json(result);
+    if (result !== null) res.status(200).json(result);
     return;
   }
   if (req.method === 'POST') {
@@ -20,12 +20,12 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
       return;
     }
     const result = await accountRequest<HistoryItem>(req, res, '/watch-history', 'POST', { movieId }, message);
-    if (result) res.status(200).json(result);
+    if (result !== null) res.status(200).json(result);
     return;
   }
   if (req.method === 'DELETE') {
     const result = await accountRequest<string>(req, res, '/watch-history', 'DELETE', undefined, message);
-    if (result) res.status(200).json({ message: result });
+    if (result !== null) res.status(200).json({ message: result });
     return;
   }
   res.setHeader('Allow', 'GET, POST, DELETE');
