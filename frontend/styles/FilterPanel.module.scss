@@ -1,0 +1,13 @@
+@import './tokens';
+
+.panel { display: flex; flex-direction: column; gap: $space-6; padding: $space-6; border: 1px solid $line; border-radius: $radius-md; background: $surface-100; }
+.head { display: flex; align-items: center; justify-content: space-between; h2 { display: flex; align-items: center; gap: $space-2; margin: 0; @include title-m; } }
+.reset { padding: 0; border: 0; background: none; color: $marquee-text; @include body-s; font-weight: 600; text-decoration: underline; text-underline-offset: 3px; cursor: pointer; }
+.fieldset { display: flex; flex-direction: column; gap: $space-3; min-width: 0; margin: 0; padding: 0; border: 0; legend { margin-bottom: $space-3; padding: 0; @include label; } &:disabled { opacity: .45; } }
+.chips { display: flex; flex-wrap: wrap; gap: $space-2; }
+.range { display: flex; align-items: flex-end; gap: $space-2; > div { flex: 1; min-width: 0; label { color: $ink-muted; font-size: 13px; font-weight: 500; } input { font-family: $font-mono; font-size: 14px; padding: 0 $space-3; } } }
+.dash { display: flex; align-items: center; height: 44px; color: $ink-faint; }
+.unit { display: flex; align-items: center; height: 44px; @include meta; color: $ink-faint; }
+.hint { margin: 0; color: $ink-muted; @include body-s; }
+.language { display: flex; flex-direction: column; gap: 6px; label { @include label; } }
+.select { position: relative; select { appearance: none; width: 100%; height: 44px; padding: 0 40px 0 $space-4; border: 1px solid $line-strong; border-radius: $radius-sm; background: $surface-100; color: $ink; font-size: 16px; cursor: pointer; &:hover { border-color: $ink-muted; } } svg { position: absolute; top: 14px; right: 14px; color: $ink-muted; pointer-events: none; } }

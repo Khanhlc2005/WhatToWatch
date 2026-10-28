@@ -25,7 +25,7 @@
 
 .head { display: flex; flex-direction: column; gap: $space-3; padding: $space-8 $space-8 $space-4; }
 .title { margin: 0; @include display-l; overflow-wrap: anywhere; }
-.actions { margin-top: $space-2; }
+.actions { display: flex; flex-wrap: wrap; align-items: center; gap: $space-2; margin-top: $space-2; }
 .hint { margin: 0; color: $ink-muted; @include body-s; }
 .link { color: $marquee-text; @include label; text-decoration: underline; text-decoration-thickness: 1px; text-underline-offset: 3px; &:hover { text-decoration-thickness: 2px; } }
 

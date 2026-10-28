@@ -3,7 +3,9 @@ import { useRouter } from 'next/router';
 import styles from '../../styles/Modal.module.scss';
 import { ModalContext } from '../../context/ModalContext';
 import { Trailer, youtubeTrailerSearchUrl } from '../../lib/movies';
+import AddToList from '../AddToList';
 import LibraryActions, { signedIn } from '../LibraryActions';
+import { ADD_TO_LIST_ENABLED } from '../../config/features';
 import MovieRow from '../List/MovieRow';
 import MovieRating from '../MovieRating';
 import Chip from '../ui/Chip';
@@ -121,6 +123,7 @@ export default function Modal() {
           <TicketMeta rating={rating} year={year} runtime={runtime} highlight />
           <div className={styles.actions}>
             <LibraryActions movieId={id} />
+            {ADD_TO_LIST_ENABLED && id && <AddToList movieId={id} />}
           </div>
           {trailerKey && <p className={styles.hint}>The trailer starts muted. You can turn on sound in the video player.</p>}
           {(trailerUnavailable || trailerError) && <StatusNote tone={trailerError ? 'error' : 'info'}

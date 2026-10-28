@@ -1,0 +1,19 @@
+@import './tokens';
+
+.wrap { position: relative; display: inline-block; }
+.button { display: inline-flex; flex: none; align-items: center; gap: $space-2; height: 44px; padding: 0 $space-4; border: 1px solid $line-strong; border-radius: $radius-sm; background: transparent; color: $ink; @include label; white-space: nowrap; cursor: pointer; transition: background-color $duration-fast $ease; &:hover { background: $surface-300; } }
+.listed { border-color: $marquee; color: $marquee-text; }
+.popover { position: absolute; top: calc(100% + #{$space-2}); left: 0; z-index: 30; width: 300px; border: 1px solid $line-strong; border-radius: $radius-md; background: $surface-200; box-shadow: $shadow-overlay; }
+.head { display: flex; align-items: center; justify-content: space-between; padding: $space-2 $space-2 $space-1 $space-4; }
+.eyebrow { color: $ink-muted; @include eyebrow; }
+.items { max-height: 240px; margin: 0; padding: 0 $space-2 $space-2; overflow-y: auto; list-style: none; }
+.empty { margin: 0; padding: 0 $space-4 $space-3; color: $ink-muted; @include body-s; }
+.note { padding: 0 $space-4 $space-3; }
+.row { position: relative; display: flex; align-items: center; gap: $space-3; height: 44px; padding: 0 $space-2; border-radius: $radius-sm; font-size: 15px; cursor: pointer; &:hover { background: $surface-300; } input { position: absolute; width: 1px; height: 1px; opacity: 0; } input:disabled ~ * { opacity: .6; } input:checked + .check { border-color: $marquee; background: $marquee; } input:focus-visible + .check { @include focus-ring(2px); } }
+.check { display: grid; flex: none; place-items: center; width: 20px; height: 20px; border: 1px solid $line-strong; border-radius: $radius-sm; color: $on-marquee; }
+.name { flex: 1; min-width: 0; overflow: hidden; white-space: nowrap; text-overflow: ellipsis; }
+.count { @include meta; color: $ink-faint; }
+.foot { padding: $space-2; border-top: 1px solid $line; }
+.newList { display: flex; align-items: center; gap: $space-3; width: 100%; height: 40px; padding: 0 $space-2; border: 0; border-radius: $radius-sm; background: none; color: $marquee-text; @include label; cursor: pointer; &:hover { background: $surface-300; } }
+.create { display: flex; gap: $space-2; input { flex: 1; min-width: 0; height: 36px; padding: 0 $space-3; border: 1px solid $line-strong; border-radius: $radius-sm; background: $surface-100; color: $ink; font-size: 14px; } }
+.sr { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); }

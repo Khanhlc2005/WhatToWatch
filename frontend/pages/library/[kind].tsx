@@ -11,7 +11,7 @@ import styles from '../../styles/Page.module.scss';
 import Button from '../../components/ui/Button';
 import Pagination from '../../components/ui/Pagination';
 import StatusNote from '../../components/ui/StatusNote';
-import Tabs from '../../components/ui/Tabs';
+import LibraryTabs from '../../components/library/LibraryTabs';
 import TicketMeta from '../../components/ui/TicketMeta';
 
 export default function LibraryPage() {
@@ -56,10 +56,7 @@ export default function LibraryPage() {
         <span className={styles.eyebrow}>YOUR COLLECTION</span>
         <h1>{title}</h1>
       </div>
-      <Tabs label='Saved lists' active={kind || ''} items={[
-        { id: 'favorites', label: 'Favourite', href: '/library/favorites' },
-        { id: 'watchlist', label: 'Watch later', href: '/library/watchlist' }
-      ]} />
+      <LibraryTabs active={kind || 'favorites'} />
       {loading && <StatusNote tone='loading'>Loading your list…</StatusNote>}
       {error && <StatusNote tone='error'>{error}</StatusNote>}
       {!loading && results && <>

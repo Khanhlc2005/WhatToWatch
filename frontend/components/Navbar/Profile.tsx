@@ -8,11 +8,11 @@ import Icon, { IconName } from '../ui/Icon';
 
 type Session = { authenticated: boolean; email?: string | null };
 
-// `ready` is flipped as each page ships (My lists in Phase 5).
+// `ready` marks the pages that exist; flip one to false to hide its link.
 const accountLinks: { href: string; label: string; icon: IconName; ready: boolean }[] = [
   { href: '/me/ratings', label: 'My ratings', icon: 'star', ready: true },
   { href: '/me/history', label: 'Watch history', icon: 'clock', ready: true },
-  { href: '/library/lists', label: 'My lists', icon: 'list', ready: false }
+  { href: '/library/lists', label: 'My lists', icon: 'list', ready: true }
 ];
 
 export default function Profile(): React.ReactElement {

@@ -4,7 +4,7 @@ import { PageResult } from '../lib/movies';
 
 // Loads one page of a signed-in list (`?page=` in the URL), reloads on the given window events and
 // sends a 401 to /login?next=.
-export default function usePagedList<T>(endpoint: string, reloadEvents: string[] = []) {
+export default function usePagedList<T>(endpoint: string | null, reloadEvents: string[] = []) {
   const router = useRouter();
   const queryPage = Number(router.query.page || 1);
   const page = Number.isSafeInteger(queryPage) && queryPage > 0 ? queryPage : 1;
@@ -22,8 +22,12 @@ export default function usePagedList<T>(endpoint: string, reloadEvents: string[]
     return () => names.forEach(name => window.removeEventListener(name, reload));
   }, [eventKey, reload]);
 
+  // A different list starts from a clean slate instead of showing the previous one.
+  useEffect(() => { setResult(null); }, [endpoint]);
+
   useEffect(() => {
     if (!router.isReady) return;
+    if (!endpoint) { setLoading(false); return; }
     let active = true;
     setLoading(true);
     setError('');
@@ -37,7 +41,7 @@ export default function usePagedList<T>(endpoint: string, reloadEvents: string[]
       .then(body => {
         if (!active || !body) return;
         // The last item of a later page was removed: step back one page.
-        if (body.data.length === 0 && page > 1) void router.replace({ pathname: router.pathname, query: { page: page - 1 } });
+        if (body.data.length === 0 && page > 1) void router.replace({ pathname: router.pathname, query: { ...router.query, page: page - 1 } });
         else setResult(body);
       })
       .catch(reason => { if (active) setError(reason instanceof Error ? reason.message : 'Could not load this list.'); })
