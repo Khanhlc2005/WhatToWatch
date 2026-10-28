@@ -101,7 +101,7 @@ Trạng thái code branch `feature/week6-backlog-fixes` ngày 14/10/2026:
    eventual consistency, request ngay sau rating có thể nhận profile cũ/cold_start.
    API rating không chờ AI và AI failure không rollback rating đã commit.
 
-Bằng chứng/giới hạn live và tests: [báo cáo tuần 6](week06_backlog_fixes_vi.md).
+Bằng chứng/giới hạn live và tests: xem `docs/evidence/`.
 Backend container đang chạy image cũ; các fixes mới chưa được deploy.
 
 Endpoint theo convention /internal hiện tại; chưa có service authentication.

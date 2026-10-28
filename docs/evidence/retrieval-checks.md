@@ -24,7 +24,7 @@ No change to `tools/prepare_movies_sql.py`, backend source, or stored Qdrant pay
 
 ## Chốt phạm vi bàn giao theo yêu cầu mới
 
-Người dùng đã loại các nhiệm vụ phụ thuộc CSV MySQL khỏi đợt này. Phần triển khai và kiểm tra trong phạm vi còn lại đã hoàn thành; các hàng MySQL/CSV INCOMPLETE/NOT RUN phía trên thuộc công việc hoãn, không phải tuyên bố mapping đã xong. Checklist tiếp tục nằm trong [tổng kết bàn giao](../handoff_retrieval_vi.md).
+Người dùng đã loại các nhiệm vụ phụ thuộc CSV MySQL khỏi đợt này. Phần triển khai và kiểm tra trong phạm vi còn lại đã hoàn thành; các hàng MySQL/CSV INCOMPLETE/NOT RUN phía trên thuộc công việc hoãn, không phải tuyên bố mapping đã xong.
 
 Kiểm tra cuối đợt trên nguồn hiện tại:
 

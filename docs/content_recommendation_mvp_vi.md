@@ -8,7 +8,7 @@ query movies named dense bằng cosine → loại ID lỗi, dedup → trả movi
 Reuse normalize của preference và MovieFilters/build_payload_filter của retrieval.
 Không inference embedding hoặc tạo interactions. `ranking=cosine` giữ hành vi
 MVP; `ranking=final` đã có trong code tuần 5, trả score_components/reasons và
-sắp final score giảm dần. Xem [ranking v1](week05_ai_ranking_sft_vi.md).
+sắp final score giảm dần.
 
 Request:
 
@@ -93,4 +93,4 @@ duplicate, invalid IDs, ties, filters/exclusions, validation, cold-start, profil
 lỗi, storage errors và snapshot → recommendation → update → delete.
 Ngày 14/10/2026: smoke live read-only với 7 ratings của user 1 xác nhận vector,
 exclusions, final ranking/reasons và 10 IDs có trong MySQL. Chưa xác minh thao tác
-rating qua phiên đăng nhập thật hoặc deployment fixes mới. Xem [báo cáo tuần 6](week06_backlog_fixes_vi.md).
+rating qua phiên đăng nhập thật hoặc deployment fixes mới.
