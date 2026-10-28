@@ -1,0 +1,27 @@
+<!-- @dsCard group="Screens" height=1400 width=1440 page subtitle="/discover — advanced filters (new)" -->
+<!doctype html>
+<html>
+<head><meta charset="utf-8"><title>DiscoverScreen</title>
+<script src="../demo-data.js"></script>
+<style>body{margin:0}</style></head>
+<body>
+<div id="root"></div>
+<script>
+  var W = window.WTW, h = React.createElement, D = window.WTW_DEMO, M = D.movies;
+  ReactDOM.createRoot(document.getElementById('root')).render(
+    h('div', null,
+      h(W.Navbar, { active: 'discover', scrolled: true, user: { email: 'khanh@example.com' } }),
+      h('main', { className: 'w-page', style: { gap: 32 } },
+        h('div', { className: 'w-pagehead' }, h('span', { className: 'w-eyebrow' }, 'EXPLORE THE COLLECTION'), h('h1', null, 'Discover movies'), h('p', null, 'Narrow the catalogue by genre, era, rating, language and runtime.')),
+        h('div', { style: { display: 'grid', gridTemplateColumns: '360px 1fr', gap: 32, alignItems: 'start' } },
+          h(W.FilterPanel, { genres: D.genres, selectedGenres: [878, 18], yearFrom: 1990, yearTo: 2026, minRating: 7.5 }),
+          h('section', { style: { display: 'flex', flexDirection: 'column', gap: 24 } },
+            h('div', { style: { display: 'flex', alignItems: 'center', gap: 12, flexWrap: 'wrap' } },
+              h(W.TicketMeta, { extra: ['48 RESULTS'] }),
+              h(W.Chip, { selected: true }, 'Science Fiction'), h(W.Chip, { selected: true }, 'Drama'), h(W.Chip, null, '1990–2026'), h(W.Chip, null, 'IMDb ≥ 7.5')),
+            h('div', { className: 'w-grid' }, [M[4], M[7], M[0], M[9], M[3], M[5], M[6], M[1]].map(function (m) { return h(W.MovieCard, { key: m.id, movie: m }); })),
+            h(W.Pagination, { page: 1, totalPages: 4 })))),
+      h(W.Footer)));
+</script>
+</body>
+</html>

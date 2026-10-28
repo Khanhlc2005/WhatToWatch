@@ -1,0 +1,1 @@
+`poster-placeholder.svg`: the flat 2:3 fallback for a missing or broken poster (`surface-300` ground, `ink-faint` play glyph and "NO POSTER" in mono). It replaces the gradient placeholder at `frontend/public/assets/poster-placeholder.svg`.

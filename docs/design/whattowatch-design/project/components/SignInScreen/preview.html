@@ -1,0 +1,29 @@
+<!-- @dsCard group="Screens" height=900 width=1440 page subtitle="/login — sign in (register uses the same layout)" -->
+<!doctype html>
+<html>
+<head><meta charset="utf-8"><title>SignInScreen</title>
+<script src="../demo-data.js"></script>
+<style>body{margin:0}</style></head>
+<body>
+<div id="root"></div>
+<script>
+  var W = window.WTW, h = React.createElement, D = window.WTW_DEMO, M = D.movies;
+  var USER = { email: 'khanh@example.com' };
+  function head(eyebrow, title, lead) { return h('div', { className: 'w-pagehead' }, h('span', { className: 'w-eyebrow' }, eyebrow), h('h1', null, title), lead ? h('p', null, lead) : null); }
+  ReactDOM.createRoot(document.getElementById('root')).render(
+    h('div', { style: { minHeight: 860, display: 'flex', flexDirection: 'column' } },
+      h('header', { style: { padding: '28px 48px' } }, h(W.Brand, { href: '/' })),
+      h('main', { style: { flex: 1, display: 'grid', gridTemplateColumns: '1fr 440px', gap: 96, alignItems: 'center', padding: '0 48px 0 96px', maxWidth: 1340 } },
+        h('div', { style: { display: 'flex', flexDirection: 'column', gap: 24 } },
+          h('span', { className: 'w-eyebrow' }, 'WELCOME TO WHAT TO WATCH'),
+          h('h1', { style: { margin: 0, fontFamily: 'var(--font-display)', fontWeight: 500, fontSize: 72, lineHeight: .95, letterSpacing: '-0.02em' } }, 'A new story', h('br'), h('em', { style: { color: 'var(--marquee-text)' } }, 'every night.')),
+          h('p', { style: { margin: 0, fontSize: 18, lineHeight: '28px', color: 'var(--ink-muted)', maxWidth: '40ch' } }, 'Save movies you want to watch and discover more stories worth seeing.'),
+          h('ul', { style: { listStyle: 'none', margin: '8px 0 0', padding: 0, display: 'flex', flexDirection: 'column', gap: 12 } },
+            [['heart', 'Keep favourites and a watch-later queue'], ['star', 'Rate 3 movies to unlock picks made for you'], ['message', 'Ask Chatbot W2W what to watch tonight']].map(function (r) {
+              return h('li', { key: r[0], style: { display: 'flex', alignItems: 'center', gap: 12, color: 'var(--ink-muted)' } }, h('span', { style: { color: 'var(--marquee-text)' } }, h(W.Icon, { name: r[0] })), r[1]);
+            }))),
+        h(W.AuthForm, { mode: 'login', registered: true, email: 'khanh@example.com' })),
+      h('div', { style: { padding: '0 48px 32px' } }, h(W.Perforation), h('div', { className: 'w-meta', style: { marginTop: 16, letterSpacing: '.2em' } }, 'ADMIT ONE · WHAT TO WATCH'))));
+</script>
+</body>
+</html>

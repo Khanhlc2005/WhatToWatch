@@ -1,0 +1,26 @@
+<!-- @dsCard group="Screens" height=860 width=1440 page subtitle="/ — signed-out landing" -->
+<!doctype html>
+<html>
+<head><meta charset="utf-8"><title>LandingScreen</title>
+<script src="../demo-data.js"></script>
+<style>body{margin:0}</style></head>
+<body>
+<div id="root"></div>
+<script>
+  var W = window.WTW, h = React.createElement, D = window.WTW_DEMO, M = D.movies;
+  ReactDOM.createRoot(document.getElementById('root')).render(
+    h('div', { style: { minHeight: 860, display: 'flex', flexDirection: 'column' } },
+      h('header', { style: { display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '28px 48px' } },
+        h(W.Brand, { href: '/' }), h(W.Button, { size: 'sm', href: '/login', iconRight: 'arrow-up-right' }, 'Sign in')),
+      h('main', { style: { flex: 1, display: 'grid', gridTemplateColumns: '1fr 560px', gap: 64, alignItems: 'center', padding: '0 48px' } },
+        h('div', { style: { display: 'flex', flexDirection: 'column', gap: 24 } },
+          h('span', { className: 'w-eyebrow' }, 'DISCOVER MOVIES YOUR WAY'),
+          h('h1', { style: { margin: 0, fontFamily: 'var(--font-display)', fontWeight: 500, fontSize: 88, lineHeight: .95, letterSpacing: '-0.02em' } }, 'Find a great movie.', h('br'), h('em', { style: { color: 'var(--marquee-text)' } }, 'Enjoy it tonight.')),
+          h('p', { style: { margin: 0, fontSize: 18, lineHeight: '28px', color: 'var(--ink-muted)', maxWidth: '44ch' } }, 'Your next great story is waiting. Start with top rated and newly released movies.'),
+          h('div', { style: { display: 'flex', gap: 12 } }, h(W.Button, { variant: 'primary', href: '/login', iconRight: 'arrow-up-right' }, 'Start exploring'), h(W.Button, { href: '/register' }, 'Create an account'))),
+        h('div', { style: { display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: 16, transform: 'rotate(-4deg)' } },
+          [M[2], M[0], M[5], M[3], M[6], M[4]].map(function (m, i) { return h('div', { key: i, style: { marginTop: i % 3 === 1 ? 40 : 0 } }, h(W.Poster, { movie: m })); }))),
+      h('div', { style: { padding: '0 48px 32px' } }, h(W.Perforation), h('div', { className: 'w-meta', style: { marginTop: 16, letterSpacing: '.2em' } }, 'WHAT TO WATCH · YOUR NEXT GREAT STORY'))));
+</script>
+</body>
+</html>

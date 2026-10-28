@@ -1,0 +1,24 @@
+<!-- @dsCard group="Screens" height=1110 width=1440 page subtitle="/me/history — watch history" -->
+<!doctype html>
+<html>
+<head><meta charset="utf-8"><title>HistoryScreen</title>
+<script src="../demo-data.js"></script>
+<style>body{margin:0}</style></head>
+<body>
+<div id="root"></div>
+<script>
+  var W = window.WTW, h = React.createElement, D = window.WTW_DEMO, M = D.movies;
+  var USER = { email: 'khanh@example.com' };
+  function head(eyebrow, title, lead) { return h('div', { className: 'w-pagehead' }, h('span', { className: 'w-eyebrow' }, eyebrow), h('h1', null, title), lead ? h('p', null, lead) : null); }
+  var TAB = 'history';
+  ReactDOM.createRoot(document.getElementById('root')).render(
+    h('div', null,
+      h(W.Navbar, { active: null, scrolled: true, user: USER }),
+      h('main', { className: 'w-page', style: { gap: 32, maxWidth: 1040 } },
+        head('YOUR ACTIVITY', 'Watch history', 'Movies you opened and watched, newest first.'),
+        h(W.Tabs, { label: "Your activity", active: TAB, items: [{ id: "ratings", label: "My ratings", count: 4, href: "/me/ratings" }, { id: "history", label: "Watch history", count: 4, href: "/me/history" }] }),
+        h(W.WatchHistory, { total: 4, groups: [{ label: 'TODAY', items: [{ id: 1, time: '21:40', movie: M[5] }, { id: 2, time: '19:05', movie: M[2] }] }, { label: 'YESTERDAY', items: [{ id: 3, time: '22:10', movie: M[6] }] }, { label: 'OCT 21', items: [{ id: 4, time: '20:30', movie: M[9] }] }] })),
+      h(W.Footer)));
+</script>
+</body>
+</html>

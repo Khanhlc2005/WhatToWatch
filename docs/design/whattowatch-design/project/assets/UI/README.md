@@ -1,0 +1,1 @@
+Full-page captures of each screen at 1520px desktop width, rendered from the `Screens` cards with sample data (typographic posters stand in for TMDB images). The `UI` section shows them in order with the frontend and backend status of each screen. Re-capture a screen whenever its card changes.
