@@ -12,7 +12,7 @@ class ChatHistoryMessage(BaseModel):
 
     role: Literal["user", "assistant"]
     content: str = Field(min_length=1, max_length=2000)
-    movie_ids: list[int] = Field(default_factory=list, max_length=5)
+    movie_ids: list[int] = Field(default_factory=list, max_length=8)
 
 
 class ChatRequest(BaseModel):

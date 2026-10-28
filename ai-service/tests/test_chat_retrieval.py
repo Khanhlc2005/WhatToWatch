@@ -137,7 +137,7 @@ def test_missing_mysql_movie_is_skipped(catalog_chat, monkeypatch):
     assert response.json()["status"] == "insufficient_context"
 
 
-def test_context_builder_fills_five_movies_in_retrieval_order(monkeypatch):
+def test_context_builder_fills_eight_movies_in_retrieval_order(monkeypatch):
     def hit(movie_id):
         return MovieSearchHit(
             point_id=str(movie_id), movie_id=movie_id, imdb_id=None, tmdb_id=None,
@@ -156,11 +156,11 @@ def test_context_builder_fills_five_movies_in_retrieval_order(monkeypatch):
     monkeypatch.setattr(context_builder, "fetch_movie_detail", fetch)
     search = MovieSearchResponse(
         collection="movies", mode="hybrid",
-        hits=[hit(None), hit(1), hit(2), hit(1), *(hit(i) for i in range(3, 9))],
+        hits=[hit(None), hit(1), hit(2), hit(1), *(hit(i) for i in range(3, 13))],
     )
     context = context_builder.build_movie_context(search)
-    assert [movie.movie_id for movie in context] == ["1", "3", "4", "5", "6"]
-    assert calls == [1, 2, 3, 4, 5, 6]
+    assert [movie.movie_id for movie in context] == ["1", "3", "4", "5", "6", "7", "8", "9"]
+    assert calls == [1, 2, 3, 4, 5, 6, 7, 8, 9]
 
 
 def test_actor_filter_checks_full_catalog_cast(monkeypatch):

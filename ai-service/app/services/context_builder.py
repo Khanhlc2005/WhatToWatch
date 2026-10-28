@@ -11,8 +11,8 @@ from app.schemas.retrieval import MovieSearchHit, MovieSearchResponse
 
 logger = logging.getLogger(__name__)
 
-MAX_CONTEXT_MOVIES = 5
-MAX_RETRIEVAL_CANDIDATES = 10
+MAX_CONTEXT_MOVIES = 8
+MAX_RETRIEVAL_CANDIDATES = 12
 MAX_OVERVIEW_CHARS = 700
 CATALOG_TIMEOUT_SECONDS = 5
 
