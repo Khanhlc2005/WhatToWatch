@@ -1,37 +1,15 @@
-.page { width: min(1440px, 100%); margin: 0 auto; padding: 3rem clamp(1rem, 4vw, 4rem) 5rem; color: #fff9ee; }
-.heading { margin-bottom: 2rem; }
-.eyebrow { color: #ffba72; font-size: .72rem; letter-spacing: .2em; font-weight: 800; }
-.heading h1 { margin: .5rem 0; font-size: clamp(2rem, 4vw, 3.5rem); letter-spacing: -.04em; }
-.heading p, .sidebar p, .empty p { color: #aebdc4; }
-.shell { display: grid; grid-template-columns: minmax(210px, 280px) minmax(0, 1fr); min-height: 65vh; border: 1px solid #30414a; border-radius: 1rem; overflow: hidden; background: #122029; }
-.sidebar { padding: 1.25rem; background: #0e1b23; border-right: 1px solid #30414a; }
-.newChat { width: 100%; padding: .8rem 1rem; border: 1px solid #ffba72; border-radius: .6rem; background: transparent; color: #ffba72; font-weight: 700; cursor: pointer; }
-.newChat:hover { background: #ffba721a; }
-.sidebar h2 { margin: 2rem .4rem .8rem; color: #aebdc4; font-size: .8rem; text-transform: uppercase; letter-spacing: .1em; }
-.sidebar ul, .movies { list-style: none; margin: 0; padding: 0; }
-.sidebar li { display: flex; align-items: center; border-radius: .5rem; }
-.sidebar li.selected { background: #263844; }
-.sidebar li > button:first-child { flex: 1; min-width: 0; padding: .8rem .7rem; border: 0; background: none; color: #e9edeb; text-align: left; overflow: hidden; white-space: nowrap; text-overflow: ellipsis; cursor: pointer; }
-.delete { border: 0; background: none; color: #aebdc4; font-size: 1.4rem; cursor: pointer; }
-.delete:hover { color: #ffabab; }
-.chat { display: flex; min-width: 0; flex-direction: column; }
-.feed { flex: 1; min-height: 380px; max-height: 65vh; overflow-y: auto; padding: 1.5rem clamp(1rem, 3vw, 2rem); }
-.empty { max-width: 560px; margin: 6rem auto; text-align: center; }
-.empty h2 { font-size: 1.7rem; }
-.userMessage, .assistantMessage { max-width: min(85%, 680px); margin: 0 0 1.2rem; padding: 1rem 1.2rem; border-radius: .8rem; background: #23333d; }
-.userMessage { margin-left: auto; background: #384337; }
-.speaker { color: #ffba72; font-size: .75rem; font-weight: 800; }
-.userMessage p, .assistantMessage p { margin: .55rem 0 0; line-height: 1.55; white-space: pre-wrap; overflow-wrap: anywhere; }
-.movies { display: grid; gap: .6rem; margin-top: 1rem; }
-.movies li { display: grid; gap: .3rem; padding: .7rem .85rem; border: 1px solid #4b5d61; border-radius: .5rem; }
-.movies a { color: #ffba72; font-weight: 700; }
-.movies span { color: #c4cdd0; font-size: .85rem; }
-.waiting { color: #ffba72; }
-.composer { padding: 1rem clamp(1rem, 3vw, 2rem) 1.5rem; border-top: 1px solid #30414a; }
-.composer label { display: block; margin-bottom: .55rem; font-size: .82rem; color: #c4cdd0; }
-.composer > div { display: flex; gap: .6rem; }
-.composer input { flex: 1; min-width: 0; padding: .9rem 1rem; border: 1px solid #4b5d61; border-radius: .5rem; background: #0d1921; color: #fff9ee; }
-.composer button { padding: .8rem 1.3rem; border: 0; border-radius: .5rem; background: #ffba72; color: #15232c; font-weight: 800; cursor: pointer; }
-.composer button:disabled, .newChat:disabled, .sidebar button:disabled { opacity: .5; cursor: default; }
-.error { color: #ffabab; margin: 0 0 .8rem; }
-@media (max-width: 700px) { .page { padding-top: 2rem; } .shell { display: block; } .sidebar { border-right: 0; border-bottom: 1px solid #30414a; } .sidebar ul { display: flex; gap: .5rem; overflow-x: auto; } .sidebar li { min-width: 170px; } .sidebar h2 { margin-top: 1.2rem; } .feed { max-height: 55vh; } .userMessage, .assistantMessage { max-width: 95%; } }
+@import './tokens';
+
+.shell { display: grid; grid-template-columns: 300px minmax(0, 1fr); gap: $space-6; align-items: start; }
+.chat { display: flex; flex-direction: column; gap: $space-6; min-width: 0; min-height: 640px; padding: $space-6; border: 1px solid $line; border-radius: $radius-md; }
+.feed { display: flex; flex: 1; flex-direction: column; gap: $space-4; min-height: 380px; max-height: 62vh; overflow-y: auto; }
+.empty { max-width: 560px; margin: auto; text-align: center; h2 { margin: 0 0 $space-2; @include title-l; } p { margin: 0; color: $ink-muted; @include body-l; } }
+
+@include below($bp-lg) {
+  .shell { grid-template-columns: 1fr; }
+  .chat { min-height: 0; }
+}
+@include below($bp-sm) {
+  .chat { padding: $space-4; }
+  .feed { max-height: 55vh; }
+}

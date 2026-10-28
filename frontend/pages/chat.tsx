@@ -1,10 +1,21 @@
 import Head from 'next/head';
-import Link from 'next/link';
 import { FormEvent, useCallback, useEffect, useRef, useState } from 'react';
 import { useRouter } from 'next/router';
 import Layout from '../components/Layout';
 import { ChatMessage, ChatReply, Conversation, ConversationDetail } from '../lib/chat';
+import { formatClock } from '../lib/chatTime';
+import ChatComposer from '../components/chat/ChatComposer';
+import ChatMessageView from '../components/chat/ChatMessage';
+import ConversationList from '../components/chat/ConversationList';
+import StatusNote from '../components/ui/StatusNote';
+import page from '../styles/Page.module.scss';
 import styles from '../styles/ChatPage.module.scss';
+
+const suggestions = [
+  'Recommend a science fiction movie',
+  'Something short and funny for tonight',
+  'Korean thrillers like Parasite'
+];
 
 async function readJson<T>(response: Response): Promise<T> {
   const body = await response.json();
@@ -65,7 +76,7 @@ export default function ChatPage() {
     const message = draft.trim();
     if (!message || sending || loading) return;
     const previous = messages;
-    setMessages([...previous, { role: 'user', content: message, recommendedMovies: [] }]);
+    setMessages([...previous, { role: 'user', content: message, recommendedMovies: [], createdAt: new Date().toISOString() }]);
     setDraft('');
     setSending(true);
     setError('');
@@ -78,7 +89,7 @@ export default function ChatPage() {
       const reply = await readJson<ChatReply>(response);
       setMessages(current => [...current, {
         role: 'assistant', content: reply.reply, recommendedMovies: reply.recommendedMovies || [],
-        createdAt: reply.createdAt
+        createdAt: reply.createdAt, status: reply.status
       }]);
       if (selectedId === null) setSelectedId(reply.conversationId);
       const listResponse = await fetch('/api/chat/conversations');
@@ -108,52 +119,30 @@ export default function ChatPage() {
 
   return <>
     <Head><title>Chatbot W2W | WhatToWatch</title></Head>
-    <Layout><main className={styles.page}>
-      <header className={styles.heading}>
-        <div><span className={styles.eyebrow}>WHAT TO WATCH</span><h1>Your movie assistant</h1>
-          <p>Ask about movies and continue the conversation in one place.</p></div>
+    <Layout><main className={`${page.page} ${page.tight}`}>
+      <header className={page.head}>
+        <span className={page.eyebrow}>WHAT TO WATCH</span>
+        <h1>Your movie assistant</h1>
+        <p>Ask about movies and continue the conversation in one place.</p>
       </header>
       <div className={styles.shell}>
-        <aside className={styles.sidebar} aria-label='Conversations'>
-          <button className={styles.newChat} type='button' disabled={sending} onClick={() => {
-            setSelectedId(null); setMessages([]); setError('');
-          }}>+ New conversation</button>
-          <h2>Recent</h2>
-          {conversations.length === 0 && <p>No conversations yet.</p>}
-          <ul>{conversations.map(item => <li key={item.id} className={selectedId === item.id ? styles.selected : ''}>
-            <button type='button' disabled={sending} onClick={() => setSelectedId(item.id)}
-              aria-current={selectedId === item.id ? 'true' : undefined}>{item.title}</button>
-            <button type='button' className={styles.delete} disabled={sending}
-              aria-label={`Delete conversation ${item.title}`} onClick={() => void removeConversation(item.id)}>×</button>
-          </li>)}</ul>
-        </aside>
+        <ConversationList items={conversations} selected={selectedId} busy={sending}
+          onNew={() => { setSelectedId(null); setMessages([]); setError(''); }}
+          onSelect={setSelectedId} onDelete={id => void removeConversation(id)} />
         <section className={styles.chat} aria-label='Conversation'>
           <div className={styles.feed} aria-live='polite'>
-            {loading && <p role='status'>Loading conversation…</p>}
+            {loading && <StatusNote tone='loading'>Loading conversation…</StatusNote>}
             {!loading && messages.length === 0 && <div className={styles.empty}>
               <h2>What should you watch today?</h2>
               <p>Try asking: “Recommend a science fiction movie,” then “When was it released?”</p>
             </div>}
-            {messages.map((item, index) => <article key={item.id || `${item.role}-${index}`}
-              className={item.role === 'user' ? styles.userMessage : styles.assistantMessage}>
-              <span className={styles.speaker}>{item.role === 'user' ? 'You' : 'WhatToWatch'}</span>
-              <p>{item.content}</p>
-              {item.recommendedMovies?.length > 0 && <ul className={styles.movies}>{item.recommendedMovies.map(movie =>
-                <li key={movie.movie_id}>
-                  <Link href={`/movies/${encodeURIComponent(movie.movie_id)}`}><a>{movie.title} →</a></Link>
-                  <span>{movie.reason}</span>
-                </li>)}</ul>}
-            </article>)}
-            {sending && <p role='status' className={styles.waiting}>Finding movies and writing a reply…</p>}
+            {messages.map((item, index) => <ChatMessageView key={item.id || `${item.role}-${index}`}
+              role={item.role} content={item.content} time={formatClock(item.createdAt)}
+              movies={item.recommendedMovies} status={item.status} />)}
             <div ref={bottom} />
           </div>
-          <form className={styles.composer} onSubmit={send}>
-            {error && <p role='alert' className={styles.error}>{error}</p>}
-            <label htmlFor='chat-message'>Your message</label>
-            <div><input id='chat-message' value={draft} onChange={event => setDraft(event.target.value)}
-              placeholder='What kind of movie would you like to watch?' maxLength={2000} disabled={sending || loading} />
-              <button type='submit' disabled={!draft.trim() || sending || loading}>Send</button></div>
-          </form>
+          <ChatComposer value={draft} onChange={setDraft} onSend={send} sending={sending} loading={loading} error={error}
+            suggestions={!loading && messages.length === 0 ? suggestions : undefined} />
         </section>
       </div>
     </main></Layout>

@@ -3,18 +3,21 @@ import { backendRequest } from './backend';
 import { sendError } from './api';
 
 export type RecommendedMovie = { movie_id: string; title: string; reason: string };
+export type ChatStatus = 'answered' | 'no_match' | 'insufficient_context' | 'error';
 export type ChatMessage = {
   id?: number;
   role: 'user' | 'assistant';
   content: string;
   recommendedMovies: RecommendedMovie[];
   createdAt?: string;
+  // Only present on a reply received in this session; stored messages do not carry it (docs/backend-requests.md).
+  status?: ChatStatus;
 };
 export type Conversation = { id: number; title: string; updatedAt: string };
 export type ConversationDetail = { id: number; title: string; messages: ChatMessage[] };
 export type ChatReply = {
   conversationId: number;
-  status: 'answered' | 'no_match' | 'insufficient_context' | 'error';
+  status: ChatStatus;
   reply: string;
   recommendedMovies: RecommendedMovie[];
   createdAt: string;

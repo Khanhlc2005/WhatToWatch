@@ -1,0 +1,16 @@
+@import './tokens';
+
+.composer { display: flex; flex-direction: column; gap: $space-3; }
+.suggestions { display: flex; flex-wrap: wrap; gap: $space-2; }
+.label { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; }
+.bar {
+  display: flex;
+  align-items: center;
+  gap: $space-2;
+  padding: 6px 6px 6px $space-4;
+  border: 1px solid $line-strong;
+  border-radius: $radius-md;
+  background: $surface-100;
+  &:focus-within { @include focus-ring(2px); }
+  input { flex: 1; min-width: 0; height: 44px; border: 0; outline: none; background: none; font-size: 16px; &:disabled { opacity: .6; } }
+}
