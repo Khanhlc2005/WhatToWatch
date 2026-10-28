@@ -2,11 +2,11 @@ import { NextApiRequest, NextApiResponse } from 'next';
 import { backendRequest } from '../../../lib/backend';
 import { sendError } from '../../../lib/api';
 
-type RatingResult = { movieId: number; rating: number } | null;
+type RatingResult = { movieId: number; rating: number } | string | null;
 
 export default async function handler(req: NextApiRequest, res: NextApiResponse) {
-  if (req.method !== 'GET' && req.method !== 'POST') {
-    res.setHeader('Allow', 'GET, POST');
+  if (req.method !== 'GET' && req.method !== 'POST' && req.method !== 'DELETE') {
+    res.setHeader('Allow', 'GET, POST, DELETE');
     res.status(405).json({ message: 'Method not allowed' });
     return;
   }
@@ -25,7 +25,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
     return;
   }
   try {
-    const path = req.method === 'GET' ? '/ratings/movie/' + movieId : '/ratings';
+    const path = req.method === 'POST' ? '/ratings' : '/ratings/movie/' + movieId;
     const result = await backendRequest<RatingResult>(path, {
       method: req.method,
       headers: { Authorization: 'Bearer ' + token },

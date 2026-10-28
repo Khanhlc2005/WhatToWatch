@@ -1,0 +1,27 @@
+<!-- @dsCard group="Screens" height=1020 width=1440 page subtitle="/me/ratings — rating history" -->
+<!doctype html>
+<html>
+<head><meta charset="utf-8"><title>RatingsScreen</title>
+<script src="../demo-data.js"></script>
+<style>body{margin:0}</style></head>
+<body>
+<div id="root"></div>
+<script>
+  var W = window.WTW, h = React.createElement, D = window.WTW_DEMO, M = D.movies;
+  var USER = { email: 'khanh@example.com' };
+  function head(eyebrow, title, lead) { return h('div', { className: 'w-pagehead' }, h('span', { className: 'w-eyebrow' }, eyebrow), h('h1', null, title), lead ? h('p', null, lead) : null); }
+  var TAB = 'ratings';
+  ReactDOM.createRoot(document.getElementById('root')).render(
+    h('div', null,
+      h(W.Navbar, { active: null, scrolled: true, user: USER }),
+      h('main', { className: 'w-page', style: { gap: 32, maxWidth: 1040 } },
+        head('YOUR ACTIVITY', 'My ratings', 'Every star you give shapes the movies picked for you.'),
+        h(W.Tabs, { label: "Your activity", active: TAB, items: [{ id: "ratings", label: "My ratings", count: 4, href: "/me/ratings" }, { id: "history", label: "Watch history", count: 4, href: "/me/history" }] }),
+        h(W.StatusNote, { tone: 'success', action: h('a', { className: 'w-link', href: '/browse#for-you' }, 'See your picks') }, 'You have rated 4 movies, so For you is personalized.'),
+        h('div', { style: { display: 'flex', alignItems: 'center', justifyContent: 'space-between' } },
+          h(W.TicketMeta, { extra: ['4 RATED MOVIES', 'NEWEST FIRST'] })),
+        h(W.RatingHistory, { items: [{ id: 1, rating: 5, date: 'OCT 22', movie: M[0] }, { id: 2, rating: 4, date: 'OCT 20', movie: M[4] }, { id: 3, rating: 4, date: 'OCT 18', movie: M[8] }, { id: 4, rating: 2, date: 'SEP 30', movie: M[10] }] })),
+      h(W.Footer)));
+</script>
+</body>
+</html>

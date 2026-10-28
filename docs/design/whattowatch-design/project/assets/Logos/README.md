@@ -1,0 +1,1 @@
+`wtw-mark.svg`: the ticket mark in `marquee` (#f5b83d) on transparent. Use it on `surface-000`…`surface-200` only; never place it on a marquee fill or recolour it. `favicon.svg`: the same mark on a `surface-000` rounded square, replacing `frontend/public/favicon.svg`. The wordmark is live text (`Brand`, `display` family), not a file.

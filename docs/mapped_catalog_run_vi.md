@@ -1,6 +1,6 @@
 # Mapping và index catalog đã nhận từ MySQL
 
-Việc integration MySQL/backend/search → detail đang tạm hoãn theo yêu cầu: xem [pending_search_integration_vi.md](pending_search_integration_vi.md) để tiếp tục đúng trạng thái.
+Việc integration MySQL/backend/search → detail đang tạm hoãn theo yêu cầu.
 
 ## Kết quả kiểm tra ngày 2026-10-10
 

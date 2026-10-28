@@ -1,0 +1,4 @@
+@import '../tokens';
+
+.pager { display: flex; align-items: center; justify-content: center; gap: $space-6; padding: $space-8 0; }
+.status { @include meta; color: $ink-faint; }

@@ -1,0 +1,26 @@
+<!-- @dsCard group="Screens" height=2050 width=1440 page subtitle="/browse — hero, For you, Top rated, New releases" -->
+<!doctype html>
+<html>
+<head><meta charset="utf-8"><title>BrowseScreen</title>
+<script src="../demo-data.js"></script>
+<style>body{margin:0}</style></head>
+<body>
+<div id="root"></div>
+<script>
+  var W = window.WTW, h = React.createElement, D = window.WTW_DEMO, M = D.movies;
+  ReactDOM.createRoot(document.getElementById('root')).render(
+    h('div', null,
+      h(W.Navbar, { active: 'home', user: { email: 'khanh@example.com' } }),
+      h('main', { className: 'w-page' },
+        h(W.Hero, { movie: M[4] }),
+        h('div', { style: { display: 'flex', alignItems: 'flex-end', justifyContent: 'space-between', gap: 24 } },
+          h('div', { className: 'w-pagehead' }, h('span', { className: 'w-eyebrow' }, 'DISCOVER MOVIES'), h('h1', null, 'Find a great movie for tonight.'), h('p', null, 'Explore picks for you, top rated movies, and the latest releases.')),
+          h('nav', { className: 'w-quick', 'aria-label': 'Movie sections' }, h(W.Chip, { onClick: function () {} }, 'For you'), h(W.Chip, { onClick: function () {} }, 'Top rated'), h(W.Chip, { onClick: function () {} }, 'New releases'))),
+        h(W.MovieRow, { id: 'for-you', title: 'For you', stamp: 'PERSONALIZED', count: '8 MOVIES', movies: M.slice(0, 8), reasons: D.reasons, note: h(W.StatusNote, { tone: 'info' }, 'Ranked by your preferences and IMDb rating.') }),
+        h(W.MovieRow, { id: 'top-rated', title: 'Top rated', count: '10 MOVIES', ranked: true, movies: M.slice(0, 10) }),
+        h(W.MovieRow, { id: 'newest', title: 'New releases', count: 'EXPLORE', movies: [] }),
+        h('div', { style: { marginTop: -32 } }, h(W.SkeletonRow, { count: 7 }))),
+      h(W.Footer)));
+</script>
+</body>
+</html>

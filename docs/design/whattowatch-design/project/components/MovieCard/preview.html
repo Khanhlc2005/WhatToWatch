@@ -1,0 +1,18 @@
+<!-- @dsCard group="Movies" height=400 -->
+<!doctype html>
+<html>
+<head><meta charset="utf-8"><title>MovieCard — preview</title>
+<script src="../demo-data.js"></script>
+<style>body{padding:24px;}</style></head>
+<body>
+<div id="root"></div>
+<script>
+  var W = window.WTW, h = React.createElement, D = window.WTW_DEMO, M = D.movies;
+  function stack() { return h.apply(null, ['div', { style: { display: 'flex', flexDirection: 'column', gap: 16, alignItems: 'flex-start' } }].concat([].slice.call(arguments))); }
+  function line() { return h.apply(null, ['div', { style: { display: 'flex', flexWrap: 'wrap', gap: 12, alignItems: 'center' } }].concat([].slice.call(arguments))); }
+  ReactDOM.createRoot(document.getElementById('root')).render(
+    line(h(W.MovieCard, { movie: M[0] }), h(W.MovieCard, { movie: Object.assign({}, M[3], { favorite: true, watchLater: true }), reason: D.reasons[0] }), h(W.MovieCard, { movie: M[4], rank: 1 }), h(W.MovieCard, { movie: M[10] }))
+  );
+</script>
+</body>
+</html>

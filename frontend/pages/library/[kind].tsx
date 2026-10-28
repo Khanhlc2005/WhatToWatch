@@ -1,6 +1,5 @@
 import Head from 'next/head';
 import { GetServerSideProps } from 'next';
-import Link from 'next/link';
 import { useContext, useEffect, useState } from 'react';
 import { useRouter } from 'next/router';
 import Layout from '../../components/Layout';
@@ -8,7 +7,12 @@ import Modal from '../../components/Modal';
 import MovieCard from '../../components/List/MovieCard';
 import { ModalContext } from '../../context/ModalContext';
 import { MovieSummary, PageResult, toMovie } from '../../lib/movies';
-import styles from '../../styles/LibraryPage.module.scss';
+import styles from '../../styles/Page.module.scss';
+import Button from '../../components/ui/Button';
+import Pagination from '../../components/ui/Pagination';
+import StatusNote from '../../components/ui/StatusNote';
+import LibraryTabs from '../../components/library/LibraryTabs';
+import TicketMeta from '../../components/ui/TicketMeta';
 
 export default function LibraryPage() {
   const router = useRouter();
@@ -43,28 +47,25 @@ export default function LibraryPage() {
     return () => { active = false; };
   }, [router, router.isReady, returnPath, kind, page, revision]);
   const title = kind === 'favorites' ? 'Favourite movies' : 'Watch later';
-  if (router.isReady && !kind) return <Layout><main className={styles.page}><h1>List not found</h1></main></Layout>;
+  if (router.isReady && !kind) return <Layout><main className={styles.page}><div className={styles.head}><h1>List not found</h1></div></main></Layout>;
   return <>
     <Head><title>{title} | WhatToWatch</title></Head>
     {isModal && <Modal />}
-    <Layout><main className={styles.page}>
-      <span className={styles.eyebrow}>YOUR COLLECTION</span>
-      <h1>{title}</h1>
-      <nav className={styles.tabs} aria-label='Saved lists'>
-        <Link href='/library/favorites'><a aria-current={kind === 'favorites' ? 'page' : undefined}>Favourite</a></Link>
-        <Link href='/library/watchlist'><a aria-current={kind === 'watchlist' ? 'page' : undefined}>Watch later</a></Link>
-      </nav>
-      {loading && <p role='status'>Loading your list…</p>}
-      {error && <p role='alert' className={styles.error}>{error}</p>}
+    <Layout><main className={`${styles.page} ${styles.tight}`}>
+      <div className={styles.head}>
+        <span className={styles.eyebrow}>YOUR COLLECTION</span>
+        <h1>{title}</h1>
+      </div>
+      <LibraryTabs active={kind || 'favorites'} />
+      {loading && <StatusNote tone='loading'>Loading your list…</StatusNote>}
+      {error && <StatusNote tone='error'>{error}</StatusNote>}
       {!loading && results && <>
-        <p className={styles.count}>{results.totalElements} saved movies</p>
-        {results.data.length === 0 && <p>This list is empty. <Link href='/browse'><a>Explore movies</a></Link> to get started.</p>}
-        <div className={styles.grid}>{results.data.map(movie => <MovieCard key={movie.id} item={toMovie(movie)} />)}</div>
-        {results.totalPages > 1 && <div className={styles.pagination}>
-          <button disabled={page <= 1} onClick={() => void router.push(`/library/${kind}?page=${page - 1}`)}>Previous</button>
-          <span>Page {page} / {results.totalPages}</span>
-          <button disabled={page >= results.totalPages} onClick={() => void router.push(`/library/${kind}?page=${page + 1}`)}>Next</button>
-        </div>}
+        <TicketMeta extra={[`${results.totalElements} SAVED MOVIES`]} />
+        {results.data.length === 0 && <StatusNote tone='empty' block
+          action={<Button size='sm' href='/browse'>Explore movies</Button>}>This list is empty.</StatusNote>}
+        <div className={styles.grid}>{results.data.map(movie => <MovieCard key={movie.id} item={toMovie(movie)} fluid />)}</div>
+        {results.totalPages > 1 && <Pagination page={page} totalPages={results.totalPages}
+          onChange={target => void router.push(`/library/${kind}?page=${target}`)} />}
       </>}
     </main></Layout>
   </>;

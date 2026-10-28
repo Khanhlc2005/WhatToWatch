@@ -1,13 +1,14 @@
 import { useEffect, useState } from 'react';
 import { useRouter } from 'next/router';
 import styles from '../../styles/Library.module.scss';
+import Icon from '../ui/Icon';
 
 type Kind = 'favorites' | 'watchlist';
 type Status = { favorites: boolean; watchlist: boolean };
 
 let sessionPromise: Promise<boolean> | null = null;
 export function invalidateLibrarySession() { sessionPromise = null; }
-function signedIn() {
+export function signedIn() {
   if (!sessionPromise) sessionPromise = fetch('/api/auth/session')
     .then(response => response.json()).then(body => Boolean(body.authenticated))
     .catch(() => false);
@@ -85,14 +86,18 @@ export default function LibraryActions({ movieId, compact = false }: { movieId: 
     }
   }
 
+  const favouriteLabel = status.favorites ? 'Remove from favourites' : 'Add to favourites';
+  const laterLabel = status.watchlist ? 'Remove from Watch later' : 'Add to Watch later';
   return <div className={`${styles.actions} ${compact ? styles.compact : ''}`} onClick={event => event.stopPropagation()}>
-    <button type='button' aria-pressed={status.favorites} disabled={busy !== null}
-      onClick={() => void toggle('favorites')} title={status.favorites ? 'Remove from favourites' : 'Add to favourites'}>
-      {status.favorites ? '♥' : '♡'} {!compact && (status.favorites ? 'In favourites' : 'Favourite')}
+    <button type='button' className={styles.favourite} aria-pressed={status.favorites} disabled={busy !== null}
+      onClick={() => void toggle('favorites')} title={favouriteLabel} aria-label={compact ? favouriteLabel : undefined}>
+      <Icon name='heart' filled={status.favorites} />
+      {!compact && <span>{status.favorites ? 'In favourites' : 'Favourite'}</span>}
     </button>
-    <button type='button' aria-pressed={status.watchlist} disabled={busy !== null}
-      onClick={() => void toggle('watchlist')} title={status.watchlist ? 'Remove from Watch later' : 'Add to Watch later'}>
-      {status.watchlist ? '✓' : '+'} {!compact && (status.watchlist ? 'Saved for later' : 'Watch later')}
+    <button type='button' className={styles.later} aria-pressed={status.watchlist} disabled={busy !== null}
+      onClick={() => void toggle('watchlist')} title={laterLabel} aria-label={compact ? laterLabel : undefined}>
+      <Icon name={status.watchlist ? 'check' : 'plus'} />
+      {!compact && <span>{status.watchlist ? 'Saved for later' : 'Watch later'}</span>}
     </button>
     {error && <span className={styles.error} role='alert'>{error}</span>}
   </div>;

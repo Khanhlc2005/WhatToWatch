@@ -1,0 +1,14 @@
+@import './tokens';
+
+.message { --perf-pad: #{$space-6}; display: flex; flex-direction: column; gap: $space-2; max-width: 640px; padding: $space-4 $space-6; border-radius: $radius-md; overflow-wrap: anywhere; p { margin: 0; white-space: pre-wrap; } }
+.user { align-self: flex-end; background: $surface-300; }
+.bot { align-self: flex-start; border: 1px solid $line; background: $surface-200; }
+.failed { border-color: $danger; }
+.who { display: flex; align-items: center; gap: $space-2; color: $ink-muted; @include eyebrow; }
+.user .who { justify-content: flex-end; }
+.time { @include meta; letter-spacing: .02em; color: $ink-faint; }
+.picks { display: flex; flex-direction: column; gap: $space-3; margin: 0; padding: 0; list-style: none; li { display: flex; gap: $space-3; } li > div { display: flex; flex-direction: column; gap: 2px; } }
+.num { flex: none; padding-top: 1px; @include meta; color: $marquee-text; }
+.link { display: inline-flex; align-items: center; gap: $space-1; color: $marquee-text; @include label; text-decoration: underline; text-decoration-thickness: 1px; text-underline-offset: 3px; &:hover { text-decoration-thickness: 2px; } }
+.reason { color: $ink-muted; @include body-s; }
+@include below($bp-sm) { .message { max-width: 95%; padding: $space-4; } }

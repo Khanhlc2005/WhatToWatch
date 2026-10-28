@@ -1,0 +1,28 @@
+<!-- @dsCard group="Screens" height=1000 width=1440 page subtitle="/library/lists — My lists with Favourite and Watch later" -->
+<!doctype html>
+<html>
+<head><meta charset="utf-8"><title>LibraryScreen</title>
+<script src="../demo-data.js"></script>
+<style>body{margin:0}</style></head>
+<body>
+<div id="root"></div>
+<script>
+  var W = window.WTW, h = React.createElement, D = window.WTW_DEMO, M = D.movies;
+  var USER = { email: 'khanh@example.com' };
+  function head(eyebrow, title, lead) { return h('div', { className: 'w-pagehead' }, h('span', { className: 'w-eyebrow' }, eyebrow), h('h1', null, title), lead ? h('p', null, lead) : null); }
+  ReactDOM.createRoot(document.getElementById('root')).render(
+    h('div', null,
+      h(W.Navbar, { active: 'library', scrolled: true, user: USER }),
+      h('main', { className: 'w-page', style: { gap: 32 } },
+        head('YOUR COLLECTION', 'My lists', 'Keep favourites, a watch-later queue and as many named lists as you like.'),
+        h(W.Tabs, { label: 'Saved lists', active: 'lists', items: [{ id: 'favorites', label: 'Favourite', count: 12, href: '/library/favorites' }, { id: 'watchlist', label: 'Watch later', count: 31, href: '/library/watchlist' }, { id: 'lists', label: 'My lists', count: 3, href: '/library/lists' }] }),
+        h(W.WatchlistManager, { selected: 'l1', lists: [
+          { id: 'favorites', name: 'Favourite', system: true, count: 12, movies: M.slice(0, 5) },
+          { id: 'watchlist', name: 'Watch later', system: true, count: 31, movies: M.slice(3, 9) },
+          { id: 'l1', name: 'Sunday classics', count: 5, movies: [M[1], M[0], M[6], M[2], M[5]] },
+          { id: 'l2', name: 'Date night', count: 0, movies: [] },
+          { id: 'l3', name: 'Studio Ghibli marathon', count: 1, movies: [M[2]] }] })),
+      h(W.Footer)));
+</script>
+</body>
+</html>

@@ -1,0 +1,9 @@
+@import './tokens';
+
+.history { display: flex; flex-direction: column; gap: $space-8; }
+.bar { display: flex; align-items: center; justify-content: space-between; gap: $space-4; }
+.count { @include meta; color: $ink-faint; }
+.confirm { display: flex; flex-wrap: wrap; align-items: center; justify-content: flex-end; gap: $space-2; color: $ink-muted; @include body-s; }
+.day { display: flex; flex-direction: column; gap: $space-2; }
+.heading { margin: 0; color: $ink-muted; @include eyebrow; }
+.time { flex: none; width: 48px; @include meta; color: $ink-faint; }

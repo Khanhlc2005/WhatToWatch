@@ -6,7 +6,14 @@ import Modal from '../components/Modal';
 import MovieCard from '../components/List/MovieCard';
 import { ModalContext } from '../context/ModalContext';
 import { MovieSummary, PageResult, toMovie } from '../lib/movies';
-import styles from '../styles/LibraryPage.module.scss';
+import { DISCOVER_ENABLED } from '../config/features';
+import styles from '../styles/Page.module.scss';
+import Button from '../components/ui/Button';
+import Icon from '../components/ui/Icon';
+import Pagination from '../components/ui/Pagination';
+import StatusNote from '../components/ui/StatusNote';
+import TicketMeta from '../components/ui/TicketMeta';
+import Link from 'next/link';
 
 export default function Search() {
   const router = useRouter();
@@ -41,30 +48,42 @@ export default function Search() {
     if (input.trim()) void router.push('/search?q=' + encodeURIComponent(input.trim()));
   }
 
+  const currentPage = (Number.isSafeInteger(page) && page >= 0 ? page : 0) + 1;
+  const goToPage = (target: number) => void router.push('/search?q=' + encodeURIComponent(query) + '&page=' + (target - 1));
+
   return <>
     <Head><title>Search movies | WhatToWatch</title></Head>
     {isModal && <Modal />}
-    <Layout><main className={styles.page}>
-      <span className={styles.eyebrow}>EXPLORE WHAT TO WATCH</span>
-      <h1>Search for a movie</h1>
-      <form className={styles.searchForm} onSubmit={submit}>
+    <Layout><main className={`${styles.page} ${styles.tight}`}>
+      <div className={styles.head}>
+        <span className={styles.eyebrow}>EXPLORE WHAT TO WATCH</span>
+        <h1>Search for a movie</h1>
+      </div>
+      <form className={styles.search} role='search' onSubmit={submit}>
         <label htmlFor='movie-query'>Movie title</label>
-        <div><input id='movie-query' value={input} onChange={event => setInput(event.target.value)}
-          maxLength={100} placeholder='For example: The Godfather' autoComplete='off' />
-          <button type='submit'>Search</button></div>
+        <div className={styles.searchBar}>
+          <Icon name='search' size={20} />
+          <input id='movie-query' value={input} onChange={event => setInput(event.target.value)}
+            maxLength={100} placeholder='For example: The Godfather' autoComplete='off' />
+          <Button variant='primary' type='submit'>Search</Button>
+        </div>
       </form>
-      {!query && <p>Enter a movie title to search the collection.</p>}
-      {loading && <p role='status'>Searching movies…</p>}
-      {error && <p role='alert' className={styles.error}>{error}</p>}
+      {!query && <StatusNote tone='info' block>Enter a movie title to search the collection.</StatusNote>}
+      {loading && <StatusNote tone='loading'>Searching movies…</StatusNote>}
+      {error && <StatusNote tone='error'>{error}</StatusNote>}
       {!loading && results && <>
-        <p className={styles.count}>{results.totalElements} results for “{query}”</p>
-        {results.data.length === 0 && <p>No matching movies found. Try another title.</p>}
-        <div className={styles.grid}>{results.data.map(movie => <MovieCard key={movie.id} item={toMovie(movie)} />)}</div>
-        {results.totalPages > 1 && <div className={styles.pagination}>
-          <button disabled={page <= 0} onClick={() => void router.push('/search?q=' + encodeURIComponent(query) + '&page=' + (page - 1))}>Previous</button>
-          <span>Page {(Number.isSafeInteger(page) ? page : 0) + 1} / {results.totalPages}</span>
-          <button disabled={page + 1 >= results.totalPages} onClick={() => void router.push('/search?q=' + encodeURIComponent(query) + '&page=' + (page + 1))}>Next</button>
-        </div>}
+        <div className={styles.toolbar}>
+          {results.data.length > 0 ? <TicketMeta extra={[`${results.totalElements} RESULTS FOR “${query}”`]} /> : <span />}
+          {DISCOVER_ENABLED && <Link href='/discover'><a className={styles.link}>
+            <Icon name='sliders' size={16} />Need more control? Try Discover
+          </a></Link>}
+        </div>
+        {results.data.length === 0 && <StatusNote tone='empty' block title={`0 results for “${query}”`}
+          action={<Button size='sm' href='/chat' icon='message'>Ask Chatbot W2W</Button>}>
+          No matching movies found. Try another title.
+        </StatusNote>}
+        <div className={styles.grid}>{results.data.map(movie => <MovieCard key={movie.id} item={toMovie(movie)} fluid />)}</div>
+        {results.totalPages > 1 && <Pagination page={currentPage} totalPages={results.totalPages} onChange={goToPage} />}
       </>}
     </main></Layout>
   </>;

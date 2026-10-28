@@ -1,0 +1,22 @@
+@import '../tokens';
+
+.note { display: flex; align-items: flex-start; gap: $space-3; color: $ink-muted; @include body-s; svg { margin-top: 1px; } }
+.body { display: flex; flex-direction: column; gap: 2px; flex: 1; strong { color: $ink; @include body; font-weight: 600; } }
+.action { flex: none; align-self: center; }
+.error { color: $danger; }
+.success { color: $success; }
+.invite svg { color: $marquee-text; }
+.block { padding: $space-6; border: 1px dashed $line-strong; border-radius: $radius-md; align-items: center; }
+
+.spinner {
+  flex: none;
+  width: 16px;
+  height: 16px;
+  margin-top: 2px;
+  border: 2px solid $line-strong;
+  border-top-color: $marquee;
+  border-radius: 50%;
+  animation: spin .8s linear infinite;
+  @include reduced-motion { animation: none; }
+}
+@keyframes spin { to { transform: rotate(360deg); } }

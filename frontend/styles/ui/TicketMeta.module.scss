@@ -1,0 +1,5 @@
+@import '../tokens';
+
+.meta { display: inline-flex; flex-wrap: wrap; align-items: center; gap: 0 6px; @include meta; color: $ink-faint; }
+.dot { color: $line-strong; }
+.highlight { color: $marquee-text; }

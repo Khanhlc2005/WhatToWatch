@@ -1,0 +1,28 @@
+<!-- @dsCard group="Screens" height=1100 width=1440 page subtitle="/chat — Chatbot W2W" -->
+<!doctype html>
+<html>
+<head><meta charset="utf-8"><title>ChatScreen</title>
+<script src="../demo-data.js"></script>
+<style>body{margin:0}</style></head>
+<body>
+<div id="root"></div>
+<script>
+  var W = window.WTW, h = React.createElement, D = window.WTW_DEMO, M = D.movies;
+  ReactDOM.createRoot(document.getElementById('root')).render(
+    h('div', null,
+      h(W.Navbar, { active: 'chat', scrolled: true, user: { email: 'khanh@example.com' } }),
+      h('main', { className: 'w-page', style: { gap: 32 } },
+        h('div', { className: 'w-pagehead' }, h('span', { className: 'w-eyebrow' }, 'WHAT TO WATCH'), h('h1', null, 'Your movie assistant'), h('p', null, 'Ask about movies and continue the conversation in one place.')),
+        h('div', { style: { display: 'grid', gridTemplateColumns: '300px 1fr', gap: 24, alignItems: 'start' } },
+          h(W.ConversationList, { items: D.conversations, selected: 3 }),
+          h('section', { style: { display: 'flex', flexDirection: 'column', gap: 24, minHeight: 760, padding: 24, border: '1px solid var(--line)', borderRadius: 8 }, 'aria-label': 'Conversation' },
+            h('div', { style: { flex: 1, display: 'flex', flexDirection: 'column', gap: 16 } },
+              h(W.ChatMessage, { role: 'user', time: '21:02', content: 'Recommend a slow, thoughtful science fiction movie.' }),
+              h(W.ChatMessage, { role: 'assistant', time: '21:02', content: 'Here are three that take their time and reward patience:', movies: [{ id: '329865', title: 'Arrival', reason: 'Quiet first-contact story built around language.' }, { id: '157336', title: 'Interstellar', reason: 'Long, emotional space drama with a strong score.' }, { id: '843', title: 'In the Mood for Love', reason: 'Not sci-fi, but the same patient pacing.' }] }),
+              h(W.ChatMessage, { role: 'user', time: '21:03', content: 'When was the first one released?' }),
+              h(W.ChatMessage, { role: 'assistant', time: '21:03', content: 'Arrival was released in 2016. It runs 116 minutes and holds a 7.9 on IMDb.' })),
+            h(W.ChatComposer, { sending: false })))),
+      h(W.Footer)));
+</script>
+</body>
+</html>

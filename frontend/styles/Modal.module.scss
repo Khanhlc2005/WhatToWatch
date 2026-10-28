@@ -1,138 +1,49 @@
-@import './_variables.scss';
+@import './tokens';
 
-.container {
-  position: fixed;
-  inset: 0;
-  z-index: 500;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-}
-
-.overlay {
-  position: absolute;
-  inset: 0;
-  background: rgba(0, 0, 0, .78);
-}
-
+.wrap { position: fixed; inset: 0; z-index: 800; align-items: flex-start; justify-content: center; padding: $space-12 $space-6; overflow-y: auto; }
+.scrim { position: fixed; inset: 0; background: $scrim; }
 .modal {
+  --perf-bg: #{$surface-000};
   position: relative;
-  z-index: 1;
-  width: min(920px, calc(100vw - 4rem));
-  max-height: 92vh;
-  overflow-y: auto;
-  border-radius: .8rem;
-  background: $secondary;
-  color: $white;
-  box-shadow: 0 35px 100px rgba(0, 0, 0, .6);
-}
-
-.cross {
-  position: absolute;
-  top: 1rem;
-  right: 1rem;
-  z-index: 20;
-  display: grid;
-  place-items: center;
-  width: 2.4rem;
-  height: 2.4rem;
-  border-radius: 50%;
-  background: rgba(8, 15, 20, .8);
-  cursor: pointer;
-}
-
-.spotlight {
-  position: relative;
-  isolation: isolate;
   width: 100%;
-  min-height: 420px;
-  aspect-ratio: 16 / 9;
+  max-width: 920px;
   overflow: hidden;
-  background: #0b141b;
+  border: 1px solid $line;
+  border-radius: $radius-lg;
+  background: $surface-200;
+  box-shadow: $shadow-overlay;
+  animation: rise $duration-modal $ease;
+  @include reduced-motion { animation-name: fade; }
 }
+@keyframes rise { from { opacity: 0; transform: translateY(12px); } }
+@keyframes fade { from { opacity: 0; } }
 
-.spotlight__image {
-  position: absolute;
-  inset: 0;
-  z-index: 2;
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
-  pointer-events: none;
-  transition: opacity .35s ease;
-}
+.close { position: absolute; top: $space-4; right: $space-4; z-index: 2; }
+.media { position: relative; aspect-ratio: 16 / 9; background: $surface-000; img, iframe { position: absolute; inset: 0; width: 100%; height: 100%; border: 0; } img { object-fit: cover; } }
+.hidden { visibility: hidden; }
+.media .placeholder { width: auto; margin: 0 auto; object-fit: contain; }
 
-.imageHidden { opacity: 0; }
+.head { display: flex; flex-direction: column; gap: $space-3; padding: $space-8 $space-8 $space-4; }
+.title { margin: 0; @include display-l; overflow-wrap: anywhere; }
+.actions { display: flex; flex-wrap: wrap; align-items: center; gap: $space-2; margin-top: $space-2; }
+.hint { margin: 0; color: $ink-muted; @include body-s; }
+.link { color: $marquee-text; @include label; text-decoration: underline; text-decoration-thickness: 1px; text-underline-offset: 3px; &:hover { text-decoration-thickness: 2px; } }
 
-.trailerFrame {
-  position: absolute;
-  inset: 0;
-  z-index: 1;
-  background: #000;
-}
+.body { display: grid; grid-template-columns: 3fr 2fr; gap: $space-8; padding: $space-4 $space-8 $space-8; }
+.column { display: flex; flex-direction: column; gap: $space-3; p { margin: 0; } }
+.eyebrow { margin: 0; color: $ink-muted; @include eyebrow; }
+.facts { display: grid; grid-template-columns: 84px 1fr; gap: $space-3 $space-4; align-content: start; margin: 0; @include body-s; dt { color: $ink-muted; } dd { margin: 0; } }
+.mono { @include meta; font-size: 14px; }
+.chips { display: flex; flex-wrap: wrap; gap: $space-2; }
 
-.trailerFrame iframe {
-  display: block;
-  width: 100%;
-  height: 100%;
-  border: 0;
-}
+.related { display: flex; flex-direction: column; gap: $space-4; padding: $space-6 $space-8 $space-8; border-top: 1px solid $line; background: $surface-100; }
+.muted { margin: 0; color: $ink-muted; @include body-s; }
 
-.details {
-  padding: 1.5rem 2.5rem .5rem;
-}
-
-.title {
-  margin-bottom: 1rem;
-  color: #fff9ee;
-  font-size: clamp(2rem, 4vw, 3.25rem);
-  font-weight: 800;
-  line-height: 1.1;
-  letter-spacing: -.04em;
-}
-
-.trailerError { margin: .8rem 0 0; color: #e6eaeb; font-size: .82rem; }
-.trailerError a { color: #ffba72; text-decoration: underline; }
-.trailerHint { margin: .8rem 0 0; color: #b9c4c8; font-size: .82rem; }
-.userRating { display: flex; flex-direction: column; align-items: flex-start; gap: .55rem; margin: 1rem 0; color: #d8e0e3; font-size: .85rem; }
-.userRating strong { color: #fff9ee; }
-.userRating a { color: #ffba72; text-decoration: underline; }
-.ratingChoices { display: flex; flex-wrap: wrap; gap: .4rem; }
-.ratingChoices button { padding: .4rem .6rem; border: 1px solid rgba(255,255,255,.25); border-radius: .4rem; background: #20313c; color: #fff9ee; font: inherit; cursor: pointer; }
-.ratingChoices button[aria-pressed='true'] { border-color: #ffba72; background: #644322; color: #fff; }
-.ratingChoices button:hover, .ratingChoices button:focus-visible { border-color: #ffba72; }
-.ratingChoices button:disabled { opacity: .55; cursor: wait; }
-.ratingError { color: #ffabab; }
-
-.bottomContainer {
-  display: grid;
-  grid-template-columns: minmax(0, 1.5fr) minmax(220px, 1fr);
-  gap: 2.5rem;
-  padding: 1.2rem 2.5rem 2.5rem;
-}
-
-.column { min-width: 0; color: #e2e7e8; font-size: .94rem; line-height: 1.65; }
-.column h3 { margin: 0 0 .7rem; color: #fff9ee; font-size: 1.1rem; }
-.column p { margin: 0; }
-.column strong { color: #fff9ee; }
-.metadataRow { display: flex; align-items: center; flex-wrap: wrap; gap: .35rem 1rem; margin-bottom: .8rem; }
-.greenText { color: #ffba72; font-weight: 800; }
-.genre, .row { display: inline-flex; flex-wrap: wrap; }
-.genre { margin-bottom: .5rem; }
-
-.related { padding: 0 2.5rem 2.5rem; }
-.related h3 { margin: 0 0 .4rem; font-size: 1.2rem; }
-.related p { margin: 0; color: #b9c4c8; font-size: .85rem; }
-.related > div { padding-top: 1rem; }
-
-@media (max-width: 700px) {
-  .modal { width: calc(100vw - 2rem); }
-  .spotlight { min-height: 340px; }
-  .details { padding: 1.5rem; }
-  .bottomContainer { grid-template-columns: 1fr; gap: 1.2rem; padding: 1.5rem; }
-  .related { padding: 0 1.5rem 1.5rem; }
-}
-
-@media (prefers-reduced-motion: reduce) {
-  .spotlight__image { transition: none; }
+@include below($bp-md) {
+  .wrap { padding: 0; }
+  .modal { border-radius: 0; border-width: 0; }
+  .head { padding: $space-6 $space-4 $space-4; }
+  .title { font-size: 34px; line-height: 38px; }
+  .body { grid-template-columns: 1fr; gap: $space-6; padding: $space-4; }
+  .related { padding: $space-6 $space-4; }
 }

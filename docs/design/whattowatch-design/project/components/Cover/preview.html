@@ -1,0 +1,43 @@
+<!-- @dsCard height=300 -->
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Newsreader:opsz,wght@6..72,500&family=Be+Vietnam+Pro:wght@400&display=swap&subset=vietnamese" rel="stylesheet">
+<style>
+  html, body { margin: 0; height: 100%; }
+  body { background: var(--surface-000); width: 960px; height: 300px; position: relative; overflow: hidden; }
+  svg { position: absolute; inset: 0; }
+  .velvet { fill: var(--velvet); }
+  .marquee { fill: var(--marquee); }
+  .ink { fill: var(--ink); }
+  .strong { fill: var(--line-strong); }
+  .cut { fill: var(--surface-000); }
+  .r-md { rx: var(--radius-md); }
+  .r-sm { rx: var(--radius-sm); }
+  .text { position: absolute; left: 48px; bottom: 40px; max-width: 420px; }
+  h1 { margin: 0; font-family: var(--font-display); font-weight: 500; font-size: 60px; line-height: .95; letter-spacing: -0.02em; color: var(--ink); }
+  p { margin: 12px 0 0; font-family: var(--font-sans); font-size: 14px; line-height: 20px; color: var(--ink-muted); }
+</style>
+<svg viewBox="0 0 960 300" width="960" height="300" aria-hidden="true">
+  <!--
+    blocks: marquee ticket 240×208 (space-16×3.25), velvet 192×144 (space-12×4 × space-12×3), ink 192×96, line-strong band 240×32 (space-8); corners radius-md, band radius-sm
+    arrangement: one tall ticket slab right with satellites stacked left of it; velvet bleeds off the top edge
+    pattern: ticket row — two half-round notches cut from the slab and a perforation of 13 dots at a space-4 pitch; chosen because the README names the torn-ticket rule as the system's mark
+    steps and radii: space-2, space-4, space-6, space-12, space-16; radius-sm, radius-md; notch r = space-4, dot r = 3px
+  -->
+  <rect class="velvet r-md" x="480" y="-8" width="192" height="152"/>
+  <rect class="ink r-md" x="480" y="160" width="192" height="96"/>
+  <rect class="strong r-sm" x="688" y="0" width="240" height="32"/>
+  <rect class="marquee r-md" x="688" y="48" width="240" height="208"/>
+  <circle class="cut" cx="688" cy="160" r="16"/>
+  <circle class="cut" cx="928" cy="160" r="16"/>
+  <g class="cut">
+    <circle cx="712" cy="160" r="3"/><circle cx="728" cy="160" r="3"/><circle cx="744" cy="160" r="3"/>
+    <circle cx="760" cy="160" r="3"/><circle cx="776" cy="160" r="3"/><circle cx="792" cy="160" r="3"/>
+    <circle cx="808" cy="160" r="3"/><circle cx="824" cy="160" r="3"/><circle cx="840" cy="160" r="3"/>
+    <circle cx="856" cy="160" r="3"/><circle cx="872" cy="160" r="3"/><circle cx="888" cy="160" r="3"/>
+    <circle cx="904" cy="160" r="3"/>
+  </g>
+</svg>
+<div class="text">
+  <h1>WhatToWatch</h1>
+  <p>Your next great story is waiting.</p>
+</div>

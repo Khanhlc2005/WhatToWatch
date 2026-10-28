@@ -5,6 +5,9 @@ import { MovieSummary, toMovie } from '../../lib/movies';
 import { RecommendationResult, recommendationReason } from '../../lib/recommendations';
 import { readApiJson } from '../../lib/readApiJson';
 import MovieRow from '../List/MovieRow';
+import SectionHeading from '../ui/SectionHeading';
+import SkeletonRow from '../ui/SkeletonRow';
+import StatusNote from '../ui/StatusNote';
 import styles from '../../styles/Cards.module.scss';
 
 export default function Recommendations() {
@@ -66,24 +69,23 @@ export default function Recommendations() {
     };
   }, []);
 
-  return <section id='for-you' className={styles.listContainer} aria-busy={status === 'loading'}>
-    <div className={styles.sectionHeading}>
-      <h2 className={styles.category}>For you</h2>
-      <span className={styles.sectionLine} />
-      <span className={styles.sectionCount}>{status === 'ready' ? `${movies.length} movies` : 'PERSONALIZED'}</span>
-    </div>
-    {status === 'loading' && <p role='status' className={styles.listNote}>Finding movies for you…</p>}
-    {status === 'sign_in' && <p className={styles.listNote}>
-      A random selection of top rated IMDb movies. <Link href='/login?next=%2Fbrowse%23for-you'><a>Sign in</a></Link> and rate 3 movies for personalized picks.
-    </p>}
-    {status === 'cold_start' && <p role='status' className={styles.listNote}>
+  return <section id='for-you' className={styles.section} aria-busy={status === 'loading'}>
+    <SectionHeading title='For you' stamp='PERSONALIZED' count={status === 'ready' ? `${movies.length} MOVIES` : undefined} />
+    {status === 'loading' && <>
+      <StatusNote tone='loading'>Finding movies for you…</StatusNote>
+      <SkeletonRow />
+    </>}
+    {status === 'sign_in' && <StatusNote tone='invite'>
+      A random selection of top rated IMDb movies. <Link href='/login?next=%2Fbrowse%23for-you'><a className={styles.noteLink}>Sign in</a></Link> and rate 3 movies for personalized picks.
+    </StatusNote>}
+    {status === 'cold_start' && <StatusNote tone='invite'>
       These top rated IMDb movies were picked at random. Rate at least 3 movies you have watched (1–5 stars) to get personalized picks.
-    </p>}
-    {status === 'unavailable' && <p role='alert' className={styles.listError}>Recommendations are temporarily unavailable. Please try again later.</p>}
-    {status === 'error' && <p role='alert' className={styles.listError}>{error}</p>}
-    {status === 'ready' && movies.length === 0 && <p role='status' className={styles.listNote}>No matching recommendations yet.</p>}
+    </StatusNote>}
+    {status === 'unavailable' && <StatusNote tone='error'>Recommendations are temporarily unavailable. Please try again later.</StatusNote>}
+    {status === 'error' && <StatusNote tone='error'>{error}</StatusNote>}
+    {status === 'ready' && movies.length === 0 && <StatusNote tone='empty'>No matching recommendations yet.</StatusNote>}
     {(status === 'ready' || status === 'cold_start' || status === 'sign_in') && movies.length > 0 && <>
-      {status === 'ready' && <p className={styles.listNote}>Ranked by your preferences and IMDb rating.</p>}
+      {status === 'ready' && <StatusNote tone='info'>Ranked by your preferences and IMDb rating.</StatusNote>}
       <MovieRow movies={movies} reasons={status === 'ready' ? reasons : undefined} />
     </>}
   </section>;

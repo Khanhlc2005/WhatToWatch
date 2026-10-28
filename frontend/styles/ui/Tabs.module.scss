@@ -1,0 +1,5 @@
+@import '../tokens';
+
+.tabs { display: flex; gap: $space-6; border-bottom: 1px solid $line; a { position: relative; display: inline-flex; align-items: center; gap: $space-2; height: 44px; color: $ink-muted; @include label; &:hover { color: $ink; } } }
+.on { color: $ink !important; &::after { content: ''; position: absolute; left: 0; right: 0; bottom: -1px; height: 3px; background: $marquee; } }
+.count { @include meta; font-size: 12px; color: $ink-faint; }

@@ -1,0 +1,27 @@
+@import '../tokens';
+
+.button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  height: 44px;
+  padding: 0 24px;
+  border: 1px solid transparent;
+  border-radius: $radius-sm;
+  @include label;
+  white-space: nowrap;
+  cursor: pointer;
+  transition: background-color $duration-fast $ease, border-color $duration-fast $ease, color $duration-fast $ease;
+
+  &:disabled, &[aria-disabled='true'] { opacity: .45; cursor: not-allowed; }
+}
+
+.small { height: 36px; padding: 0 16px; font-size: 14px; }
+.block { width: 100%; }
+
+.primary { background: $marquee; color: $on-marquee; &:hover:not(:disabled) { background: $marquee-hover; } }
+.secondary { background: transparent; border-color: $line-strong; color: $ink; &:hover:not(:disabled) { background: $surface-300; } }
+.ghost { background: transparent; color: $ink-muted; &:hover:not(:disabled) { background: $surface-300; color: $ink; } }
+.ghostDanger { background: transparent; color: $danger; &:hover:not(:disabled) { background: $surface-300; } }
+.button[aria-pressed='true'].secondary { border-color: $success; color: $ink; }

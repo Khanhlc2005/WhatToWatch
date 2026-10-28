@@ -1,0 +1,18 @@
+<!-- @dsCard group="Navigation" height=140 width=1280 -->
+<!doctype html>
+<html>
+<head><meta charset="utf-8"><title>Footer — preview</title>
+<script src="../demo-data.js"></script>
+<style>body{padding:24px;padding:0}</style></head>
+<body>
+<div id="root"></div>
+<script>
+  var W = window.WTW, h = React.createElement, D = window.WTW_DEMO, M = D.movies;
+  function stack() { return h.apply(null, ['div', { style: { display: 'flex', flexDirection: 'column', gap: 16, alignItems: 'flex-start' } }].concat([].slice.call(arguments))); }
+  function line() { return h.apply(null, ['div', { style: { display: 'flex', flexWrap: 'wrap', gap: 12, alignItems: 'center' } }].concat([].slice.call(arguments))); }
+  ReactDOM.createRoot(document.getElementById('root')).render(
+    h(W.Footer, null)
+  );
+</script>
+</body>
+</html>

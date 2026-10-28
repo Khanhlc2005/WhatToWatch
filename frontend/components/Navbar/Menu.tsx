@@ -2,7 +2,9 @@ import Link from 'next/link';
 import { useEffect, useState } from 'react';
 import { useRouter } from 'next/router';
 import Brand from '../Brand';
+import { DISCOVER_ENABLED } from '../../config/features';
 import styles from '../../styles/Navbar.module.scss';
+
 
 export default function Menu() {
   const router = useRouter();
@@ -28,9 +30,9 @@ export default function Menu() {
   const links = [
     { href: '/browse', label: 'Home', active: path === '/browse' },
     { href: '/search', label: 'Search', active: path === '/search' },
+    ...(DISCOVER_ENABLED ? [{ href: '/discover', label: 'Discover', active: path === '/discover' }] : []),
     { href: '/chat', label: 'Chatbot W2W', active: path === '/chat' },
-    { href: '/library/favorites', label: 'Favourite', active: path === '/library/favorites' },
-    { href: '/library/watchlist', label: 'Watch later', active: path === '/library/watchlist' }
+    { href: '/library/favorites', label: 'Library', active: path.startsWith('/library') }
   ];
 
   return <div className={styles.navigation}>

@@ -1,0 +1,27 @@
+@import '../tokens';
+
+.chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  height: 32px;
+  padding: 0 14px;
+  border: 1px solid transparent;
+  border-radius: $radius-pill;
+  background: $surface-300;
+  color: $ink;
+  font-size: 14px;
+  line-height: 20px;
+  font-weight: 500;
+}
+
+.action {
+  border-color: $line-strong;
+  background: transparent;
+  cursor: pointer;
+  transition: background-color $duration-fast $ease;
+  &:hover { background: $surface-300; }
+}
+
+.on, .on:hover { background: $marquee; border-color: $marquee; color: $on-marquee; }
+.on:hover { background: $marquee-hover; }

@@ -1,14 +1,22 @@
-/* eslint-disable @next/next/no-img-element */
 import { useContext } from 'react';
 import { useRouter } from 'next/router';
 import { Movie } from '../../types';
 import { ModalContext } from '../../context/ModalContext';
 import styles from '../../styles/Cards.module.scss';
 import LibraryActions from '../LibraryActions';
+import Icon from '../ui/Icon';
+import Poster from '../ui/Poster';
+import TicketMeta from '../ui/TicketMeta';
 
-export interface MovieCardProps { item: Movie; reason?: string }
+export interface MovieCardProps {
+  item: Movie;
+  reason?: string;
+  rank?: number;
+  // Fill the grid column instead of the fixed 176px row width.
+  fluid?: boolean;
+}
 
-export default function MovieCard({ item, reason }: MovieCardProps): React.ReactElement {
+export default function MovieCard({ item, reason, rank, fluid = false }: MovieCardProps): React.ReactElement {
   const router = useRouter();
   const { setModalData, setIsModal } = useContext(ModalContext);
 
@@ -21,23 +29,16 @@ export default function MovieCard({ item, reason }: MovieCardProps): React.React
     void router.push(url, undefined, { scroll: false });
   };
 
-  return <article className={styles.card}>
-    <button className={styles.cardPosterButton} onClick={openDetail} aria-label={`View details for ${item.title}`}>
-      <img src={item.poster} alt='' className={styles.cardPoster} loading='lazy'
-        onError={event => {
-          if (event.currentTarget.getAttribute('src') !== '/assets/poster-placeholder.svg') {
-            event.currentTarget.src = '/assets/poster-placeholder.svg';
-          }
-        }} />
-      <span className={styles.cardOverlay}>View details ↗</span>
+  return <article className={`${styles.card} ${rank ? styles.ranked : ''} ${fluid ? styles.fluid : ''}`}>
+    {rank && <span className={styles.rank} aria-label={'Rank ' + rank}>{rank < 10 ? '0' + rank : rank}</span>}
+    <button type='button' className={styles.posterButton} onClick={openDetail} aria-label={`View details for ${item.title}`}>
+      <Poster src={item.poster} />
+      <span className={styles.veil}>View details <Icon name='arrow-up-right' /></span>
     </button>
-    <div className={styles.cardInfo}>
-      <span className={styles.cardTitle} title={item.title}>{item.title}</span>
-      <div className={styles.cardMeta}>
-        <span className={styles.cardRating}>{item.rating == null ? 'Not rated' : `IMDb ★ ${item.rating.toFixed(1)}`}</span>
-        <span>{item.releaseDate?.slice(0, 4) || 'Movie'}</span>
-      </div>
-      {reason && <p className={styles.cardReason}>{reason}</p>}
+    <div className={styles.info}>
+      <span className={styles.title} title={item.title}>{item.title}</span>
+      <TicketMeta rating={item.rating} year={item.releaseDate?.slice(0, 4) || 'MOVIE'} highlight />
+      {reason && <p className={styles.reason}>{reason}</p>}
       <LibraryActions movieId={item.id} compact />
     </div>
   </article>;

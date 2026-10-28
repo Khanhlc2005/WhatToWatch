@@ -1,0 +1,103 @@
+// Single source of truth for design tokens (docs/design/whattowatch-design/project/tokens.json).
+// Modules import this partial for SCSS variables and mixins; it emits no CSS by itself.
+// The matching CSS custom properties are emitted once from globals.scss via `root-vars`.
+
+// Colour (dark theme only, flat fills, no gradients)
+$surface-000: #0f0e0d;
+$surface-100: #171513;
+$surface-200: #211e1b;
+$surface-300: #2c2824;
+$line: #3a3530;
+$line-strong: #776e64;
+$ink: #f2ece2;
+$ink-muted: #b3aa9d;
+$ink-faint: #938a7f;
+$marquee: #f5b83d;
+$marquee-hover: #f8c867;
+$on-marquee: #1a1408;
+$marquee-text: #f5b83d;
+$velvet: #9b2c2c;
+$on-velvet: #f7efe4;
+$danger: #ff7a6b;
+$success: #5fc79e;
+$focus: #f5b83d;
+$scrim: rgba(8, 7, 6, 0.78);
+$image-veil: rgba(15, 14, 13, 0.72);
+
+$colors: (
+  'surface-000': $surface-000, 'surface-100': $surface-100, 'surface-200': $surface-200, 'surface-300': $surface-300,
+  'line': $line, 'line-strong': $line-strong,
+  'ink': $ink, 'ink-muted': $ink-muted, 'ink-faint': $ink-faint,
+  'marquee': $marquee, 'marquee-hover': $marquee-hover, 'on-marquee': $on-marquee, 'marquee-text': $marquee-text,
+  'velvet': $velvet, 'on-velvet': $on-velvet,
+  'danger': $danger, 'success': $success, 'focus': $focus,
+  'scrim': $scrim, 'image-veil': $image-veil
+);
+
+// Type
+$font-display: 'Newsreader', 'Iowan Old Style', Georgia, serif;
+$font-sans: 'Be Vietnam Pro', 'Segoe UI', system-ui, sans-serif;
+$font-mono: 'JetBrains Mono', ui-monospace, 'Cascadia Mono', monospace;
+
+// Space (4px scale)
+$space-1: 4px;
+$space-2: 8px;
+$space-3: 12px;
+$space-4: 16px;
+$space-6: 24px;
+$space-8: 32px;
+$space-12: 48px;
+$space-16: 64px;
+$space: (1: $space-1, 2: $space-2, 3: $space-3, 4: $space-4, 6: $space-6, 8: $space-8, 12: $space-12, 16: $space-16);
+
+// Shape and elevation
+$radius-sm: 4px;
+$radius-md: 8px;
+$radius-lg: 14px;
+$radius-pill: 999px;
+$radius: ('sm': $radius-sm, 'md': $radius-md, 'lg': $radius-lg, 'pill': $radius-pill);
+$shadow-overlay: 0 24px 64px rgba(0, 0, 0, 0.55);
+
+// Motion
+$ease: cubic-bezier(.2, .7, .2, 1);
+$duration-fast: 160ms;
+$duration-modal: 240ms;
+
+// Breakpoints (same values as config/breakpoints.ts)
+$bp-xs: 480px;
+$bp-sm: 640px;
+$bp-md: 768px;
+$bp-lg: 1024px;
+$bp-xl: 1280px;
+$bp-xxl: 1536px;
+
+@mixin root-vars {
+  :root {
+    @each $name, $value in $colors { --#{$name}: #{$value}; }
+    @each $name, $value in $space { --space-#{$name}: #{$value}; }
+    @each $name, $value in $radius { --radius-#{$name}: #{$value}; }
+    --font-display: #{$font-display};
+    --font-sans: #{$font-sans};
+    --font-mono: #{$font-mono};
+    --shadow-overlay: #{$shadow-overlay};
+    --ease: #{$ease};
+  }
+}
+
+// Type styles
+@mixin display-xl { font-family: $font-display; font-size: 72px; line-height: .95; font-weight: 500; letter-spacing: -.02em; }
+@mixin display-l { font-family: $font-display; font-size: 48px; line-height: 52px; font-weight: 500; letter-spacing: -.015em; }
+@mixin title-l { font-family: $font-display; font-size: 32px; line-height: 38px; font-weight: 500; }
+@mixin title-m { font-family: $font-display; font-size: 24px; line-height: 30px; font-weight: 500; font-style: italic; }
+@mixin body-l { font-family: $font-sans; font-size: 18px; line-height: 28px; font-weight: 400; }
+@mixin body { font-family: $font-sans; font-size: 16px; line-height: 24px; font-weight: 400; }
+@mixin body-s { font-family: $font-sans; font-size: 14px; line-height: 20px; font-weight: 400; }
+@mixin label { font-family: $font-sans; font-size: 15px; line-height: 20px; font-weight: 600; }
+@mixin eyebrow { font-family: $font-sans; font-size: 12px; line-height: 16px; font-weight: 600; letter-spacing: .12em; text-transform: uppercase; }
+@mixin meta { font-family: $font-mono; font-size: 13px; line-height: 18px; font-weight: 500; letter-spacing: .02em; }
+@mixin rank { font-family: $font-mono; font-size: 56px; line-height: 1; font-weight: 700; letter-spacing: -.04em; }
+
+// Interaction
+@mixin focus-ring($offset: 3px) { outline: 2px solid $focus; outline-offset: $offset; }
+@mixin reduced-motion { @media (prefers-reduced-motion: reduce) { @content; } }
+@mixin below($width) { @media (max-width: $width - 1px) { @content; } }

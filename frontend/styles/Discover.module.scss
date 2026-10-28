@@ -1,0 +1,10 @@
+@import './tokens';
+
+.layout { display: grid; grid-template-columns: 360px minmax(0, 1fr); gap: $space-8; align-items: start; }
+.side { position: sticky; top: 84px; }
+.results { display: flex; flex-direction: column; gap: $space-6; min-width: 0; }
+.summary { display: flex; flex-wrap: wrap; align-items: center; gap: $space-2; }
+@include below($bp-lg) {
+  .layout { grid-template-columns: 1fr; }
+  .side { position: static; }
+}

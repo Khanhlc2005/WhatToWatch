@@ -1,0 +1,9 @@
+@import '../tokens';
+
+.row { display: flex; gap: $space-4; overflow: hidden; }
+.card { display: flex; flex: none; flex-direction: column; gap: $space-2; width: 176px; }
+.skeleton { display: block; border-radius: $radius-sm; background: $surface-300; animation: pulse 1.4s ease-in-out infinite; @include reduced-motion { animation: none; } }
+.poster { aspect-ratio: 2 / 3; }
+.line { height: 14px; margin-top: 4px; }
+.short { width: 60%; }
+@keyframes pulse { 50% { opacity: .6; } }

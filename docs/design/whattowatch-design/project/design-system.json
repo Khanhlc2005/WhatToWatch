@@ -1,0 +1,31 @@
+{
+  "v": 3,
+  "layout": "files",
+  "createdOnFiles": { "v": 1, "at": "2026-10-24T10:00:00Z" },
+  "title": "WhatToWatch",
+  "namespace": "WTW",
+  "libraries": [{ "name": "react", "version": "18.3.1" }, { "name": "react-dom", "version": "18.3.1" }],
+  "sections": {},
+  "groups": ["UI", "Logos", "Images"],
+  "assetGroups": {
+    "UI": { "name": "UI", "tile": "l", "order": ["01-landing.png", "02-sign-in.png", "03-browse.png", "04-search.png", "05-discover.png", "06-movie-detail-add-to-list.png", "07-chat.png", "08-library-my-lists.png", "09-my-ratings.png", "10-watch-history.png"], "files": {
+      "01-landing.png": { "name": "01-landing.png", "blob": "200a254b16e42f74686d2fb761923555", "size": 639559, "type": "image/png" },
+      "02-sign-in.png": { "name": "02-sign-in.png", "blob": "d72c6a2bf476d9df25ccffa450bf4e38", "size": 344543, "type": "image/png" },
+      "03-browse.png": { "name": "03-browse.png", "blob": "9bd7e60b98e30089d2888dff5a7083e8", "size": 1190979, "type": "image/png" },
+      "04-search.png": { "name": "04-search.png", "blob": "f47a516966220eb45eb4bef1bb2d83dd", "size": 1018404, "type": "image/png" },
+      "05-discover.png": { "name": "05-discover.png", "blob": "d2a9c39fea8153971aa7ab021085a216", "size": 855732, "type": "image/png" },
+      "06-movie-detail-add-to-list.png": { "name": "06-movie-detail-add-to-list.png", "blob": "ab85faff46cb4019d10dee11754a6616", "size": 649555, "type": "image/png" },
+      "07-chat.png": { "name": "07-chat.png", "blob": "4234eb0556cdebd425c1d73331666aac", "size": 495427, "type": "image/png" },
+      "08-library-my-lists.png": { "name": "08-library-my-lists.png", "blob": "ce7b2e5ed2e0a28f49ba1a08bde1b700", "size": 570248, "type": "image/png" },
+      "09-my-ratings.png": { "name": "09-my-ratings.png", "blob": "7dc3e0a2ed340971d783428ebbd64531", "size": 343788, "type": "image/png" },
+      "10-watch-history.png": { "name": "10-watch-history.png", "blob": "681dfdc50669d49cb577708da9c700d3", "size": 300696, "type": "image/png" } } },
+    "Logos": { "name": "Logos", "tile": "m", "order": ["wtw-mark.svg", "favicon.svg"], "files": {
+      "wtw-mark.svg": { "name": "wtw-mark.svg", "blob": "0bce0365e2d81a563a03cdf23e64981d", "size": 566, "type": "image/svg+xml" },
+      "favicon.svg": { "name": "favicon.svg", "blob": "9a4495cacd97d7406f1e0e1f0563d4ac", "size": 440, "type": "image/svg+xml" } } },
+    "Images": { "name": "Images", "tile": "m", "order": ["poster-placeholder.svg"], "files": {
+      "poster-placeholder.svg": { "name": "poster-placeholder.svg", "blob": "7541ce9ac1a398ecc964d1d8a0304c20", "size": 482, "type": "image/svg+xml" } } }
+  },
+  "blobs": {},
+  "docs": { "readme": "project/README.md", "sections": [] },
+  "lastChange": { "by": "Claude", "at": "2026-10-25T09:00:00Z", "via": "Claude Code", "note": "UI section: full-page screenshots of all 10 screens with frontend and backend implementation status." }
+}

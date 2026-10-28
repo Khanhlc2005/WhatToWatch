@@ -1,12 +1,16 @@
+@import './tokens';
+
 .detailError {
   position: fixed;
-  z-index: 800;
-  top: 4rem;
+  z-index: 900;
+  top: $space-16;
   left: 50%;
   transform: translateX(-50%);
-  background: #191919;
-  color: white;
-  padding: 1rem 1.5rem;
-  border-radius: .3rem;
+  padding: $space-4 $space-6;
+  border: 1px solid $line-strong;
+  border-radius: $radius-md;
+  background: $surface-200;
+  color: $danger;
+  box-shadow: $shadow-overlay;
   cursor: pointer;
 }

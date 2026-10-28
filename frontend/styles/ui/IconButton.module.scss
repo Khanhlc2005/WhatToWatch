@@ -1,0 +1,22 @@
+@import '../tokens';
+
+.iconButton {
+  display: inline-grid;
+  place-items: center;
+  width: 36px;
+  height: 36px;
+  border: 1px solid transparent;
+  border-radius: $radius-pill;
+  background: transparent;
+  color: $ink-muted;
+  cursor: pointer;
+  transition: background-color $duration-fast $ease, color $duration-fast $ease;
+
+  &:hover:not(:disabled) { background: $surface-300; color: $ink; }
+  &:disabled { opacity: .45; cursor: not-allowed; }
+  &[aria-pressed='true'] { color: $ink; }
+}
+
+.large { width: 44px; height: 44px; }
+.float { width: 44px; height: 44px; background: $surface-200; border-color: $line-strong; color: $ink; }
+.danger:hover:not(:disabled) { color: $danger; }

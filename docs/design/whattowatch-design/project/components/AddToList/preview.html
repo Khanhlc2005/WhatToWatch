@@ -1,0 +1,17 @@
+<!-- @dsCard group="Movies" height=420 -->
+<!doctype html>
+<html>
+<head><meta charset="utf-8"><title>AddToList — preview</title>
+<style>body{padding:24px} .slot{width:320px;height:300px}</style></head>
+<body>
+<div id="root" style="display:flex;flex-wrap:wrap;gap:24px;align-items:flex-start"></div>
+<script>
+  var W = window.WTW, h = React.createElement;
+  var lists = [{ id: 'l1', name: 'Sunday classics', count: 4, checked: true }, { id: 'l2', name: 'Date night', count: 0 }, { id: 'l3', name: 'Studio Ghibli marathon', count: 9 }];
+  ReactDOM.createRoot(document.getElementById('root')).render(h(React.Fragment, null,
+    h('div', { className: 'slot' }, h(W.AddToList, { lists: lists, open: true })),
+    h('div', { className: 'slot' }, h(W.AddToList, { lists: [], open: true, creating: true })),
+    h('div', { className: 'slot', style: { height: 'auto' } }, h(W.AddToList, { lists: lists.map(function (l) { return Object.assign({}, l, { checked: false }); }) }))));
+</script>
+</body>
+</html>

@@ -1,0 +1,38 @@
+@import './tokens';
+
+// Shared page scaffolding: Browse, Search, Library
+.page { display: flex; flex-direction: column; gap: $space-12; width: 100%; max-width: 1440px; min-height: 65vh; margin: 0 auto; padding: $space-8 $space-12 $space-12; }
+.tight { gap: $space-8; }
+.head { display: flex; flex-direction: column; gap: $space-2; h1, h2 { margin: 0; @include title-l; } p { margin: 0; max-width: 60ch; color: $ink-muted; @include body-l; } }
+.eyebrow { margin: 0; color: $ink-muted; @include eyebrow; }
+.headRow { display: flex; align-items: flex-end; justify-content: space-between; gap: $space-6; }
+.quick { display: flex; gap: $space-2; }
+.grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(168px, 1fr)); gap: $space-8 $space-4; }
+.toolbar { display: flex; align-items: center; justify-content: space-between; gap: $space-4; }
+.link { display: inline-flex; align-items: center; gap: $space-1; color: $marquee-text; @include label; text-decoration: underline; text-decoration-thickness: 1px; text-underline-offset: 3px; &:hover { text-decoration-thickness: 2px; } }
+
+.search { display: flex; flex-direction: column; gap: $space-2; max-width: 880px; label { @include label; } }
+.searchBar {
+  display: flex;
+  align-items: center;
+  gap: $space-3;
+  height: 60px;
+  padding: 0 8px 0 $space-4;
+  border: 1px solid $line-strong;
+  border-radius: $radius-md;
+  background: $surface-100;
+  color: $ink-muted;
+  &:focus-within { @include focus-ring(2px); }
+  input { flex: 1; min-width: 0; height: 100%; border: 0; outline: none; background: none; color: $ink; font-size: 18px; }
+}
+
+@include below($bp-lg) {
+  .page { gap: $space-8; padding: $space-6 $space-8 $space-8; }
+  .headRow { flex-direction: column; align-items: flex-start; }
+}
+@include below($bp-sm) {
+  .page { padding: $space-4 $space-4 $space-8; }
+  .grid { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: $space-6 $space-3; }
+  .toolbar { flex-direction: column; align-items: flex-start; }
+  .searchBar { height: auto; flex-wrap: wrap; padding: $space-2; input { height: 44px; } }
+}
