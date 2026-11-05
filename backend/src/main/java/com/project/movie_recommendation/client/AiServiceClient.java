@@ -78,8 +78,9 @@ public class AiServiceClient {
                     .body(AiMovieSearchRequest.builder()
                             .query(query)
                             .mode("hybrid")
-                            .rerank(true)
-                            .candidateK(Math.max(50, limit))
+                            // Cross-encoder rerank over 50 docs on CPU dominated latency (same for short/long
+                            // queries); hybrid dense+sparse RRF is enough for interactive search.
+                            .rerank(false)
                             .limit(limit)
                             .build())
                     .retrieve()

@@ -17,13 +17,14 @@ def get_embedding_model():
     )
 
 
+@lru_cache(maxsize=512)
 def embed_query(text: str) -> dict[str, object]:
     model = get_embedding_model()
 
     output = model.encode(
         [text],
         batch_size=1,
-        max_length=512,
+        max_length=128,
         return_dense=True,
         return_sparse=True,
         return_colbert_vecs=False,
