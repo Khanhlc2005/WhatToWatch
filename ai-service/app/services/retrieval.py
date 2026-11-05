@@ -1,4 +1,6 @@
+import logging
 import math
+import time
 
 from qdrant_client import models
 
@@ -16,6 +18,7 @@ from app.services.filters import build_payload_filter
 from app.services.reranker import score_pairs
 
 RRF_K = 60
+logger = logging.getLogger(__name__)
 
 
 def fetch_sample_movies(limit: int = 5) -> SampleRetrievalResponse:
@@ -48,7 +51,9 @@ def search_movies(request: MovieSearchRequest) -> MovieSearchResponse:
                    if request.rerank else request.limit)
     if candidate_k > 500:
         raise ValueError("Invalid candidate pool size")
+    started = time.perf_counter()
     vectors = embed_query(request.query)
+    embed_ms = (time.perf_counter() - started) * 1000
     queries = {}
     if request.mode in ("dense", "hybrid"):
         dense = vectors["dense"]
@@ -70,6 +75,7 @@ def search_movies(request: MovieSearchRequest) -> MovieSearchResponse:
     client = get_qdrant_client()
     query_filter = build_payload_filter(request.filters)
     results = {}
+    started = time.perf_counter()
     for mode, query in queries.items():
         result = client.query_points(
             collection_name=settings.qdrant_collection,
@@ -85,6 +91,7 @@ def search_movies(request: MovieSearchRequest) -> MovieSearchResponse:
             key=lambda point: (-point.score, str(point.id)),
         )
 
+    qdrant_ms = (time.perf_counter() - started) * 1000
     if request.mode == "hybrid":
         ranked = _fuse_rrf(results, candidate_k)
     else:
@@ -97,7 +104,9 @@ def search_movies(request: MovieSearchRequest) -> MovieSearchResponse:
             deduplicated.append((point, score))
             identities.add(identity)
     candidates = [(point, score, None) for point, score in deduplicated]
+    rerank_ms = 0.0
     if request.rerank and deduplicated:
+        started = time.perf_counter()
         documents = []
         indexes = []
         for index, (point, _) in enumerate(deduplicated):
@@ -110,6 +119,9 @@ def search_movies(request: MovieSearchRequest) -> MovieSearchResponse:
                       for index, (point, score) in enumerate(deduplicated)]
         # Python's stable sort keeps retrieval order when reranker scores tie.
         candidates.sort(key=lambda item: (item[2] is None, -(item[2] or 0)))
+        rerank_ms = (time.perf_counter() - started) * 1000
+    logger.info("search timing mode=%s qlen=%d embed_ms=%.0f qdrant_ms=%.0f rerank_ms=%.0f",
+                request.mode, len(request.query), embed_ms, qdrant_ms, rerank_ms)
     hits = []
     for point, score, rerank_score in candidates[:request.limit]:
         payload = point.payload or {}
