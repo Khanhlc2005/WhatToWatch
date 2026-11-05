@@ -15,12 +15,13 @@ class Settings(BaseSettings):
     backend_base_url: str = "http://localhost:8080/movie-recommendation"
 
     embedding_model_name: str = "BAAI/bge-m3"
-    embedding_device: str = "cpu"
+    embedding_device: str = "auto"  # auto | cpu | cuda[:N]
     embedding_cpu_threads: int = 4
     embedding_model_path: str | None = None
     reranker_model_name: str = "BAAI/bge-reranker-v2-m3"
     reranker_model_path: str | None = None
-    reranker_device: str = "cpu"
+    reranker_device: str = "auto"
+    warmup_on_startup: bool = True
     retrieval_candidate_k: int = 50
     retrieval_final_k: int = 10
     recommendation_similarity_weight: float = 0.8

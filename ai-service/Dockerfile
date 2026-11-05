@@ -4,7 +4,7 @@ FROM python:3.11-slim
 ENV PYTHONDONTWRITEBYTECODE=1 \
     PYTHONUNBUFFERED=1 \
     PIP_DEFAULT_TIMEOUT=120 \
-    EMBEDDING_DEVICE=cpu \
+    EMBEDDING_DEVICE=auto \
     HF_HOME=/home/app/.cache/huggingface
 
 WORKDIR /srv/ai-service

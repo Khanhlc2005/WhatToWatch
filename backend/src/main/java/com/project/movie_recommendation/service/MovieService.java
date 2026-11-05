@@ -17,6 +17,7 @@ import com.project.movie_recommendation.mapper.MovieMapper;
 import com.project.movie_recommendation.repository.MovieRepository;
 import com.project.movie_recommendation.repository.specification.MovieSpecification;
 import lombok.AccessLevel;
+import lombok.extern.slf4j.Slf4j;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
 import org.springframework.cache.annotation.Cacheable;
@@ -33,6 +34,7 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.stream.Collectors;
 
+@Slf4j
 @Service
 @RequiredArgsConstructor
 @FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
@@ -169,7 +171,9 @@ public class MovieService {
         int fetchLimit = 50;
         int queryPage = Math.max(page - 1, 0);
 
+        long t0 = System.nanoTime();
         AiMovieSearchResponse vectorResponse = aiServiceClient.searchSimilarMovies(cleanQuery, fetchLimit);
+        long aiMs = (System.nanoTime() - t0) / 1_000_000;
 
         if (vectorResponse == null || vectorResponse.getHits() == null) {
             Page<Movie> fallbackPage = movieRepository.searchByTitle(cleanQuery, PageRequest.of(queryPage, size));
@@ -191,12 +195,14 @@ public class MovieService {
         Map<Long, Movie> movieMap = movieRepository.findAllById(rankedIds).stream()
                 .collect(Collectors.toMap(Movie::getId, movie -> movie));
 
+        long t1 = System.nanoTime();
         List<MovieSummaryResponse> hydrated = rankedIds.stream()
                 .map(movieMap::get)
                 .filter(Objects::nonNull)
                 .map(movieMapper::toMovieSummaryResponse)
                 .toList();
 
+        log.info("search timing qlen={} ai_ms={} hydrate_ms={}", cleanQuery.length(), aiMs, (System.nanoTime() - t1) / 1_000_000);
         int totalElements = hydrated.size();
         int totalPages = (int) Math.ceil((double) totalElements / size);
         long fromIndex = (long) queryPage * size;
