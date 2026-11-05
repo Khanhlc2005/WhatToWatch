@@ -4,16 +4,18 @@ import math
 from functools import lru_cache
 
 from app.core.config import settings
+from app.core.device import resolve_device
 
 
 @lru_cache(maxsize=1)
 def get_reranker():
     from FlagEmbedding import FlagReranker
 
+    device = resolve_device(settings.reranker_device)
     return FlagReranker(
         settings.reranker_model_path or settings.reranker_model_name,
-        devices=settings.reranker_device,
-        use_fp16=settings.reranker_device.startswith("cuda"),
+        devices=device,
+        use_fp16=device.startswith("cuda"),
     )
 
 
