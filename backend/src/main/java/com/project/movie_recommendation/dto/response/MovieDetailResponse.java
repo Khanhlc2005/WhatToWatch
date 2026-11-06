@@ -34,9 +34,20 @@ public class MovieDetailResponse {
     String trailerSite;
     String trailerType;
 
+    List<GenreResponse> genres;
     List<CastResponse> cast;
     List<CrewResponse> crew;
     List<MovieSummaryResponse> similarMovies;
+
+    @Data
+    @Builder
+    @NoArgsConstructor
+    @AllArgsConstructor
+    @FieldDefaults(level = AccessLevel.PRIVATE)
+    public static class GenreResponse {
+        Long id;
+        String name;
+    }
 
     @Data
     @Builder
