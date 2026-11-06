@@ -1,14 +1,27 @@
 """Read-only catalog tools for factual and comparison questions."""
 
+import logging
 import re
 import unicodedata
+from difflib import SequenceMatcher
 
 from app.schemas.chat import ChatHistoryMessage
 from app.schemas.rag import AnswerMovie, MovieContext, RAGAnswer
+from app.schemas.retrieval import MovieSearchRequest
 from app.services.context_builder import (
     build_context_for_movie_ids,
     find_exact_movie_titles,
 )
+from app.services.retrieval import search_movies
+
+logger = logging.getLogger(__name__)
+
+# A fuzzy title is accepted only when it is very close and clearly ahead of the runner-up;
+# anything weaker or tied is returned to the user as a question.
+FUZZY_ACCEPT_RATIO = 0.85
+FUZZY_MARGIN = 0.08
+FUZZY_SUGGEST_RATIO = 0.7
+FUZZY_SUGGESTIONS = 3
 
 COMPARISON_LINK = re.compile(r"\s+(?:so với|versus|vs\.?|and|và|với|with|to|against)\s+", re.IGNORECASE)
 COMPARISON_START = re.compile(
@@ -77,6 +90,50 @@ def _title_variants(fragment: str) -> list[tuple[str, int | None]]:
     return result
 
 
+def _compact_key(text: str) -> str:
+    """Casefolded title with spaces and punctuation removed, so "lalaland" equals "La La Land"."""
+    return re.sub(r"[\W_]+", "", unicodedata.normalize("NFKC", text).casefold())
+
+
+def find_similar_titles(fragment: str) -> list[dict]:
+    """Candidate catalog titles for a fragment that did not match exactly (vector + keyword search)."""
+    try:
+        response = search_movies(MovieSearchRequest(query=fragment, mode="hybrid", limit=15))
+    except Exception:
+        logger.exception("Fuzzy title lookup failed")
+        return []
+    seen: dict[int, dict] = {}
+    for hit in response.hits:
+        if hit.movie_id is not None and hit.title and hit.movie_id not in seen:
+            seen[hit.movie_id] = {"id": hit.movie_id, "title": hit.title}
+    return list(seen.values())
+
+
+def _fuzzy_match(fragment: str, candidates: list[dict]) -> tuple[int | None, list[str]]:
+    """Return (movie_id, []) for one clear match, else (None, suggested titles) so the caller can ask."""
+    key = _compact_key(fragment)
+    if len(key) < 3:
+        return None, []
+    scored: dict[int, tuple[float, str]] = {}
+    for movie in candidates:
+        titles = [movie["title"], movie.get("originalTitle") or ""]
+        ratio = max((1.0 if _compact_key(t) == key else SequenceMatcher(None, key, _compact_key(t)).ratio())
+                    for t in titles if t)
+        if movie["id"] not in scored or ratio > scored[movie["id"]][0]:
+            scored[movie["id"]] = (ratio, movie["title"])
+    ranked = sorted(scored.items(), key=lambda item: item[1][0], reverse=True)
+    perfect = [item for item in ranked if item[1][0] == 1.0]
+    if len(perfect) == 1:
+        return perfect[0][0], []
+    if len(perfect) > 1:
+        return None, [item[1][1] for item in perfect[:FUZZY_SUGGESTIONS]]
+    if ranked and ranked[0][1][0] >= FUZZY_ACCEPT_RATIO and (
+        len(ranked) == 1 or ranked[0][1][0] - ranked[1][1][0] >= FUZZY_MARGIN
+    ):
+        return ranked[0][0], []
+    return None, [item[1][1] for item in ranked if item[1][0] >= FUZZY_SUGGEST_RATIO][:FUZZY_SUGGESTIONS]
+
+
 def _comparison_pairs(question: str) -> list[tuple[str, str]]:
     quoted = re.findall(r'"([^"]+)"|“([^”]+)”', question)
     if len(quoted) == 2:
@@ -87,17 +144,20 @@ def _comparison_pairs(question: str) -> list[tuple[str, str]]:
             for text in candidates for link in list(COMPARISON_LINK.finditer(text))[:6]]
 
 
-def _comparison_ids(question: str, history: list[ChatHistoryMessage]) -> list[int]:
+def _comparison_ids(question: str, history: list[ChatHistoryMessage]) -> tuple[list[int], str | None]:
+    """Resolve the two movies being compared; the second value is a clarifying question when unsure."""
     previous = _latest_movie_ids(history)
     text = question.casefold()
     if any(term in text for term in ("first two", "hai phim đầu")) and len(previous) >= 2:
-        return previous[:2]
+        return previous[:2], None
     if not _comparison_pairs(question):
         if any(term in text for term in ("hai phim", "2 phim", "these two movies", "those two movies")):
-            return previous if len(previous) == 2 else []
-        return []
+            return (previous if len(previous) == 2 else []), None
+        return [], None
 
     cache: dict[str, list[dict]] = {}
+    fuzzy_cache: dict[str, tuple[int | None, list[str]]] = {}
+    unsure: dict[str, list[str]] = {}
 
     def resolve(fragment: str) -> int | None:
         if _title_key(fragment.strip(' ?!"“”')) in SINGLE_REFERENCE:
@@ -113,7 +173,20 @@ def _comparison_ids(question: str, history: list[ChatHistoryMessage]) -> list[in
             if len(ids) == 1:
                 return ids[0]
             if len(ids) > 1:
+                unsure[title] = [f"{movie['title']} ({movie['releaseYear']})" if movie.get("releaseYear")
+                                 else movie["title"] for movie in matches]
                 return None
+        # No exact match: ignore spaces/punctuation and allow small typos, but never guess between ties.
+        for title, year in _title_variants(fragment):
+            if year is not None:
+                continue
+            if title not in fuzzy_cache:
+                fuzzy_cache[title] = _fuzzy_match(title, find_similar_titles(title))
+            movie_id, suggestions = fuzzy_cache[title]
+            if movie_id is not None:
+                return movie_id
+            if suggestions:
+                unsure[title] = suggestions
         return None
 
     pairs = set()
@@ -121,7 +194,13 @@ def _comparison_ids(question: str, history: list[ChatHistoryMessage]) -> list[in
         first, second = resolve(left), resolve(right)
         if first is not None and second is not None and first != second:
             pairs.add((first, second))
-    return list(next(iter(pairs))) if len(pairs) == 1 else []
+    if len(pairs) == 1:
+        return list(next(iter(pairs))), None
+    if unsure:
+        title, options = next(iter(unsure.items()))
+        return [], (f'Which movie did you mean by "{title}"? Possible matches: {"; ".join(options)}. '
+                    "Please give the exact title, for example with the year: Title (2016).")
+    return [], None
 
 
 def _catalog_movies(ids: list[int], context: list[MovieContext]) -> list[MovieContext]:
@@ -169,9 +248,10 @@ def answer_with_detail_tool(question: str, context: list[MovieContext], history:
 
 
 def answer_with_comparison_tool(question: str, context: list[MovieContext], history: list[ChatHistoryMessage]) -> RAGAnswer:
-    ids = _comparison_ids(question, history)
+    ids, clarification = _comparison_ids(question, history)
     if len(ids) != 2:
-        return RAGAnswer(status="insufficient_context", answer="Please identify two movies to compare.", movies=[])
+        return RAGAnswer(status="insufficient_context",
+                         answer=clarification or "Please identify two movies to compare.", movies=[])
     movies = _catalog_movies(ids, context)
     if len(movies) != 2:
         return RAGAnswer(status="no_match", answer="Both movies could not be found in the catalog.", movies=[])

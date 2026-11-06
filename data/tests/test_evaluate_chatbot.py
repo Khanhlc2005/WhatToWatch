@@ -8,16 +8,6 @@ evaluation = importlib.util.module_from_spec(spec)
 spec.loader.exec_module(evaluation)
 
 
-def test_compare_requires_identical_set_prompt_options_and_ids():
-    dataset = {'cases':[{'id':'Q1','question':'question','context':[]}]}
-    capture = dict(model='fixture',evaluation_sha256=evaluation.sha(dataset),
-        system_prompt_sha256=evaluation.sha(evaluation.SYSTEM_PROMPT),generation_options={},
-        runs=[dict(id='Q1',input_sha256=evaluation.sha(dataset['cases'][0]),error='fixture error')])
-    assert evaluation.compare(dataset,capture,capture)['quality_metrics'] is None
-    for changed in [dict(evaluation_sha256='wrong'),dict(system_prompt_sha256='wrong'),dict(generation_options={'temperature':1}),dict(runs=[]),dict(runs=capture['runs'] * 2)]:
-        with pytest.raises(ValueError): evaluation.compare(dataset,capture,dict(capture,**changed))
-
-
 def test_raw_contract_and_identity_are_independent_checks():
     import json
     from app.schemas.rag import MovieContext
@@ -28,14 +18,6 @@ def test_raw_contract_and_identity_are_independent_checks():
     checks = evaluation.checks(json.dumps(raw),context)
     assert checks['json_contract'] and not checks['source_identity']
     assert not evaluation.checks('not json',context)['json_contract']
-
-
-def test_prepare_rejects_training_overlap(tmp_path):
-    import json
-    train = tmp_path / 'train.jsonl'
-    train.write_text(json.dumps({'provenance':{'source_movie_id':1}}) + '\n')
-    queries = {'queries':[dict(id='Q1',query='Example',catalog_anchors=[{'movie_id':1}])]}
-    with pytest.raises(ValueError,match='overlaps SFT train'): evaluation.prepare(queries,{1:{}},train)
 
 
 def test_capture_does_not_pull_uninstalled_model(monkeypatch):

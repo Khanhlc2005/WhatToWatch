@@ -18,6 +18,7 @@ def title_catalog(monkeypatch) -> None:
                 for movie in MOVIES if movie.title.casefold() == title.casefold()]
 
     monkeypatch.setattr(chat_tools, "find_exact_movie_titles", lookup)
+    monkeypatch.setattr(chat_tools, "find_similar_titles", lambda title: [])
 
 
 def test_detail_tool_reads_canonical_catalog_and_never_uses_model(monkeypatch) -> None:
@@ -116,3 +117,46 @@ def test_compare_follow_up_uses_exactly_two_prior_movie_ids(monkeypatch) -> None
     history = [ChatHistoryMessage(role="assistant", content="Two films", movie_ids=[1, 2])]
     result = chat_tools.answer_with_comparison_tool("So sánh hai phim đó", [], history)
     assert [movie.movie_id for movie in result.movies] == ["1", "2"]
+
+
+def _fuzzy(monkeypatch, candidates) -> None:
+    monkeypatch.setattr(chat_tools, "find_similar_titles", lambda title: candidates)
+    monkeypatch.setattr(chat_tools, "build_context_for_movie_ids", lambda ids: [
+        MovieContext(movie_id=str(i), title=f"Movie {i}", year=2000 + i) for i in ids])
+
+
+def test_compare_matches_title_typed_without_spaces(monkeypatch) -> None:
+    _fuzzy(monkeypatch, [{"id": 7, "title": "La La Land"}, {"id": 8, "title": "Landscape"}])
+    ids, ask = chat_tools._comparison_ids("compare Film One and lalaland", [])
+    assert ids == [1, 7] and ask is None
+
+
+def test_compare_ignores_punctuation_and_case(monkeypatch) -> None:
+    _fuzzy(monkeypatch, [{"id": 9, "title": "Spider-Man: Homecoming"}])
+    ids, _ = chat_tools._comparison_ids("compare Film Two and SPIDERMAN homecoming", [])
+    assert ids == [2, 9]
+
+
+def test_compare_accepts_small_typo_when_clearly_ahead(monkeypatch) -> None:
+    _fuzzy(monkeypatch, [{"id": 5, "title": "Interstellar"}, {"id": 6, "title": "Interstitial Zone"}])
+    ids, _ = chat_tools._comparison_ids("compare Film One and intersteller", [])
+    assert ids == [1, 5]
+
+
+def test_compare_asks_again_when_fuzzy_titles_tie(monkeypatch) -> None:
+    _fuzzy(monkeypatch, [{"id": 3, "title": "Dune"}, {"id": 4, "title": "Dune"}])
+    result = chat_tools.answer_with_comparison_tool("compare Film One and dune", MOVIES, [])
+    assert result.status == "insufficient_context" and result.movies == []
+    assert "Which movie did you mean" in result.answer and "Dune" in result.answer
+
+
+def test_compare_asks_again_when_only_weak_matches(monkeypatch) -> None:
+    _fuzzy(monkeypatch, [{"id": 3, "title": "Inception"}])
+    ids, ask = chat_tools._comparison_ids("compare Film One and incestion zzz", [])
+    assert ids == []
+
+
+def test_compare_never_guesses_unrelated_title(monkeypatch) -> None:
+    _fuzzy(monkeypatch, [{"id": 3, "title": "Casablanca"}])
+    ids, ask = chat_tools._comparison_ids("compare Film One and xyzzy", [])
+    assert ids == [] and ask is None
