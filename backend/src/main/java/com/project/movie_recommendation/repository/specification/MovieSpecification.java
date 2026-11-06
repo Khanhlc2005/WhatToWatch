@@ -18,9 +18,8 @@ public class MovieSpecification {
         return (root, query, criteriaBuilder) -> {
             List<Predicate> predicates = new ArrayList<>();
 
-            if (Long.class != query.getResultType()) {
-                query.distinct(true);
-            }
+            // A movie in several selected genres joins more than once; distinct also makes the count query use countDistinct.
+            query.distinct(true);
 
             if (request.getGenreIds() != null && !request.getGenreIds().isEmpty()) {
                 Join<Movie, Genre> genreJoin = root.join("genres");

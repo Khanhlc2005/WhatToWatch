@@ -13,6 +13,8 @@ public interface MovieMapper {
 
     MovieDetailResponse toMovieDetailResponse(Movie movie);
 
+    MovieDetailResponse.GenreResponse toGenreResponse(com.project.movie_recommendation.entity.Genre genre);
+
     @Mapping(target = "personId", source = "person.id")
     @Mapping(target = "name", source = "person.name")
     MovieDetailResponse.CastResponse toCastResponse(MovieCast movieCast);

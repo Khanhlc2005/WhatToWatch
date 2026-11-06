@@ -37,6 +37,8 @@ docker exec -e MYSQL_PWD=root whattowatch-mysql mysql -u root -N whattowatch_db 
 
 Với dump hiện dùng, kết quả là `46923`. Khi dùng volume MySQL mới, tài khoản và danh sách cá nhân từ volume khác không tự chuyển sang.
 
+Bộ lọc thể loại của trang Discover cần bảng `genres` và `movie_genres`, mà dump không có. Backend tự nạp chúng khi khởi động nếu `movie_genres` còn trống (dữ liệu nằm trong `backend/src/main/resources/seed/`), nên đồng đội không phải làm thêm bước nào. Log sẽ có dòng `Seeded 19 genres ...`; kết quả là 19 thể loại (ID của TMDB) và 108.408 liên kết phim–thể loại. Tắt bằng `APP_SEED_GENRES=false`. Chỉ chạy lại `python3 tools/seed_genres.py` khi catalog thay đổi.
+
 ## 3. Chạy frontend ngoài Docker (tùy chọn)
 
 Tạo `frontend/.env.local` nếu chưa có, theo mẫu `frontend/.env.example`. Giữ `BACKEND_URL=http://localhost:8080/movie-recommendation`. Điền `TMDB_KEY` và `YOUTUBE_API_KEY` để tự tìm trailer cho phim chưa có trailer trong SQL. File `.env.local` được Git bỏ qua; không đưa khóa API vào commit.

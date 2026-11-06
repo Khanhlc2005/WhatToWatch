@@ -4,8 +4,8 @@
 export const DISCOVER_ENABLED = true;
 // GET /movies/filter filters on the score the cards show (IMDb, TMDB fallback).
 export const RATING_FILTER_ENABLED = true;
-// The seed data (data/mysql/movies_data.sql) fills only `movies`; `genres` and `movie_genres` stay empty,
-// so any genre filter returns no movies.
-export const GENRE_FILTER_ENABLED = false;
+// `genres` and `movie_genres` are filled by tools/seed_genres.py (see README). Set this to false on a database
+// that has not been seeded, because every genre filter would return no movies.
+export const GENRE_FILTER_ENABLED = true;
 // "Add to list" in the detail modal: Watch later would show "Saved" for movies that are only in a named list.
 export const ADD_TO_LIST_ENABLED = false;

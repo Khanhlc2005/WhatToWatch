@@ -25,6 +25,7 @@ export type MovieDetail = {
   trailerKey: string | null;
   trailerSite: string | null;
   releaseDate: string | null;
+  genres?: { id: number; name: string }[] | null;
   cast?: { personId: number; name: string; characterName: string | null; castOrder: number | null }[];
   similarMovies?: MovieSummary[] | null;
 };
@@ -64,8 +65,7 @@ export function toMovie(movie: MovieSummary | MovieDetail): Movie {
     poster,
     banner: backdropUrl(detail?.backdropPath) || poster,
     rating: summary ? summary.voteAverage : (imdbRating != null && imdbRating > 0 ? imdbRating : detail?.tmdbVoteAverage ?? null),
-    // Genres are not included in the current detail DTO.
-    genre: [],
+    genre: detail?.genres?.map(({ id, name }) => ({ id, name })) || [],
     cast: detail?.cast?.length ? detail.cast.slice(0, 8).map(person => person.name).join(', ') : null,
     similarMovies: detail?.similarMovies?.map(toMovie) || [],
     runtime: detail?.runtimeMinutes ?? null,
