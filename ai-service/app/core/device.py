@@ -7,7 +7,8 @@ def cuda_available() -> bool:
     try:
         import torch
         return bool(torch.cuda.is_available())
-    except Exception:  # torch missing or broken CUDA driver: treat as no GPU
+    except (ImportError, OSError, RuntimeError, AssertionError):
+        # Missing torch or an unusable CUDA runtime means CPU is the safe choice.
         return False
 
 
