@@ -25,6 +25,9 @@ public interface MovieRepository extends JpaRepository<Movie, Long>, JpaSpecific
             nativeQuery = true)
     Page<Movie> searchByTitle(String query, Pageable pageable);
 
+    @Query("SELECT m FROM Movie m WHERE LOWER(m.title) = LOWER(:title) OR LOWER(m.originalTitle) = LOWER(:title) ORDER BY m.id ASC")
+    List<Movie> findExactTitleMatches(@Param("title") String title, Pageable pageable);
+
     @Query(value = "SELECT * FROM movies WHERE id <> :id AND original_language = :language AND release_date BETWEEN :fromDate AND :toDate ORDER BY COALESCE(NULLIF(tmdb_vote_average, 0), imdb_rating, 0) DESC, id ASC LIMIT 6", nativeQuery = true)
     List<Movie> findRelatedByLanguageAndDate(Long id, String language, LocalDate fromDate, LocalDate toDate);
 

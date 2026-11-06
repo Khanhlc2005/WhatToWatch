@@ -61,6 +61,10 @@ def test_comparison_calls_catalog_tool_and_uses_only_catalog_facts(monkeypatch) 
         return movies
 
     monkeypatch.setattr(chat_tools, "build_context_for_movie_ids", detail)
+    monkeypatch.setattr(chat_tools, "find_exact_movie_titles", lambda title: [
+        {"id": int(movie.movie_id), "title": movie.title, "releaseYear": movie.year}
+        for movie in movies if movie.title.casefold() == title.casefold()
+    ])
     with TestClient(app) as http:
         response = http.post("/internal/chat", json={
             "message": "So sánh Film One và Film Two",
@@ -70,3 +74,22 @@ def test_comparison_calls_catalog_tool_and_uses_only_catalog_facts(monkeypatch) 
     assert calls == [[1, 2]]
     assert response.json()["tool_name"] == "compare_movies"
     assert "2010" in response.json()["answer"] and "2020" in response.json()["answer"]
+
+
+def test_named_comparison_resolves_titles_without_qdrant_retrieval(monkeypatch) -> None:
+    movies = [
+        MovieContext(movie_id="1", title="Film One", year=2010),
+        MovieContext(movie_id="2", title="Film Two", year=2020),
+    ]
+    monkeypatch.setattr(chat_router, "search_movies", lambda _: (_ for _ in ()).throw(AssertionError("retrieval called")))
+    monkeypatch.setattr(chat_tools, "find_exact_movie_titles", lambda title: [
+        {"id": int(movie.movie_id), "title": movie.title, "releaseYear": movie.year}
+        for movie in movies if movie.title.casefold() == title.casefold()
+    ])
+    monkeypatch.setattr(chat_tools, "build_context_for_movie_ids", lambda ids: [
+        next(movie for movie in movies if movie.movie_id == str(movie_id)) for movie_id in ids
+    ])
+    with TestClient(app) as http:
+        response = http.post("/internal/chat", json={"message": "Compare Film One and Film Two"})
+    assert response.status_code == 200
+    assert [movie["movie_id"] for movie in response.json()["movies"]] == ["1", "2"]

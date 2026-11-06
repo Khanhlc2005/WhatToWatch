@@ -110,4 +110,15 @@ public class MovieController {
                 .result(movieService.searchMovies(term, page, size))
                 .build();
     }
+
+    @GetMapping("/resolve-title")
+    public ApiResponse<List<MovieTitleMatchResponse>> resolveTitle(@RequestParam String title) {
+        String term = title.trim();
+        if (term.isEmpty() || term.length() > 500) {
+            throw new AppException(ErrorCode.INVALID_SEARCH_PARAMS);
+        }
+        return ApiResponse.<List<MovieTitleMatchResponse>>builder()
+                .result(movieService.findExactTitleMatches(term))
+                .build();
+    }
 }

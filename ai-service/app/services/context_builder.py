@@ -42,6 +42,28 @@ def fetch_movie_detail(movie_id: int) -> dict | None:
     return body["result"]
 
 
+def find_exact_movie_titles(title: str) -> list[dict]:
+    """Look up a title in MySQL without sending the question back through vector search."""
+    url = f"{settings.backend_base_url.rstrip('/')}/movies/resolve-title"
+    try:
+        response = requests.get(url, params={"title": title}, timeout=CATALOG_TIMEOUT_SECONDS)
+        response.raise_for_status()
+        body = response.json()
+    except (requests.RequestException, ValueError) as exc:
+        raise MovieCatalogUnavailable("Movie catalog is unavailable") from exc
+    if not isinstance(body, dict) or body.get("code") != 1000 or not isinstance(body.get("result"), list):
+        raise MovieCatalogUnavailable("Movie catalog returned an invalid title lookup")
+    matches = body["result"]
+    if any(not isinstance(movie, dict) or type(movie.get("id")) is not int
+           or movie["id"] <= 0 or not isinstance(movie.get("title"), str)
+           or not movie["title"].strip()
+           or movie.get("originalTitle") is not None and not isinstance(movie["originalTitle"], str)
+           or movie.get("releaseYear") is not None and type(movie["releaseYear"]) is not int
+           for movie in matches):
+        raise MovieCatalogUnavailable("Movie catalog returned an invalid title lookup")
+    return matches
+
+
 def _year(release_date: object) -> int | None:
     if isinstance(release_date, str) and len(release_date) >= 4 and release_date[:4].isdigit():
         year = int(release_date[:4])

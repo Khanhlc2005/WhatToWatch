@@ -1,12 +1,27 @@
 """Read-only catalog tools for factual and comparison questions."""
 
+import re
+import unicodedata
+
 from app.schemas.chat import ChatHistoryMessage
 from app.schemas.rag import AnswerMovie, MovieContext, RAGAnswer
-from app.services.context_builder import build_context_for_movie_ids
+from app.services.context_builder import (
+    build_context_for_movie_ids,
+    find_exact_movie_titles,
+)
+
+COMPARISON_LINK = re.compile(r"\s+(?:so với|versus|vs\.?|and|và|với|with|to|against)\s+", re.IGNORECASE)
+COMPARISON_START = re.compile(
+    r"(?:so sánh|compare|đối chiếu|difference between|khác nhau giữa)", re.IGNORECASE,
+)
+SINGLE_REFERENCE = {"phim đó", "phim này", "bộ phim đó", "bộ phim này", "that movie",
+                    "this movie", "that film", "this film", "the previous movie"}
 
 
 def is_comparison(question: str) -> bool:
-    return any(term in question.casefold() for term in ("so sánh", "khác nhau", "compare", "versus", " vs "))
+    text = question.casefold()
+    return any(term in text for term in ("so sánh", "khác nhau", "compare", "versus", "so với", "difference between")) \
+        or re.search(r"(?<!\w)vs\.?(?!\w)", text) is not None
 
 
 def is_detail(question: str) -> bool:
@@ -30,6 +45,83 @@ def _selected_ids(question: str, context: list[MovieContext], history: list[Chat
             if turn.role == "assistant" and turn.movie_ids:
                 return list(dict.fromkeys(named + turn.movie_ids))
     return named
+
+
+def _latest_movie_ids(history: list[ChatHistoryMessage]) -> list[int]:
+    for turn in reversed(history):
+        if turn.role == "assistant" and turn.movie_ids:
+            return list(dict.fromkeys(turn.movie_ids))
+    return []
+
+
+def _title_key(title: str) -> str:
+    return " ".join(unicodedata.normalize("NFKC", title).casefold().split())
+
+
+def _title_variants(fragment: str) -> list[tuple[str, int | None]]:
+    clean = fragment.strip().strip(' ?!"“”')
+    clean = re.sub(r"\s+(?:for me|giúp tôi|how are they different|khác nhau thế nào)\s*$", "", clean, flags=re.IGNORECASE)
+    variants = [clean]
+    if clean.endswith("."):
+        variants.append(clean[:-1].rstrip())
+    without_prefix = re.sub(r"^(?:between|giữa|bộ phim|phim|movie)\s+", "", clean, flags=re.IGNORECASE)
+    if without_prefix != clean:
+        variants.append(without_prefix)
+    result = []
+    for value in variants:
+        year = re.search(r"\s*\((\d{4})\)$", value)
+        if year:
+            value = value[:year.start()].rstrip()
+        if 1 < len(value) <= 500 and (value, int(year[1]) if year else None) not in result:
+            result.append((value, int(year[1]) if year else None))
+    return result
+
+
+def _comparison_pairs(question: str) -> list[tuple[str, str]]:
+    quoted = re.findall(r'"([^"]+)"|“([^”]+)”', question)
+    if len(quoted) == 2:
+        return [(quoted[0][0] or quoted[0][1], quoted[1][0] or quoted[1][1])]
+    command = COMPARISON_START.search(question)
+    candidates = [question[command.end():], question[:command.start()]] if command else [question]
+    return [(text[:link.start()].strip(), text[link.end():].strip())
+            for text in candidates for link in list(COMPARISON_LINK.finditer(text))[:6]]
+
+
+def _comparison_ids(question: str, history: list[ChatHistoryMessage]) -> list[int]:
+    previous = _latest_movie_ids(history)
+    text = question.casefold()
+    if any(term in text for term in ("first two", "hai phim đầu")) and len(previous) >= 2:
+        return previous[:2]
+    if not _comparison_pairs(question):
+        if any(term in text for term in ("hai phim", "2 phim", "these two movies", "those two movies")):
+            return previous if len(previous) == 2 else []
+        return []
+
+    cache: dict[str, list[dict]] = {}
+
+    def resolve(fragment: str) -> int | None:
+        if _title_key(fragment.strip(' ?!"“”')) in SINGLE_REFERENCE:
+            return previous[0] if len(previous) == 1 else None
+        for title, year in _title_variants(fragment):
+            if title not in cache:
+                cache[title] = find_exact_movie_titles(title)
+            matches = [movie for movie in cache[title]
+                       if _title_key(title) in (_title_key(movie["title"]),
+                                               _title_key(movie.get("originalTitle") or ""))
+                       and (year is None or movie.get("releaseYear") == year)]
+            ids = list(dict.fromkeys(movie["id"] for movie in matches))
+            if len(ids) == 1:
+                return ids[0]
+            if len(ids) > 1:
+                return None
+        return None
+
+    pairs = set()
+    for left, right in _comparison_pairs(question):
+        first, second = resolve(left), resolve(right)
+        if first is not None and second is not None and first != second:
+            pairs.add((first, second))
+    return list(next(iter(pairs))) if len(pairs) == 1 else []
 
 
 def _catalog_movies(ids: list[int], context: list[MovieContext]) -> list[MovieContext]:
@@ -77,7 +169,7 @@ def answer_with_detail_tool(question: str, context: list[MovieContext], history:
 
 
 def answer_with_comparison_tool(question: str, context: list[MovieContext], history: list[ChatHistoryMessage]) -> RAGAnswer:
-    ids = _selected_ids(question, context, history)
+    ids = _comparison_ids(question, history)
     if len(ids) != 2:
         return RAGAnswer(status="insufficient_context", answer="Please identify two movies to compare.", movies=[])
     movies = _catalog_movies(ids, context)

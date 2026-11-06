@@ -6,6 +6,7 @@ import com.project.movie_recommendation.dto.request.MovieFilterRequest;
 import com.project.movie_recommendation.dto.response.HomeFeedResponse;
 import com.project.movie_recommendation.dto.response.MovieDetailResponse;
 import com.project.movie_recommendation.dto.response.MovieSummaryResponse;
+import com.project.movie_recommendation.dto.response.MovieTitleMatchResponse;
 import com.project.movie_recommendation.dto.response.PageResponse;
 import com.project.movie_recommendation.dto.response.RecommendationMovieResponse;
 import com.project.movie_recommendation.dto.response.TrailerResponse;
@@ -217,5 +218,17 @@ public class MovieService {
                 .totalElements(totalElements)
                 .data(pagedData)
                 .build();
+    }
+
+    @Transactional(readOnly = true)
+    public List<MovieTitleMatchResponse> findExactTitleMatches(String title) {
+        String requested = title.trim();
+        return movieRepository.findExactTitleMatches(requested, PageRequest.of(0, 20)).stream()
+                .filter(movie -> requested.equalsIgnoreCase(movie.getTitle())
+                        || requested.equalsIgnoreCase(movie.getOriginalTitle()))
+                .map(movie -> new MovieTitleMatchResponse(
+                        movie.getId(), movie.getTitle(), movie.getOriginalTitle(),
+                        movie.getReleaseDate() == null ? null : movie.getReleaseDate().getYear()))
+                .toList();
     }
 }
