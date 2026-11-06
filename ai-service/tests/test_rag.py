@@ -186,7 +186,7 @@ def test_final_attempt_keeps_only_grounded_movies_from_a_list() -> None:
         {"movie_id": good.movie_id, "title": good.title, "reason": "genre"},
         {"movie_id": other.movie_id, "title": "Invented film", "reason": "genre"},
     ]}
-    result = answer_question("recommend something", context, lambda prompt, system: json.dumps(payload))
+    result = answer_question("Tell me about the first movie", context, lambda prompt, system: json.dumps(payload))
     assert [movie.movie_id for movie in result.movies] == [good.movie_id]
 
 
@@ -197,3 +197,59 @@ def test_final_attempt_still_fails_when_no_movie_is_grounded() -> None:
     ]}
     with pytest.raises(RAGGroundingError):
         answer_question("recommend something", context, lambda prompt, system: json.dumps(payload))
+
+
+def test_recommendation_adds_verified_matching_movies_when_model_returns_one() -> None:
+    context = load_sample_context()
+    result = answer_question("Recommend drama movies", context, lambda *_: _output(context[1]))
+    assert [movie.movie_id for movie in result.movies] == [
+        context[1].movie_id, context[0].movie_id, context[2].movie_id,
+    ]
+    assert all(movie.reason.startswith("Genres: ") for movie in result.movies)
+    assert result.answer == "I found 3 movies in the provided context."
+
+
+def test_recommendation_respects_explicit_one_movie_request() -> None:
+    context = load_sample_context()
+    result = answer_question("Recommend one drama movie", context, lambda *_: _output(context[0]))
+    assert [movie.movie_id for movie in result.movies] == [context[0].movie_id]
+
+
+def test_recommendation_does_not_pad_with_other_genres() -> None:
+    context = load_sample_context()
+    result = answer_question("Gợi ý phim khoa học viễn tưởng", context, lambda *_: _output(context[2]))
+    assert [movie.movie_id for movie in result.movies] == [context[2].movie_id]
+
+
+def test_recommendation_rejects_model_pick_outside_explicit_genre() -> None:
+    context = load_sample_context()
+    result = answer_question("Recommend horror movies", context, lambda *_: _output(context[0]))
+    assert result.status == "no_match" and result.movies == []
+
+
+def test_salvaged_recommendation_still_reaches_three_verified_movies() -> None:
+    context = load_sample_context()
+    payload = {"status": "answered", "answer": "Drama movies from the catalog.", "movies": [
+        {"movie_id": context[0].movie_id, "title": context[0].title, "reason": "Drama"},
+        {"movie_id": context[1].movie_id, "title": "Invented title", "reason": "Drama"},
+    ]}
+    result = answer_question("Recommend drama movies", context, lambda *_: json.dumps(payload))
+    assert [movie.movie_id for movie in result.movies] == [movie.movie_id for movie in context]
+    assert [movie.title for movie in result.movies] == [movie.title for movie in context]
+
+
+def test_recommendation_keeps_no_match_status() -> None:
+    context = load_sample_context()
+    raw = '{"status":"no_match","answer":"No horror films found.","movies":[]}'
+    result = answer_question("Recommend horror movies", context, lambda *_: raw)
+    assert result.status == "no_match" and result.movies == []
+
+
+def test_discovery_question_without_recommend_word_returns_multiple_movies() -> None:
+    context = [
+        MovieContext(movie_id=str(index), title=f"Korean Film {index}",
+                     genres=["Thriller"], original_language="ko", overview="A mystery story.")
+        for index in range(1, 4)
+    ]
+    result = answer_question("Korean thrillers like Parasite", context, lambda *_: _output(context[0]))
+    assert [movie.movie_id for movie in result.movies] == ["1", "2", "3"]

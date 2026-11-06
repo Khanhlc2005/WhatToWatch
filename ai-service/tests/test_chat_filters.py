@@ -51,3 +51,9 @@ def test_common_english_filter_phrases() -> None:
     assert result.retrieval.genres == ["Science Fiction"]
     assert result.retrieval.year_min == 2016
     assert result.retrieval.rating_min == 7.5
+
+
+def test_plural_thriller_query_uses_genre_filter() -> None:
+    result = extract_chat_filters("Korean thrillers like Parasite")
+    assert result.retrieval.languages == ["ko"]
+    assert result.retrieval.genres == ["Thriller"]

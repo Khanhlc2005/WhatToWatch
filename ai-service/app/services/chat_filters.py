@@ -24,6 +24,7 @@ GENRES = {
     "tội phạm": "Crime", "crime": "Crime", "bí ẩn": "Mystery", "mystery": "Mystery",
     "tài liệu": "Documentary", "documentary": "Documentary", "gia đình": "Family",
     "family": "Family", "giật gân": "Thriller", "thriller": "Thriller",
+    "thrillers": "Thriller",
 }
 LANGUAGES = {"tiếng anh": "en", "english": "en", "tiếng hàn": "ko", "korean": "ko",
              "tiếng nhật": "ja", "japanese": "ja", "tiếng việt": "vi", "vietnamese": "vi",
