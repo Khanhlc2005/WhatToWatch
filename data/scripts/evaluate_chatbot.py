@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
-"""Freeze catalog contexts, capture an already-installed model, compare paired RAG outputs.
+"""Freeze catalog contexts and capture an already-installed model on RAG outputs.
 
-No model pulls, runtime changes, training, or invented relevance judgments.
+No model pulls, runtime changes, or invented relevance judgments.
 PYTHONPATH=ai-service is required. Scores describe contract checks, not semantic quality.
 """
 import argparse
@@ -20,14 +20,12 @@ def sha(value):
     return hashlib.sha256(json.dumps(value, ensure_ascii=False, sort_keys=True).encode()).hexdigest()
 
 
-def prepare(queries, catalog, sft):
-    training_ids = {json.loads(line)['provenance']['source_movie_id'] for line in sft.read_text().splitlines()}
+def prepare(queries, catalog):
     cases = []
     for q in queries['queries']:
         context = []
         for anchor in q['catalog_anchors']:
             mid = anchor['movie_id']
-            if mid in training_ids: raise ValueError('Chatbot evaluation anchor overlaps SFT train')
             m = catalog[mid]
             if any(m[k] != anchor[k] for k in ('imdb_id', 'tmdb_id', 'title')):
                 raise ValueError('Unverified anchor')
@@ -48,7 +46,7 @@ def prepare(queries, catalog, sft):
     ])
     return dict(version='chatbot_v1', scope='Fixed catalog context; no retrieval or personalized recommendation gain claims.',
         source_queries_sha256=sha(queries), source_catalog_sha256=sha(catalog),
-        sft_train_sha256=hashlib.sha256(sft.read_bytes()).hexdigest(), cases=cases)
+        cases=cases)
 
 
 def checks(raw, context):
@@ -127,31 +125,6 @@ def capture(dataset, model, url):
         system_prompt_sha256=sha(SYSTEM_PROMPT), generation_options={'temperature': 0, 'seed': 42, 'num_predict': 512}, runs=runs)
 
 
-def compare(dataset, base, tuned):
-    for artifact in (base, tuned):
-        if artifact['evaluation_sha256'] != sha(dataset) or artifact['system_prompt_sha256'] != sha(SYSTEM_PROMPT):
-            raise ValueError('Evaluation/system prompt mismatch')
-    if base['generation_options'] != tuned['generation_options']:
-        raise ValueError('Generation options mismatch')
-    indexed = []
-    for artifact in (base, tuned):
-        rows = {r['id']: r for r in artifact['runs']}
-        if len(rows) != len(artifact['runs']) or set(rows) != {c['id'] for c in dataset['cases']}:
-            raise ValueError('Incomplete/duplicate capture IDs')
-        if any(rows[c['id']]['input_sha256'] != sha(c) for c in dataset['cases']):
-            raise ValueError('Frozen input mismatch')
-        indexed.append(rows)
-    paired = []
-    for case in dataset['cases']:
-        a, b = (index[case['id']] for index in indexed)
-        paired.append(dict(id=case['id'], base=a, finetuned=b))
-    return dict(scope='Structural checks only; reason substring checks are not semantic explainability judgments.',
-        quality_metrics=None, reason='No human-reviewed relevance/answer/explanation labels supplied.',
-        evaluation_sha256=sha(dataset), base_model=base['model'], finetuned_model=tuned['model'],
-        base_model_digest=base.get('model_digest'), finetuned_model_digest=tuned.get('model_digest'),
-        paired=paired)
-
-
 def write_new(path, value):
     path.parent.mkdir(parents=True, exist_ok=True)
     with path.open('x', encoding='utf-8') as stream:
@@ -164,29 +137,21 @@ def main():
     prep = sub.add_parser('prepare')
     prep.add_argument('--queries', type=Path, default=Path('data/evaluation/query_set_v1.json'))
     prep.add_argument('--movies', type=Path, default=Path('data/processed/movies_with_mysql_ids.jsonl'))
-    prep.add_argument('--sft-train', type=Path, default=Path('finetuning/datasets/v2-en/train.jsonl'))
     prep.add_argument('--output', type=Path, required=True)
     run = sub.add_parser('capture')
     run.add_argument('--evaluation', type=Path, required=True)
     run.add_argument('--model', required=True)
     run.add_argument('--ollama-url', default='http://localhost:11434')
     run.add_argument('--output', type=Path, required=True)
-    comp = sub.add_parser('compare')
-    comp.add_argument('--evaluation', type=Path, required=True)
-    comp.add_argument('--base', type=Path, required=True)
-    comp.add_argument('--finetuned', type=Path, required=True)
-    comp.add_argument('--output', type=Path, required=True)
     args = p.parse_args()
     if args.output.exists(): p.error('output already exists; preserve evidence')
     if args.command == 'prepare':
         movies = [json.loads(line) for line in args.movies.read_text().splitlines()]
         catalog = {m['movie_id']: m for m in movies}
         if len(catalog) != len(movies): raise ValueError('Duplicate catalog IDs')
-        result = prepare(json.loads(args.queries.read_text()), catalog, args.sft_train)
-    elif args.command == 'capture':
-        result = capture(json.loads(args.evaluation.read_text()), args.model, args.ollama_url)
+        result = prepare(json.loads(args.queries.read_text()), catalog)
     else:
-        result = compare(json.loads(args.evaluation.read_text()), json.loads(args.base.read_text()), json.loads(args.finetuned.read_text()))
+        result = capture(json.loads(args.evaluation.read_text()), args.model, args.ollama_url)
     write_new(args.output, result)
     return int(any(r.get('error') for r in result.get('runs', [])))
 

@@ -3,7 +3,6 @@
   "scope": "Fixed catalog context; no retrieval or personalized recommendation gain claims.",
   "source_queries_sha256": "e9ca421d90e0beffeba95cea3a86dbaab8d11797cfa6eb4ce8a6f140a9b32338",
   "source_catalog_sha256": "943c2c884b1f6089b51907a1aa27856cf5a79088297128ebe6405afe93b14a51",
-  "sft_train_sha256": "cbdd8d45b0deab5f1f2aa0b5f572dc95dd82eb85fcf34739ab8e5dc434b0c400",
   "cases": [
     {
       "id": "Q01",

@@ -31,7 +31,6 @@ def package(root, target):
         files = [(root / 'data/scripts/run_shared_catalog.py', 'script.py'),
                  (root / 'data/scripts/start_catalog.sh', 'script.sh'),
                  (root / 'data/scripts/requirements-catalog.txt', 'requirements-catalog.txt'),
-                 (root / 'docs/catalog_handoff_vi.md', 'hướng dẫn.md'),
                  (snapshot, 'data/processed/catalog.sqlite'),
                  (root / 'data/seeds/movies_cleaned_sample.jsonl', 'data/seeds/movies_cleaned_sample.jsonl')]
         files.extend((root / 'data/scripts' / name, 'scripts/' + name) for name in modules)

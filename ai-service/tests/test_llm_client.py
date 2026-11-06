@@ -41,7 +41,7 @@ def test_ollama_uses_selected_model_tag(monkeypatch) -> None:
         calls.append(json)
         return FakeResponse()
 
-    monkeypatch.setenv("OLLAMA_MODEL_NAME", "whattowatch-qwen25-3b-sft:english-v1")
+    monkeypatch.setenv("OLLAMA_MODEL_NAME", "custom-model:v1")
     monkeypatch.setattr("app.llm_client.requests.post", fake_post)
     assert OllamaClient().generate("question") == "ok"
-    assert calls[0]["model"] == "whattowatch-qwen25-3b-sft:english-v1"
+    assert calls[0]["model"] == "custom-model:v1"

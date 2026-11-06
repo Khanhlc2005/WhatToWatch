@@ -1,7 +1,6 @@
 # Evaluation tuần 6
 
-Phần đánh giá chất lượng chatbot tiếp theo (filter F1, memory và review
-faithfulness/relevance) nằm trong [hướng dẫn chat quality](../../docs/chat_quality_evaluation_vi.md).
+Đánh giá filter F1 dùng `chat_filters_v1.json` với `data/scripts/evaluate_chat_quality.py filters`.
 
 `query_set_v1.json` giữ 18 queries semantic/keyword/filter Anh-Việt, final-K=10.
 Anchors chỉ xác minh identity catalog; không phải relevance labels. Q18 là kiểm
@@ -24,7 +23,7 @@ các modes còn lại giữ `rerank=false` mặc định. Candidate-K chỉ áp 
 final-K lấy từ query set. RRF chạy một lần trong service. Đây là so sánh cấu hình
 production, không phải thí nghiệm pool giống nhau: hybrid baseline lấy mỗi nhánh
 final-K, reranker lấy mỗi nhánh candidate-K. Nếu tune candidate-K, dùng evaluation
-development riêng; không dùng SFT test.
+development riêng.
 
 Trước khi chạy live, kiểm tra dịch vụ, cache/model đã có và RAM/VRAM. Endpoint
 reranker có thể load/download model lazily; phiên tuần 6 **chưa gọi live reranker**.
@@ -59,12 +58,12 @@ không exhaustive. Queries không đủ điều kiện được ghi `skipped`, k
 Hiện 18 queries và 280 dòng manual tuần 4 có **0 labels/reviewers**; chưa có
 quality metrics thực tế.
 
-## Base vs Fine-tuned chatbot
+## Chatbot (fixed context)
 
 `chatbot_set_v1.json` đóng băng 22 cases: 18 queries gốc với catalog anchors làm
-context, hai câu hỏi facts, empty context và missing director. Source/inputs có
-hash, anchors không overlap SFT train. Context được cung cấp cố định để tách ảnh
-hưởng model khỏi retrieval; không tuyên bố đây là context live retrieval.
+context, hai câu hỏi facts, empty context và missing director. Context được cung
+cấp cố định để tách ảnh hưởng model khỏi retrieval; không tuyên bố đây là context
+live retrieval. `chat_memory_v1.json` có 3 ca memory.
 
 Tái tạo bộ evaluation sau thay đổi source chỉ bằng version mới, giữ bộ đã chốt:
 
@@ -73,41 +72,28 @@ PYTHONPATH=ai-service ai-service/.venv-gpu/bin/python data/scripts/evaluate_chat
   --output /tmp/chatbot-set-review.json
 ```
 
-Sau khi Nam Anh cung cấp model được cài sẵn, chạy hai capture trên cùng set:
+Với model đã cài sẵn trong Ollama:
 
 ```bash
 PYTHONPATH=ai-service ai-service/.venv-gpu/bin/python data/scripts/evaluate_chatbot.py capture \
   --evaluation data/evaluation/chatbot_set_v1.json --model qwen2.5:3b \
   --ollama-url http://localhost:11434 --output /tmp/base-capture.json
-PYTHONPATH=ai-service ai-service/.venv-gpu/bin/python data/scripts/evaluate_chatbot.py capture \
-  --evaluation data/evaluation/chatbot_set_v1.json --model MODEL_FINE_TUNED_DA_CO \
-  --ollama-url http://localhost:11434 --output /tmp/finetuned-capture.json
-PYTHONPATH=ai-service ai-service/.venv-gpu/bin/python data/scripts/evaluate_chatbot.py compare \
-  --evaluation data/evaluation/chatbot_set_v1.json \
-  --base /tmp/base-capture.json --finetuned /tmp/finetuned-capture.json \
-  --output /tmp/paired-comparison.json
 ```
 
 Capture kiểm tra `/api/tags`, từ chối model chưa cài, không pull hoặc đổi runtime.
 Lưu model digest, prompt/input hash và generation settings (temperature=0,
-seed=42,num_predict=512). Model có template khác nhau cần ghi trong training
-handoff; settings giống nhau không bảo đảm cùng khả năng inference.
-
-Capture riêng output đầu thô và output qua `answer_question` (guard/retry hiện
-hành); các cases empty/missing facts vẫn có raw diagnostic riêng. Retry sử dụng
-prompt sửa lỗi như runtime. JSON/source identity checks là kiểm tra contract,
-reason fact substring là proxy hạn chế, **không phải semantic quality metrics**.
-Guard tự viết lại answers/reasons nên phải review raw output riêng. Compare
-reject khác evaluation/prompt/options/IDs/input hashes; errors vẫn được giữ trong
-paired output. Không chạy so sánh thật khi thiếu fine-tuned model.
+seed=42, num_predict=512). Output đầu thô và output qua `answer_question`
+(guard/retry hiện hành) được ghi riêng. JSON/source identity checks là kiểm tra
+contract, reason fact substring là proxy hạn chế, **không phải semantic quality
+metrics**.
 
 ## Đánh giá tác động
 
 | Thành phần | Thí nghiệm cần chốt | Giới hạn hiện tại |
 |---|---|---|
-| Retrieval | Giữ catalog/index/filters/K; bốn modes trên cùng reviewed queries. Nếu chatbot rewrite query, lưu original/rewrite và relevance do người review. | Dense/sparse/RRF/reranker không dùng chatbot model; fine-tuning hiện không trực tiếp thay ranking. |
+| Retrieval | Giữ catalog/index/filters/K; bốn modes trên cùng reviewed queries. Nếu chatbot rewrite query, lưu original/rewrite và relevance do người review. | Dense/sparse/RRF/reranker không dùng chatbot model. |
 | Recommendation | Dùng cùng snapshot ratings thật, exclusions và profile version; lưu IDs/order/score components/reasons trước/sau. | Ranking cosine/final không gọi LLM; chưa có feedback hợp lệ để đo gain cá nhân. |
-| Explainability | Cùng context/reason codes, đánh giá correctness, grounding và usefulness bằng reviewer; đọc raw lẫn guarded output. | SFT hai templates không dạy reason codes recommendation; guard hiện viết lại reasons. |
+| Explainability | Cùng context/reason codes, đánh giá correctness, grounding và usefulness bằng reviewer; đọc raw lẫn guarded output. | Guard hiện viết lại reasons. |
 
 Chưa thêm query rewriting hoặc LLM reranking vào production. Không tạo user
 ratings/feedback giả. Để đo end-to-end sau này cần đóng băng output retrieval và
