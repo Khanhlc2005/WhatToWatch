@@ -12,7 +12,7 @@ import page from '../styles/Page.module.scss';
 import styles from '../styles/ChatPage.module.scss';
 
 const suggestions = [
-  'Recommend a science fiction movie',
+  'Recommend science fiction movies',
   'Something short and funny for tonight',
   'Korean thrillers like Parasite'
 ];
@@ -134,7 +134,7 @@ export default function ChatPage() {
             {loading && <StatusNote tone='loading'>Loading conversation…</StatusNote>}
             {!loading && messages.length === 0 && <div className={styles.empty}>
               <h2>What should you watch today?</h2>
-              <p>Try asking: “Recommend a science fiction movie,” then “When was it released?”</p>
+              <p>Try asking: “Recommend science fiction movies,” then “Tell me about the first one.”</p>
             </div>}
             {messages.map((item, index) => <ChatMessageView key={item.id || `${item.role}-${index}`}
               role={item.role} content={item.content} time={formatClock(item.createdAt)}
