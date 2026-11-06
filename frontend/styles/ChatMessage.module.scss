@@ -7,7 +7,10 @@
 .who { display: flex; align-items: center; gap: $space-2; color: $ink-muted; @include eyebrow; }
 .user .who { justify-content: flex-end; }
 .time { @include meta; letter-spacing: .02em; color: $ink-faint; }
-.picks { display: flex; flex-direction: column; gap: $space-3; margin: 0; padding: 0; list-style: none; li { display: flex; gap: $space-3; } li > div { display: flex; flex-direction: column; gap: 2px; } }
+.picks { display: flex; flex-direction: column; gap: $space-4; margin: 0; padding: 0; list-style: none; li { display: flex; align-items: flex-start; gap: $space-3; } }
+.details { display: flex; flex-direction: column; gap: 2px; min-width: 0; }
+.posterLink { flex: none; display: block; width: 64px; }
+.poster { display: block; width: 100%; }
 .num { flex: none; padding-top: 1px; @include meta; color: $marquee-text; }
 .link { display: inline-flex; align-items: center; gap: $space-1; color: $marquee-text; @include label; text-decoration: underline; text-decoration-thickness: 1px; text-underline-offset: 3px; &:hover { text-decoration-thickness: 2px; } }
 .reason { color: $ink-muted; @include body-s; }
