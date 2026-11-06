@@ -79,6 +79,26 @@ class MovieSearchIntegrationTest {
         verify(movies).searchByTitle(eq("space"), any());
     }
 
+    @Test
+    void exactTitleLookupUsesMysqlAndIncludesOriginalTitle() {
+        MovieRepository movies = mock(MovieRepository.class);
+        AiServiceClient ai = mock(AiServiceClient.class);
+        Movie film = Movie.builder().id(42L).title("Spirited Away")
+                .originalTitle("Sen to Chihiro no Kamikakushi")
+                .releaseDate(java.time.LocalDate.of(2001, 7, 20)).build();
+        when(movies.findExactTitleMatches(eq("Sen to Chihiro no Kamikakushi"), any()))
+                .thenReturn(List.of(film));
+
+        var matches = new MovieService(movies, mock(MovieMapper.class), ai)
+                .findExactTitleMatches(" Sen to Chihiro no Kamikakushi ");
+
+        assertEquals(1, matches.size());
+        assertEquals(42L, matches.get(0).id());
+        assertEquals("Spirited Away", matches.get(0).title());
+        assertEquals(2001, matches.get(0).releaseYear());
+        verifyNoInteractions(ai);
+    }
+
     private AiMovieSearchResponse.Hit hit(Long id) {
         return AiMovieSearchResponse.Hit.builder().movieId(id).build();
     }

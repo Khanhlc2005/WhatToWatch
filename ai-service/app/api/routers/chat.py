@@ -66,8 +66,9 @@ def chat_filters(request: ChatFilterRequest) -> ExtractedChatFilters:
 def chat(request: ChatRequest) -> ChatResponse:
     """Retrieve real movies, hydrate them from MySQL, then generate a grounded answer."""
     extracted = _validated_filters(request.message, request.filters)
-    context = request.movie_context
-    if context is None:
+    comparison = is_comparison(request.message)
+    context = request.movie_context if request.movie_context is not None else []
+    if request.movie_context is None and not comparison:
         prior_ids = _follow_up_movie_ids(request)
         try:
             search = search_movies(MovieSearchRequest(
@@ -96,13 +97,13 @@ def chat(request: ChatRequest) -> ChatResponse:
 
     try:
         tool_name = None
-        if request.movie_context is None and not search.hits and not context:
+        if comparison:
+            result = answer_with_comparison_tool(request.message, context, request.history)
+            tool_name = "compare_movies"
+        elif request.movie_context is None and not search.hits and not context:
             result = RAGAnswer(
                 status="no_match", answer="No matching movies were found in the available data.", movies=[],
             )
-        elif is_comparison(request.message):
-            result = answer_with_comparison_tool(request.message, context, request.history)
-            tool_name = "compare_movies"
         elif is_detail(request.message):
             result = answer_with_detail_tool(request.message, context, request.history)
             tool_name = "movie_detail"
