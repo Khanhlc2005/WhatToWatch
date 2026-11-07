@@ -2,7 +2,9 @@ import { NextApiRequest, NextApiResponse } from 'next';
 import { allowMethod, sendError } from '../../../lib/api';
 import { positiveId } from '../../../lib/activity';
 import { backendRequest } from '../../../lib/backend';
-import { fetchVisibleLists, ListMembership, PageResult, WatchlistItem, WatchlistSummary } from '../../../lib/watchlists';
+import {
+  accountRequest, DEFAULT_LIST_NAME, fetchAllLists, isDefaultList, ListMembership, PageResult, signIn, WatchlistItem, WatchlistSummary
+} from '../../../lib/watchlists';
 
 const PAGE_SIZE = 200;
 const MAX_PAGES = 20;
@@ -26,12 +28,25 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
     res.status(400).json({ message: 'Invalid movie ID' });
     return;
   }
-  const lists = await fetchVisibleLists(req, res);
+  let lists = await fetchAllLists(req, res);
   if (!lists) return;
+  if (!lists.some(isDefaultList)) {
+    const created = await accountRequest<WatchlistSummary>(req, res, '/watchlists', 'POST', { name: DEFAULT_LIST_NAME }, signIn);
+    if (created) lists = [created, ...lists];
+  }
+  const defaultList = lists.find(isDefaultList);
+  const customLists = lists.filter(list => !isDefaultList(list));
+  const orderedLists = defaultList ? [defaultList, ...customLists] : lists;
+
   try {
     const token = req.cookies.wtw_session as string;
-    const checked = await Promise.all(lists.map(list => holdsMovie(list, movieId, token)));
-    const result: ListMembership[] = lists.map((list, index) => ({ id: list.id, name: list.name, count: list.movieCount, checked: checked[index] }));
+    const checked = await Promise.all(orderedLists.map(list => holdsMovie(list, movieId, token)));
+    const result: ListMembership[] = orderedLists.map((list, index) => ({
+      id: list.id,
+      name: isDefaultList(list) ? 'Watch later' : list.name,
+      count: list.movieCount,
+      checked: checked[index]
+    }));
     res.status(200).json(result);
   } catch (error) {
     sendError(res, error);

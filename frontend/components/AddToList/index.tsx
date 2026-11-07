@@ -23,9 +23,6 @@ export default function AddToList({ movieId }: { movieId: string }): React.React
   const shown = useRef(movieId);
   shown.current = movieId;
 
-  useEffect(() => { void signedIn().then(setAuthenticated); }, [movieId]);
-  useEffect(() => { setOpen(false); setLists([]); setCreating(false); setError(''); setLoading(false); setBusy(false); }, [movieId]);
-
   const requireSignIn = useCallback(() => void router.push('/login?next=' + encodeURIComponent(router.asPath)), [router]);
 
   const load = useCallback(async () => {
@@ -44,6 +41,32 @@ export default function AddToList({ movieId }: { movieId: string }): React.React
       if (shown.current === movieId) setLoading(false);
     }
   }, [movieId, requireSignIn]);
+
+  useEffect(() => {
+    let active = true;
+    void signedIn().then(auth => {
+      if (!active) return;
+      setAuthenticated(auth);
+      if (auth) void load();
+    });
+    return () => { active = false; };
+  }, [movieId, load]);
+
+  useEffect(() => {
+    const onChange = (event: Event) => {
+      if ((event as CustomEvent).detail === movieId || event.type === 'wtw-auth-change') {
+        void load();
+      }
+    };
+    window.addEventListener('wtw-library-change', onChange);
+    window.addEventListener('wtw-auth-change', onChange);
+    return () => {
+      window.removeEventListener('wtw-library-change', onChange);
+      window.removeEventListener('wtw-auth-change', onChange);
+    };
+  }, [movieId, load]);
+
+  useEffect(() => { setOpen(false); setLists([]); setCreating(false); setError(''); setLoading(false); setBusy(false); }, [movieId]);
 
   // Close with Escape (before the modal sees it) or a click outside.
   useEffect(() => {

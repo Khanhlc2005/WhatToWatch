@@ -59,5 +59,21 @@ export async function visibleListId(req: NextApiRequest, res: NextApiResponse): 
   return id;
 }
 
+// Checks that `?id=` is one of the user's owned lists (including Default Watchlist), so movies can be added/removed from it.
+export async function ownedListId(req: NextApiRequest, res: NextApiResponse): Promise<number | null> {
+  const id = positiveId(req.query.id);
+  if (!id) {
+    res.status(400).json({ message: 'Invalid list ID' });
+    return null;
+  }
+  const lists = await fetchAllLists(req, res);
+  if (!lists) return null;
+  if (!lists.some(list => list.id === id)) {
+    res.status(404).json({ message: 'List not found' });
+    return null;
+  }
+  return id;
+}
+
 export { accountRequest, signIn };
 export type { PageResult };
