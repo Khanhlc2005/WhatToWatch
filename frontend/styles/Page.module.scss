@@ -5,8 +5,8 @@
 .tight { gap: $space-8; }
 .head { display: flex; flex-direction: column; gap: $space-2; h1, h2 { margin: 0; @include title-l; } p { margin: 0; max-width: 60ch; color: $ink-muted; @include body-l; } }
 .eyebrow { margin: 0; color: $ink-muted; @include eyebrow; }
-.headRow { display: flex; align-items: flex-end; justify-content: space-between; gap: $space-6; }
-.quick { display: flex; gap: $space-2; }
+.headRow { display: flex; align-items: flex-end; justify-content: space-between; gap: $space-4; }
+.quick { display: flex; align-items: center; gap: 6px; flex-shrink: 0; flex-wrap: nowrap; }
 .grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(168px, 1fr)); gap: $space-8 $space-4; }
 .toolbar { display: flex; align-items: center; justify-content: space-between; gap: $space-4; }
 .link { display: inline-flex; align-items: center; gap: $space-1; color: $marquee-text; @include label; text-decoration: underline; text-decoration-thickness: 1px; text-underline-offset: 3px; &:hover { text-decoration-thickness: 2px; } }
