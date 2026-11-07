@@ -164,9 +164,8 @@ public class WatchlistService {
         var watchlistOpt = watchlistRepository.findByUserIdAndName(user.getId(), DEFAULT_WATCHLIST_NAME)
                 .or(() -> watchlistRepository.findByUserId(user.getId()));
 
-        boolean inWatchlist = (watchlistOpt.isPresent() &&
-                watchlistItemRepository.existsByWatchlistIdAndMovieId(watchlistOpt.get().getId(), movieId))
-                || watchlistItemRepository.existsByWatchlistUserIdAndMovieId(user.getId(), movieId);
+        boolean inWatchlist = watchlistOpt.isPresent() &&
+                watchlistItemRepository.existsByWatchlistIdAndMovieId(watchlistOpt.get().getId(), movieId);
 
         return WatchlistStatusResponse.builder()
                 .movieId(movieId)

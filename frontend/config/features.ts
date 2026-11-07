@@ -7,5 +7,5 @@ export const RATING_FILTER_ENABLED = true;
 // `genres` and `movie_genres` are filled by tools/seed_genres.py (see README). Set this to false on a database
 // that has not been seeded, because every genre filter would return no movies.
 export const GENRE_FILTER_ENABLED = true;
-// "Add to list" in the detail modal: Watch later would show "Saved" for movies that are only in a named list.
-export const ADD_TO_LIST_ENABLED = false;
+// "Add to list" in the detail modal: allows adding to default and custom lists.
+export const ADD_TO_LIST_ENABLED = true;
